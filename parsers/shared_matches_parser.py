@@ -10,7 +10,7 @@ class SharedMatchesJoinerFTDNA:
 	__final_format = SharedMatchesFormat()
 	__input_format = FTDNAMatchFormat()
 
-	__result = []
+	__result = [__final_format.get_header()]
 	__already_found_pairs = {}
 
 	__files_paths = []
