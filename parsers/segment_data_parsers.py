@@ -4,9 +4,10 @@ import re
 from parsers.match_parsers import MatchDatabase
 from parsers.headers import FTDNASegmentFormat, SegmentFormat
 
+
 class SegmentDatabase:
 	__format = SegmentFormat()
-	__file_name = "working_files/databases/all_segments.csv"
+	__file_name = "all_segments.csv"
 
 	def __init__(self):
 		self.__database = self.__load_from_file()
