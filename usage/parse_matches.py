@@ -3,9 +3,9 @@ import argparse
 
 args_parser = argparse.ArgumentParser()
 
-args_parser.add_argument("source")
 args_parser.add_argument("source_file")
 args_parser.add_argument("output_file")
+args_parser.add_argument("-s", "--source", required=True)
 
 args = args_parser.parse_args()
 
