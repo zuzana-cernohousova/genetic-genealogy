@@ -15,6 +15,10 @@ souboru výstupního (druhý argument) ve správném formátu.
 Je potřeba specifikovat počáteční formát zadáním informace
 o zdrojové databázi argumentem *-s/--source*.
 
+Každý záznam ze vstupního souboru je porovnán s "databází" dosud přidaných osob
+a pokud je nalezena shoda, je záznamu o osobě přidělené stejné ID.
+V opačném případě je vygenerováno nové, unikátní ID.
+
 Použití:
 
     parse_matches.py source_file output_file -s source_database
@@ -22,6 +26,7 @@ Použití:
 ## Parsování sdílených shod
 *parse_shared_matches.py* provádí propojení a unifikaci souborů obsahujících
 sdílené shody POI a shod POI.
+
 Sjednocený přehled o shodách shod je vypsán do výstupního souboru, 
 který je specifikován prvním parametrem.
 Vstupních souborů je možné předat libovolné množství pomocí argumentu *-f/--files*.
