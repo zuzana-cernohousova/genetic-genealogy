@@ -13,8 +13,23 @@ Script *parse_matches.py* je nástrojem pro unifikaci formátu seznamu shod.
 Program načte data ze vstupního souboru (první argument) a uloží je do
 souboru výstupního (druhý argument) ve správném formátu.
 Je potřeba specifikovat počáteční formát zadáním informace
-o zdrojové databázi argumentem -s/--source.
+o zdrojové databázi argumentem *-s/--source*.
 
 Použití:
 
-    parse_matches.py source_file output_file -s FTDNA
+    parse_matches.py source_file output_file -s source_database
+
+## Parsování sdílených shod
+*parse_shared_matches.py* provádí propojení a unifikaci souborů obsahujících
+sdílené shody POI a shod POI.
+Sjednocený přehled o shodách shod je vypsán do výstupního souboru, 
+který je specifikován prvním parametrem.
+Vstupních souborů je možné předat libovolné množství pomocí argumentu *-f/--files*.
+Je také možné programu předat libovolné množství adresářů, které obsahují soubory určené k parsování,
+pomocí argumentu *-d/--directories*.
+Oba argumenty je možné nezávisle kombinovat.
+Zdroj dat je opět specifikován pomocí argumentu *-s/--source*.
+
+Použití:
+
+    parse_shared_matches.py output_file -s SOURCE -f file_1 file_2 file_3 -d directory_1 directory_2
