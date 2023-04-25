@@ -38,3 +38,6 @@ Zdroj dat je opět specifikován pomocí argumentu *-s/--source*.
 Použití:
 
     parse_shared_matches.py output_file -s SOURCE -f file_1 file_2 file_3 -d directory_1 directory_2
+
+## Parsování dat o segmentech
+*parse_segments.py* zajišťuje transformaci dat o segmentech do unifikovaného formátu.
