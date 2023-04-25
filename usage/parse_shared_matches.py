@@ -3,10 +3,11 @@ import argparse
 
 args_parser = argparse.ArgumentParser()
 
-args_parser.add_argument("source_database")
 args_parser.add_argument("output_file")
 args_parser.add_argument("-d", "--directories", nargs="+")
 args_parser.add_argument("-f", "--files", nargs="+")
+args_parser.add_argument("-s", "--source", required=True)
+
 
 args = args_parser.parse_args()
 
