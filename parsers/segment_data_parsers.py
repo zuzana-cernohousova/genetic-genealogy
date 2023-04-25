@@ -37,19 +37,23 @@ class SegmentDatabase:
 		biggest_id = 0
 		segment_id_index = self.__format.get_index("Segment ID")
 
-		with open(self.__file_name, 'r', encoding="utf-8-sig") as input_file:
-			reader = csv.reader(input_file)
+		try:
+			with open(self.__file_name, 'r', encoding="utf-8-sig") as input_file:
+				reader = csv.reader(input_file)
 
-			# skip header
-			for _ in reader:
-				break
+				# skip header
+				for _ in reader:
+					break
 
-			for segment in reader:
-				record_id = int(segment[segment_id_index])
-				if record_id > biggest_id:
-					biggest_id = record_id
+				for segment in reader:
+					record_id = int(segment[segment_id_index])
+					if record_id > biggest_id:
+						biggest_id = record_id
 
-				segments.append(segment)
+					segments.append(segment)
+
+		except IOError:
+			pass
 
 		self.__biggest_segment_ID = biggest_id
 		return segments
