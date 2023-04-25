@@ -10,7 +10,7 @@ class MatchDatabase:
 	"""
 
 	__format = MatchFormat()
-	__file_name = "working_files/databases/all_matches.csv"
+	__file_name = "all_matches.csv"
 
 	def __init__(self):
 		self.__database = self.__load_from_file()
@@ -51,24 +51,30 @@ class MatchDatabase:
 		biggest_id = 0
 		id_index = self.__format.get_index('ID')
 
-		with open(self.__file_name, 'r', encoding="utf-8-sig") as input_file:
-			reader = csv.reader(input_file)
+		try:
+			with open(self.__file_name, 'r', encoding="utf-8-sig") as input_file:
+				reader = csv.reader(input_file)
 
-			# skip header
-			for row in reader:
-				break
+				# skip header
+				for _ in reader:
+					break
 
-			for record in reader:
-				record_id = int(record[id_index])
-				if record_id > biggest_id:
-					biggest_id = record_id
+				for record in reader:
+					record_id = int(record[id_index])
+					if record_id > biggest_id:
+						biggest_id = record_id
 
-				result.append(record)
+						result.append(record)
+
+		except IOError:
+			# if the file does not exist or cannot be read, do nothing
+			pass
 
 		self.__biggest_ID = biggest_id
 		return result
 
 	def save_to_file(self):
+		# file will be opened or created
 		with open(self.__file_name, "w", newline='', encoding="utf-8-sig") as output_file:
 			writer = csv.writer(output_file)
 			writer.writerow(self.__format.get_header())
