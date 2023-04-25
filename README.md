@@ -21,7 +21,7 @@ V opačném případě je vygenerováno nové, unikátní ID.
 
 Použití:
 
-    parse_matches.py source_file output_file -s source_database
+    parse_matches.py input_file output_file -s source_database
 
 ## Parsování sdílených shod
 *parse_shared_matches.py* provádí propojení a unifikaci souborů obsahujících
@@ -41,3 +41,10 @@ Použití:
 
 ## Parsování dat o segmentech
 *parse_segments.py* zajišťuje transformaci dat o segmentech do unifikovaného formátu.
+
+Pomocí prvního argumentu specifikujte vstupní soubor, pomocí druhého výstupní soubor.
+Argumentem *-s/--source* specifikujte zdrojovou databázi.
+
+Použití:
+
+    parse_segments.py input_file output_file -s SOURCE
