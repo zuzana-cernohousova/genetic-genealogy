@@ -45,7 +45,9 @@ class SharedMatchesJoinerFTDNA:
 				reader = csv.reader(file)
 
 				# get and avoid the header
-				_ = self.__get_header(reader)
+				header = self.__get_header(reader)
+				if header != self.__input_format.get_header():
+					raise Exception("Input file is in incorrect format.")
 
 				for row in reader:
 					output_row = [''] * len(self.__final_format.get_header())
