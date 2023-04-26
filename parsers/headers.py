@@ -72,6 +72,7 @@ class FTDNASegmentFormat:
 		'Matching SNPs': 'SNPs'
 	}
 
+	@staticmethod
 	def get_format_name(self):
 		return "FamilyTreeDNA"
 
@@ -104,6 +105,7 @@ class GedMatchSegmentFormat:
 	def get_mapped_column_name(self, ftdna_column_name):
 		pass
 
+	@staticmethod
 	def get_format_name(self):
 		return "GEDmatch"
 
