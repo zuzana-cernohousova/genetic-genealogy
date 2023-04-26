@@ -13,14 +13,16 @@ class IntersectionFinder:
 
 	@staticmethod
 	def __pass_header(reader):
-		for _ in reader:
-			return
+		for header in reader:
+			return header
 
 	def load_segments(self, segments_filename):
 		with open(segments_filename, 'r', encoding="utf-8-sig") as f:
 			reader = csv.reader(f)
 
-			self.__pass_header(reader)
+			header = self.__pass_header(reader)
+			if header != self.__segments_format.get_header():
+				raise Exception("Input file is in incorrect format.")
 
 			for row in reader:
 				self.__segments.append(row)
