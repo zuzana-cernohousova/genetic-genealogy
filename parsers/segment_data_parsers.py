@@ -2,7 +2,7 @@ import csv
 import re
 
 from parsers.match_parsers import MatchDatabase
-from parsers.headers import FTDNASegmentFormat, SegmentFormat
+from parsers.headers import FTDNASegmentFormat, SegmentFormat, GedMatchSegmentFormat
 
 
 class SegmentDatabase:
@@ -66,12 +66,23 @@ class SegmentDatabase:
 				writer.writerow(row)
 
 
-class FTDNASegmentParser:
-	__final_format = SegmentFormat()
-	__input_format = FTDNASegmentFormat()
+class SegmentParser:
 
-	result = [__final_format.get_header()]
-	person_ID_not_matched = False
+	def __init__(self, source_database):
+
+		if source_database not in ["ftdna", "gedmatch"]:
+			raise Exception("Unknown format.")
+
+		if source_database == "ftdna":
+			self.__input_format = FTDNASegmentFormat()
+
+		elif source_database == "gedmatch":
+			self.__input_format = GedMatchSegmentFormat()
+
+		self.__final_format = SegmentFormat()
+
+		self.result = [self.__final_format.get_header()]
+		self.person_ID_not_matched = False
 
 	def parse_file(self, filename):
 		existing_matches = MatchDatabase()
@@ -88,7 +99,7 @@ class FTDNASegmentParser:
 				output_row = [''] * len(self.__final_format.get_header())
 
 				# add source
-				output_row[self.__final_format.get_index("Source")] = "FamilyTreeDNA"
+				output_row[self.__final_format.get_index("Source")] = self.__input_format.get_format_name()
 
 				# get person name and id from it
 				name_column_name = self.__input_format.get_mapped_column_name('Match Name')
@@ -105,12 +116,12 @@ class FTDNASegmentParser:
 				output_row[self.__final_format.get_index("ID")] = person_id
 
 				# copy all remaining relevant existing information
-				for ftdna_index in range(0, len(record)):
-					if ftdna_index == self.__input_format.get_index("Match Name"):
+				for input_index in range(0, len(record)):
+					if input_index == self.__input_format.get_index("Match Name"):
 						continue  # name already parsed
 
-					item = record[ftdna_index]
-					final_column_name = self.__input_format.get_mapped_column_name(self.__input_format.get_column_name(ftdna_index))
+					item = record[input_index]
+					final_column_name = self.__input_format.get_mapped_column_name(self.__input_format.get_column_name(input_index))
 					if final_column_name is not None:
 						new_index = self.__final_format.get_index(final_column_name)
 						output_row[new_index] = item
