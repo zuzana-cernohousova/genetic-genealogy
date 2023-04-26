@@ -44,6 +44,11 @@ pomocí argumentu *-d/--directories*.
 Oba argumenty je možné nezávisle kombinovat.
 Zdroj dat je opět specifikován pomocí argumentu *--ftdna* nebo *--gedmatch*.
 
+Pokud data pochází z FTDNA, každý vstupní soubor musí obsahovat pouze shody,
+které POI sdílí s jednou osobou,
+jméno této osoby musí být názvem tohoto souboru.
+Jméno se by mělo být složeno z prvního i druhého jména a příjmení.
+
 Použití:
 
     parse_shared_matches.py output_file --ftdna -d directory_containing_files_from_FTDNA
