@@ -90,3 +90,24 @@ Toto ID osoby je pak přidáno k záznamu o segmentu do výstupního souboru.
 
 Pokud není podle jména danou osobu možné dohledat, je jí přidělena automatická hodnota id
 **-1** a uživatel je vyzván k ručnímu vyhledání dané osoby a ruční opravě záznamu.
+
+## Hledání průniků segmentů
+*find_segment_intersections.py* umožňuje najít průniky segmentů.
+Program na vstupu bere naparsovaný seznam segmentů v unifikovaném formátu
+jako první parametr a jako druhý parametr bere jméno výstupního souboru.
+
+>Je nutné nejdříve naparsovat segmenty pomocí programu *parse_segments.py*
+> a výstupní soubor předat jako vstupní soubor tomuto programu
+
+Je možné ze segmentů v zadaném vstupním souboru vyextrahovat všechny možné 
+dvojice segmentů, které mají neprázdný průnik.
+Nebo je možné argumentem *-id/--personID* zadat ID osoby a tím omezit,
+které dvojice segmentů budou vypsány pouze na dvojice, kde jedna z osob je
+identifikována tímto ID.
+
+Použití:
+
+    find_segment_intersections.py parsed_segments_file output_file
+
+    find_segment_intersections.py parsed_segments_file output_file -id 123
+
