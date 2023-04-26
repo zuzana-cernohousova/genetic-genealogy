@@ -48,6 +48,13 @@ Pokud data pochází z FTDNA, každý vstupní soubor musí obsahovat pouze shod
 které POI sdílí s jednou osobou,
 jméno této osoby musí být názvem tohoto souboru.
 Jméno se by mělo být složeno z prvního i druhého jména a příjmení.
+Pokud jméno není identifikováno v databázi všech shod (all_matches.csv),
+místo ID osoby je do výstupního souboru uložena hodnota **-1** a uživatel
+je vyzván k ruční opravě dat nebo jména.
+
+> Kvůli vyhledávání IDs v databázi je tedy potřeba **před parsováním
+> shod shod zpracovat samotné shody POI
+pomocí *parse_matches.py***.
 
 Použití:
 
