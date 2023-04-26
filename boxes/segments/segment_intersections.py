@@ -123,10 +123,3 @@ class intersectionsFinder:
 		row[ff.get_index('Length')] = intersection[1] - intersection[0] + 1
 
 		return row
-
-
-
-
-
-
-
