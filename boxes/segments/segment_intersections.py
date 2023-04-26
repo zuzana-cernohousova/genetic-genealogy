@@ -2,7 +2,7 @@ import csv
 from parsers.headers import SegmentIntersectionFormat, SegmentFormat
 
 
-class intersectionsFinder:
+class IntersectionFinder:
 	__segments_by_id = {}
 	__segments = []
 
