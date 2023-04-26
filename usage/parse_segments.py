@@ -1,23 +1,21 @@
 from parsers.segment_data_parsers import FTDNASegmentParser
 import argparse
 
-FTDNA_names = ["FamilyTreeDNA", "FTDNA", "ftdna", "ft"]
-GEDmatch_names = ["GEDmatch", "GEDMatch", "gedmatch", "ged", "gm"]
-
 args_parser = argparse.ArgumentParser()
 args_parser.add_argument("source_file")
 args_parser.add_argument("output_file")
-args_parser.add_argument("-s", "--source", required=True)
+
+me_group = args_parser.add_mutually_exclusive_group(required=True)
+me_group.add_argument("--ftdna", action="store_true")
+me_group.add_argument("--gedmatch", action="store_true")
 
 args = args_parser.parse_args()
 
-source = args.source
-
-if source in FTDNA_names:
+if args.ftdna:
 	parser = FTDNASegmentParser()
 
-elif source in GEDmatch_names:
-	raise Exception("Cannot parse GEDmatch segment data yet.")
+elif args.gedmatch:
+	raise Exception("Cannot parse GEDmatch segment data yet. IMPLEMENT!")
 
 else:
 	raise Exception("unknown source")
