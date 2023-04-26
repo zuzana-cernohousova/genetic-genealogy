@@ -78,5 +78,3 @@ Toto ID osoby je pak přidáno k záznamu o segmentu do výstupního souboru.
 
 Pokud není podle jména danou osobu možné dohledat, je jí přidělena automatická hodnota id
 **-1** a uživatel je vyzván k ručnímu vyhledání dané osoby a ruční opravě záznamu.
-
-Během vyhledá
