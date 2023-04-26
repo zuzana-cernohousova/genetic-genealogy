@@ -15,9 +15,12 @@ souboru výstupního (druhý argument) ve správném formátu.
 Je potřeba specifikovat počáteční formát zadáním informace
 o zdrojové databázi argumentem *-s/--source*.
 
-Každý záznam ze vstupního souboru je porovnán s "databází" dosud přidaných osob
+Každý záznam ze vstupního souboru je porovnán s "databází" uloženou v souboru
+s názvem "all_matches.csv" dosud přidaných osob
 a pokud je nalezena shoda, je záznamu o osobě přidělené stejné ID.
 V opačném případě je vygenerováno nové, unikátní ID.
+
+Pokud all_matches.csv neexistuje, je vytvořen nový. 
 
 Použití:
 
@@ -44,6 +47,12 @@ Použití:
 
 Pomocí prvního argumentu specifikujte vstupní soubor, pomocí druhého výstupní soubor.
 Argumentem *-s/--source* specifikujte zdrojovou databázi.
+
+Každý záznam je porovnán s "databází" všech segmentů v souboru s názvem 
+"all_segments.csv". A pokud je nalezena shoda, je segmentu přiděleno stejné
+ID. V opačném případě je vygenerováno nové, unikátní ID.
+
+Pokud soubor all_segments.csv neexistuje, je vytvořen nový.
 
 Použití:
 
