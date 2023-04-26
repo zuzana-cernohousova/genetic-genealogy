@@ -96,3 +96,13 @@ class SharedMatchesFormat:
 
 	def get_index(self, column_name):
 		return self.__header.index(column_name)
+
+
+class SegmentIntersectionFormat:
+	__header = ['ID 1', 'ID 2', 'Segment 1 ID', 'Segment 2 ID', 'Start', 'End', 'Length']
+
+	def get_header(self):
+		return self.__header
+
+	def get_index(self, column_name):
+		return self.__header.index(column_name)
