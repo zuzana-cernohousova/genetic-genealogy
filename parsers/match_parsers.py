@@ -1,7 +1,7 @@
 import csv
 import re
 
-from parsers.headers import MatchFormat, FTDNAMatchFormat
+from parsers.headers import MatchFormat, FTDNAMatchFormat, GEDMatchMatchFormat
 
 
 class MatchDatabase:
@@ -82,15 +82,23 @@ class MatchDatabase:
 				writer.writerow(row)
 
 
-class FTDNAMatchParser:
-	__ftdna_format = FTDNAMatchFormat()
-	__final_format = MatchFormat()
+class MatchParser:
 
-	result = [__final_format.get_header()]
+	def __init__(self, input_database):
+
+		if input_database == "ftdna":
+			self.__input_format = FTDNAMatchFormat()
+		elif input_database == "gedmatch":
+			self.__input_format = GEDMatchMatchFormat()
+		else:
+			raise Exception("Unknown source format.")
+
+		self.__final_format = MatchFormat()
+		self.__result = [self.__final_format.get_header()]
 
 	def parse_file(self, filename):
 		"""Reads the file under filename and parses the records into
-		the format specified by self.Header and self.Headers_mapping."""
+		the format specified by self.__final_format."""
 
 		existing_records = MatchDatabase()
 
@@ -107,16 +115,16 @@ class FTDNAMatchParser:
 				output_record = [''] * len(self.__final_format.get_header())
 
 				# add source of information
-				output_record[self.__final_format.get_index('Source')] = 'FamilyTreeDNA'
+				output_record[self.__final_format.get_index('Source')] = self.__input_format.get_format_name()
 
 				# create name and add it into result row
 				output_record[self.__final_format.get_index('Name')] = self.__create_name(record)
 
 				# copy all relevant existing items from record to output record
-				for ftdna_index in range(0, len(record)):
-					item = record[ftdna_index]
+				for input_index in range(0, len(record)):
+					item = record[input_index]
 
-					output_column_name = self.__ftdna_format.get_mapped_column_name(self.__ftdna_format.get_column_name(ftdna_index))
+					output_column_name = self.__input_format.get_mapped_column_name(self.__input_format.get_column_name(input_index))
 					if output_column_name is not None:
 						new_index = self.__final_format.get_index(output_column_name)
 						output_record[new_index] = item
@@ -132,15 +140,15 @@ class FTDNAMatchParser:
 					existing_records.add_record(output_record)
 				else:
 					output_record[id_index] = record_id
-				self.result.append(output_record)
+				self.__result.append(output_record)
 
 		existing_records.save_to_file()
 
 	def __create_name(self, row):
 		name = [
-			row[self.__ftdna_format.get_index("First Name")],
-			row[self.__ftdna_format.get_index("Middle Name")],
-			row[self.__ftdna_format.get_index("Last Name")]
+			row[self.__input_format.get_index("First Name")],
+			row[self.__input_format.get_index("Middle Name")],
+			row[self.__input_format.get_index("Last Name")]
 		]
 
 		return re.sub(' +', ' ', " ".join(name))
@@ -149,7 +157,7 @@ class FTDNAMatchParser:
 		with open(output_filename, "w", newline='', encoding="utf-8-sig") as output_file:
 			writer = csv.writer(output_file)
 
-			for row in self.result:
+			for row in self.__result:
 				writer.writerow(row)
 
 	@staticmethod

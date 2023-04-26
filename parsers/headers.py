@@ -49,6 +49,28 @@ class FTDNAMatchFormat:
 		else:
 			return None
 
+	@staticmethod
+	def get_format_name(self):
+		return "FamilyTreeDNA"
+
+
+class GEDMatchMatchFormat:
+	def get_header(self):
+		pass
+
+	def get_index(self, column_name):
+		pass
+
+	def get_column_name(self, index):
+		pass
+
+	def get_mapped_column_name(self, ftdna_column_name):
+		pass
+
+	@staticmethod
+	def get_format_name():
+		return "GEDMatch"
+
 
 class SegmentFormat:
 	__header = ['Segment ID', 'ID', 'Name', 'Source', 'Chromosome ID',
@@ -72,10 +94,6 @@ class FTDNASegmentFormat:
 		'Matching SNPs': 'SNPs'
 	}
 
-	@staticmethod
-	def get_format_name(self):
-		return "FamilyTreeDNA"
-
 	def get_header(self):
 		return self.__header
 
@@ -90,6 +108,10 @@ class FTDNASegmentFormat:
 			return self.__headers_mapping[ftdna_column_name]
 		else:
 			return None
+
+	@staticmethod
+	def get_format_name():
+		return "FamilyTreeDNA"
 
 
 class GedMatchSegmentFormat:
@@ -106,8 +128,9 @@ class GedMatchSegmentFormat:
 		pass
 
 	@staticmethod
-	def get_format_name(self):
-		return "GEDmatch"
+	def get_format_name():
+		return "GEDMatch"
+
 
 class SharedMatchesFormat:
 	__header = ["ID 1", "Name 1", "ID 2", "Name 2", "Total cM"]

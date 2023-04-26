@@ -1,8 +1,7 @@
-from parsers.match_parsers import FTDNAMatchParser
+from parsers.match_parsers import MatchParser
 import argparse
 
 args_parser = argparse.ArgumentParser()
-
 args_parser.add_argument("source_file")
 args_parser.add_argument("output_file")
 
@@ -13,7 +12,7 @@ me_group.add_argument("--gedmatch", action="store_true")
 args = args_parser.parse_args()
 
 if args.ftdna:
-	parser = FTDNAMatchParser()
+	parser = MatchParser("ftdna")
 
 elif args.gedmatch:
 	raise Exception("Cannot parse GEDmatch data yet.")
