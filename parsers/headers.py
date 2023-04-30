@@ -150,3 +150,18 @@ class SegmentIntersectionFormat:
 
 	def get_index(self, column_name):
 		return self.__header.index(column_name)
+
+
+class ClusterFormat:
+	__header = [
+		'Cluster ID', 'ID', 'Name', 'Source', 'Total cM', 'Largest segment cM', 'mt haplogroup', 'Y haplogroup', 'X total cM',
+		'Kit age', 'Generations', 'Match number', 'Kit ID', 'E-mail', 'GED WikiTree', 'Sex',
+		'X largest segment cM', 'GEDmatch source', 'SNPs overlap', 'Match date', 'Relationship range',
+		'Linked relationship', 'Ancestral surnames', 'Notes', 'Matching bucket'
+	]
+
+	def get_header(self):
+		return self.__header
+
+	def get_index(self, column_name):
+		return self.__header.index(column_name)
