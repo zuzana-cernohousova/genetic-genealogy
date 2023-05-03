@@ -1,5 +1,12 @@
 # genetic-genealogy
 
+## Workflow diagram
+za následujícím odkazem najdete diagram 
+popisující workflow, které je možné spustit s 
+aktuálním stavem zdejších souborů:
+
+https://drive.google.com/file/d/19UCeR0YhxLGEBcRki8iF9l6CkqsWxC0R/view?usp=share_link 
+
 ## Formáty souborů
 Formáty jednotivých druhů výstupních souborů jsou specifikovány
 pomocí tříd obsažených v souboru *headers.py*.
