@@ -1,11 +1,23 @@
 # genetic-genealogy
 
-## Workflow diagram
-za následujícím odkazem najdete diagram 
+## Diagramy
+
+### Workflow diagram
+Za následujícím odkazem najdete diagram 
 popisující workflow, které je možné spustit s 
 aktuálním stavem zdejších souborů:
 
 https://drive.google.com/file/d/19UCeR0YhxLGEBcRki8iF9l6CkqsWxC0R/view?usp=share_link 
+
+### Diagram popisující funkcionalitu aplikace
+Zde najdete diagram, ve kterém jsou zachyceny současné i budoucí funkce 
+této aplikace. 
+
+Nahoře je _high level schéma_ naznačující , které funkce bude aplikace podporovat, pod ním
+je _low level schéma_, které popisuje dané funkce podrobněji, zmiňuje se i o konkrétní implementaci 
+a jak spolu budou dané nástroje komunikovat.
+
+https://drive.google.com/file/d/1zltsMH-SDBmn84_Kg38oEF7a6StJ5UmY/view?usp=sharing
 
 ## Formáty souborů
 Formáty jednotivých druhů výstupních souborů jsou specifikovány
