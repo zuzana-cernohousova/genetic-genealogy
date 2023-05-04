@@ -19,6 +19,9 @@ a jak spolu budou dané nástroje komunikovat.
 
 https://drive.google.com/file/d/1zltsMH-SDBmn84_Kg38oEF7a6StJ5UmY/view?usp=sharing
 
+### _High level schéma_
+![high level scheme](high_level_scheme.png)
+
 ## Formáty souborů
 Formáty jednotivých druhů výstupních souborů jsou specifikovány
 pomocí tříd obsažených v souboru *headers.py*.
