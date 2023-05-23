@@ -61,7 +61,7 @@ class SegmentDatabase:
 	def save_to_file(self):
 		with open(self.__file_name, "w", newline='', encoding="utf-8-sig") as output_file:
 			writer = csv.writer(output_file)
-			writer.writerow(self.__format.get_header())
+			writer.writerow(self.__format.header)
 			for row in self.__database:
 				writer.writerow(row)
 
@@ -81,7 +81,7 @@ class SegmentParser:
 
 		self.__final_format = SegmentFormat()
 
-		self.result = [self.__final_format.get_header()]
+		self.result = [self.__final_format.header]
 		self.person_ID_not_matched = False
 
 	def parse_file(self, filename):
@@ -92,11 +92,11 @@ class SegmentParser:
 			reader = csv.reader(input_file)
 			header = self.__pass_header(reader)
 
-			if header != self.__input_format.get_header():
+			if header != self.__input_format.header:
 				raise Exception("Input file is in incorrect format.")
 
 			for record in reader:
-				output_row = [''] * len(self.__final_format.get_header())
+				output_row = [''] * len(self.__final_format.header)
 
 				# add source
 				output_row[self.__final_format.get_index("Source")] = self.__input_format.get_format_name()

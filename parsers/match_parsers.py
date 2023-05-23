@@ -77,7 +77,7 @@ class MatchDatabase:
 		# file will be opened or created
 		with open(self.__file_name, "w", newline='', encoding="utf-8-sig") as output_file:
 			writer = csv.writer(output_file)
-			writer.writerow(self.__format.get_header())
+			writer.writerow(self.__format.header)
 			for row in self.__database:
 				writer.writerow(row)
 
@@ -94,7 +94,7 @@ class MatchParser:
 			raise Exception("Unknown source format.")
 
 		self.__final_format = MatchFormat()
-		self.__result = [self.__final_format.get_header()]
+		self.__result = [self.__final_format.header()]
 
 	def parse_file(self, filename):
 		"""Reads the file under filename and parses the records into
@@ -112,7 +112,7 @@ class MatchParser:
 
 			# for every record in the reader, parse it into the correct format and store it in the self.result list
 			for record in reader:
-				output_record = [''] * len(self.__final_format.get_header())
+				output_record = [''] * len(self.__final_format.header)
 
 				# add source of information
 				output_record[self.__final_format.get_index('Source')] = self.__input_format.get_format_name()

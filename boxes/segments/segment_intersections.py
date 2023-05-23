@@ -21,7 +21,7 @@ class IntersectionFinder:
 			reader = csv.reader(f)
 
 			header = self.__pass_header(reader)
-			if header != self.__segments_format.get_header():
+			if header != self.__segments_format.header:
 				raise Exception("Input file is in incorrect format.")
 
 			for row in reader:
@@ -34,7 +34,7 @@ class IntersectionFinder:
 					self.__segments_by_id[id] = [row]
 
 	def find_intersection(self, ID):
-		result = [self.__final_format.get_header()]
+		result = [self.__final_format.header]
 
 		if ID in self.__segments_by_id.keys():
 			s_segments = self.__segments_by_id[ID]
@@ -68,7 +68,7 @@ class IntersectionFinder:
 		return result
 
 	def find_all_intersections(self):  # todo only find everything once
-		final_result = [self.__final_format.get_header()]
+		final_result = [self.__final_format.header]
 		for ID in self.__segments_by_id.keys():
 
 			res = self.find_intersection(ID)
@@ -113,7 +113,7 @@ class IntersectionFinder:
 		ff = self.__final_format
 		sf = self.__segments_format
 
-		row = [''] * len(ff.get_header())
+		row = [''] * len(ff.header)
 
 		row[ff.get_index('ID 1')] = s1[sf.get_index('ID')]
 		row[ff.get_index('ID 2')] = s2[sf.get_index('ID')]

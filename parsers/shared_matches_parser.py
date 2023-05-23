@@ -10,7 +10,7 @@ class SharedMatchesJoinerFTDNA:
 	__final_format = SharedMatchesFormat()
 	__input_format = FTDNAMatchFormat()
 
-	__result = [__final_format.get_header()]
+	__result = [__final_format.header]
 	__already_found_pairs = {}
 
 	__files_paths = []
@@ -45,12 +45,12 @@ class SharedMatchesJoinerFTDNA:
 				reader = csv.reader(file)
 
 				# get and avoid the header
-				header = self.__get_header(reader)
-				if header != self.__input_format.get_header():
+				header = self.__pass_header(reader)
+				if header != self.__input_format.header:
 					raise Exception("Input file is in incorrect format.")
 
 				for row in reader:
-					output_row = [''] * len(self.__final_format.get_header())
+					output_row = [''] * len(self.__final_format.header)
 
 					id_1_index = self.__final_format.get_index("ID 1")
 					name_1_index = self.__final_format.get_index("Name 1")
@@ -120,7 +120,7 @@ class SharedMatchesJoinerFTDNA:
 			self.__already_found_pairs[main_person_id] = [new_person_id]
 
 	@staticmethod
-	def __get_header(reader):
+	def __pass_header(reader):
 		for row in reader:
 			return row
 
