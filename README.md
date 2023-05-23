@@ -23,7 +23,7 @@ https://drive.google.com/file/d/1zltsMH-SDBmn84_Kg38oEF7a6StJ5UmY/view?usp=shari
 ![high level scheme](high_level_scheme.png) 
 
 ## Formáty souborů
-Formáty jednotivých druhů výstupních souborů jsou specifikovány
+Formáty jednotlivých druhů výstupních souborů jsou specifikovány
 pomocí tříd obsažených v souboru *headers.py*.
 Jsou zde i třídy popisující formáty možných vstupních souborů.
 
