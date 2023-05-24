@@ -42,7 +42,7 @@ class InputFormat(ABC):
 		return self.header[index]
 
 
-class FormatEnum(Enum):
+class FormatEnum(IntEnum):
 	@classmethod
 	def get_header(cls):
 		return [item.name for item in cls]
