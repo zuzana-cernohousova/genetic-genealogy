@@ -7,6 +7,33 @@ class Databases(Enum):
 	GEDMATCH = 1
 
 
+class MatchFormatEnum(Enum):
+	id = 0
+	name = 1
+	source = 2
+	total_cm = 3
+	largest_segment_cm = 4
+	mt_haplogroup = 5
+	y_haplogroup = 6
+	x_total_cm = 7
+	kit_age = 8
+	generations = 9
+	match_number = 10
+	kit_id = 11
+	e_mail = 12
+	ged_wiki_tree = 13
+	sex = 14
+	x_largest_segment_cm = 15
+	ged_match_source = 16
+	snps_overlap = 17
+	match_date = 18
+	relationship_range = 19
+	linked_relationship = 20
+	ancestral_surnames = 21
+	notes = 22
+	matching_bucket = 23
+
+
 class MatchFormat:
 	@property
 	def header(self):
