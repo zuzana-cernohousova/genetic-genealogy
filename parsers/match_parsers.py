@@ -16,7 +16,7 @@ class MatchDatabase:
 
 	def get_id(self, parsed_record):
 		""" If the parsed_record already exists, finds it and returns the record ID, else returns None."""
-		match_record = None
+		match_record_id = None
 
 		for old_record in self.__database:
 			match = True
@@ -30,10 +30,10 @@ class MatchDatabase:
 					match = False
 					break
 			if match:
-				match_record = old_record
+				match_record_id = old_record[MatchFormatEnum.id]
 				break
 
-		return match_record
+		return match_record_id
 
 	def get_new_id(self):
 		"""Creates a new maximum ID and returns it."""
@@ -95,7 +95,10 @@ class MatchDatabase:
 			writer.writerow(MatchFormatEnum.get_header())
 
 			for row in self.__database:
-				writer.writerow(row)
+				if type(row) is dict:
+					writer.writerow(row.values())
+				else:  # list
+					writer.writerow(row)
 
 
 class MatchParser:
@@ -172,7 +175,7 @@ class MatchParser:
 			writer = csv.writer(output_file)
 
 			for row in self.__result:
-				writer.writerow(row)
+				writer.writerow(list(row))
 
 	@staticmethod
 	def __create_name(row):
