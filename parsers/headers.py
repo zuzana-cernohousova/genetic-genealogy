@@ -7,7 +7,7 @@ class Databases(Enum):
 	GEDMATCH = 1
 
 
-# region Abstract classes
+# region Parent classes
 
 
 class InputFormat(ABC):
@@ -42,6 +42,12 @@ class InputFormat(ABC):
 		return self.header[index]
 
 
+class FormatEnum(Enum):
+	@classmethod
+	def get_header(cls):
+		return [item.name for item in cls]
+
+
 # endregion
 
 
@@ -62,7 +68,7 @@ class MatchFormat:
 		return self.header.index(column_name)
 
 
-class MatchFormatEnum(IntEnum):
+class MatchFormatEnum(FormatEnum):
 	id = 0
 	name = 1
 	source = 2
@@ -99,7 +105,7 @@ class SegmentFormat:
 		return self.header.index(column_name)
 
 
-class SegmentFormatEnum(IntEnum):
+class SegmentFormatEnum(FormatEnum):
 	segment_id = 0
 	id = 1
 	name = 2
@@ -120,7 +126,7 @@ class SharedMatchesFormat:
 		return self.header.index(column_name)
 
 
-class SharedMatchesFormatEnum(IntEnum):
+class SharedMatchesFormatEnum(FormatEnum):
 	id_1 = 0
 	name_1 = 1
 	id_2 = 2
@@ -137,7 +143,7 @@ class SegmentIntersectionFormat:
 		return self.header.index(column_name)
 
 
-class SegmentIntersectionFormatEnum(IntEnum):
+class SegmentIntersectionFormatEnum(FormatEnum):
 	id_1 = 0
 	id_2 = 1
 	segment_1_id = 2
@@ -162,7 +168,7 @@ class ClusterFormat:
 		return self.header.index(column_name)
 
 
-class ClusterFormatEnum(IntEnum):
+class ClusterFormatEnum(FormatEnum):
 	cluster_id = 0
 	id = 1
 	name = 2
