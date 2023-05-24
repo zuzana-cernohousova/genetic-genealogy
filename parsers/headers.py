@@ -144,12 +144,12 @@ class FTDNASegmentFormat(InputFormat):
 	@property
 	def __mapping(self):
 		return {
-			'Match Name': 'Name',
-			'Chromosome': 'Chromosome ID',
-			'Start Location': 'Start',
-			'End Location': 'End',
-			'Centimorgans': 'Length cM',
-			'Matching SNPs': 'SNPs'
+			'Match Name': SegmentFormatEnum.name,
+			'Chromosome': SegmentFormatEnum.chromosome_id,
+			'Start Location': SegmentFormatEnum.start,
+			'End Location': SegmentFormatEnum.end,
+			'Centimorgans': SegmentFormatEnum.length_cm,
+			'Matching SNPs': SegmentFormatEnum.snps
 		}
 
 
