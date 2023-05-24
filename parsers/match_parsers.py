@@ -110,7 +110,7 @@ class MatchParser:
 		elif input_database == Databases.GEDMATCH:
 			raise NotImplementedError("Cannot parse data from GEDMATCH")
 
-		self.__result = [MatchFormatEnum.get_header()]
+		self.__result = []
 
 	def parse_file(self, filename):
 		"""Reads the file under filename and parses the records into
@@ -173,9 +173,10 @@ class MatchParser:
 		"""Saves the output to the given file."""
 		with open(output_filename, "w", newline='', encoding="utf-8-sig") as output_file:
 			writer = csv.writer(output_file)
+			writer.writerow(MatchFormatEnum.get_header())
 
 			for row in self.__result:
-				writer.writerow(list(row))
+				writer.writerow(row.values())
 
 	@staticmethod
 	def __create_name(row):
