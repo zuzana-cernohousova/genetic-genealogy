@@ -1,7 +1,7 @@
 import csv
 import re
 
-from parsers.headers import MatchFormat, FTDNAMatchFormat, GEDMatchMatchFormat
+from parsers.headers import MatchFormat, FTDNAMatchFormat, GEDMatchMatchFormat, Databases
 
 
 class MatchDatabase:
@@ -86,12 +86,10 @@ class MatchParser:
 
 	def __init__(self, input_database):
 
-		if input_database == "ftdna":
+		if input_database == Databases.FTDNA:
 			self.__input_format = FTDNAMatchFormat()
-		elif input_database == "gedmatch":
-			self.__input_format = GEDMatchMatchFormat()
-		else:
-			raise Exception("Unknown source format.")
+		elif input_database == Databases.GEDMATCH:
+			raise NotImplementedError()
 
 		self.__final_format = MatchFormat()
 		self.__result = [self.__final_format.header()]

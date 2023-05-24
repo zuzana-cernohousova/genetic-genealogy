@@ -2,8 +2,9 @@ from enum import Enum
 
 
 class Databases(Enum):
-	ftdna = 0
-	gedmatch = 1
+	FTDNA = 0
+	GEDMATCH = 1
+
 
 class MatchFormat:
 	@property

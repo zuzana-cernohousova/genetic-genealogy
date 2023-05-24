@@ -1,4 +1,6 @@
 from parsers.match_parsers import MatchParser
+from parsers.headers import Databases
+
 import argparse
 
 args_parser = argparse.ArgumentParser()
@@ -12,13 +14,10 @@ me_group.add_argument("--gedmatch", action="store_true")
 args = args_parser.parse_args()
 
 if args.ftdna:
-	parser = MatchParser("ftdna")
+	parser = MatchParser(Databases.FTDNA)
 
 elif args.gedmatch:
-	raise Exception("Cannot parse GEDmatch data yet.")
+	parser = MatchParser(Databases.GEDMATCH)
 
-else:
-	raise Exception("unknown source")
-
-parser.parse_file(args.source_file)
+parser.parse_file(args.source_file)  # will always be not none, because ftdna or gedmatch is required
 parser.save_to_file(args.output_file)
