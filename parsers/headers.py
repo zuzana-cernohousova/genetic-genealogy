@@ -1,4 +1,5 @@
 from enum import Enum
+from abc import ABC, abstractmethod
 
 
 class Databases(Enum):
@@ -18,6 +19,38 @@ class MatchFormat:
 
 	def get_index(self, column_name):
 		return self.header.index(column_name)
+
+
+class InputFormat(ABC):
+	@property
+	@abstractmethod
+	def header(self):
+		"""Represents the header of the given format."""
+		pass
+
+	@property
+	@abstractmethod
+	def __mapping(self):
+		"""Represents the mapping between the source format and the final format."""
+		pass
+
+	@property
+	@abstractmethod
+	def format_name(self):
+		"""Represents the name of the source database."""
+		pass
+
+	def get_mapped_column_name(self, source_column_name):
+		if source_column_name in self.__mapping.keys():
+			return self.__mapping[source_column_name]
+		else:
+			return None
+
+	def get_index(self, column_name):
+		return self.header.index(column_name)
+
+	def get_column_name(self, index):
+		return self.header[index]
 
 
 class FTDNAMatchFormat:
