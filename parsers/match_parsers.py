@@ -1,7 +1,7 @@
 import csv
 import re
 
-from parsers.headers import MatchFormat, FTDNAMatchFormat, GEDMatchMatchFormat, Databases
+from parsers.headers import FTDNAMatchFormat, Databases, MatchFormatEnum
 
 
 class MatchDatabase:
@@ -9,25 +9,29 @@ class MatchDatabase:
 	Loads all match data from file and holds it.
 	"""
 
-	__format = MatchFormat()
 	__file_name = "all_matches.csv"
 
 	def __init__(self):
 		self.__database = self.__load_from_file()
 
 	def get_id(self, parsed_record):
-		""" If the parsed_record already exists, finds it and returns the record ID, else returns -2."""
-
-		name_index = self.__format.get_index('Name')
-		source_index = self.__format.get_index('Source')
+		""" If the parsed_record already exists, finds it and returns the record ID, else returns None."""
 
 		for old_record in self.__database:
-			if old_record[name_index] == parsed_record[name_index]:
-				if old_record[source_index] == parsed_record[source_index]:
-					if old_record[1:] == parsed_record[1:]:  # todo rewrite so that id does not have to be in the first position
-						return old_record[self.__format.get_index('ID')]
+			match = True
 
-		return None
+			# compare all fields except for the id field
+			for index in MatchFormatEnum:
+				if index == MatchFormatEnum.id:
+					continue
+				if old_record[index] != parsed_record[index]:
+					match = False
+					break
+
+			if match:
+				return old_record[MatchFormatEnum.id]
+
+			return None
 
 	def get_new_id(self):
 		self.__biggest_ID += 1
@@ -40,8 +44,8 @@ class MatchDatabase:
 		match_name = re.sub(' +', ' ', match_name)
 
 		for record in self.__database:
-			if record[self.__format.get_index('Name')] == match_name:
-				return record[self.__format.get_index('ID')]
+			if record[MatchFormatEnum.name] == match_name:
+				return record[MatchFormatEnum.id]
 
 		return -1
 
@@ -49,18 +53,13 @@ class MatchDatabase:
 		result = []
 
 		biggest_id = 0
-		id_index = self.__format.get_index('ID')
 
 		try:
 			with open(self.__file_name, 'r', encoding="utf-8-sig") as input_file:
-				reader = csv.reader(input_file)
-
-				# skip header
-				for _ in reader:
-					break
+				reader = csv.DictReader(input_file)
 
 				for record in reader:
-					record_id = int(record[id_index])
+					record_id = int(MatchFormatEnum.id)
 					if record_id > biggest_id:
 						biggest_id = record_id
 
@@ -77,7 +76,9 @@ class MatchDatabase:
 		# file will be opened or created
 		with open(self.__file_name, "w", newline='', encoding="utf-8-sig") as output_file:
 			writer = csv.writer(output_file)
-			writer.writerow(self.__format.header)
+
+			writer.writerow(MatchFormatEnum.get_header())
+
 			for row in self.__database:
 				writer.writerow(row)
 
@@ -91,65 +92,64 @@ class MatchParser:
 		elif input_database == Databases.GEDMATCH:
 			raise NotImplementedError("Cannot parse data from GEDMATCH")
 
-		self.__final_format = MatchFormat()
-		self.__result = [self.__final_format.header()]
+		self.__result = [MatchFormatEnum.get_header()]
 
 	def parse_file(self, filename):
 		"""Reads the file under filename and parses the records into
-		the format specified by self.__final_format."""
+		the format specified by MatchFormatEnum"""
 
 		existing_records = MatchDatabase()
+		new_records_found = False
 
 		# read file
 		with open(filename, 'r', encoding="utf-8-sig") as input_file:
-			# create csv reader
-			reader = csv.reader(input_file)
+			# create csv DictReader
+			reader = csv.DictReader(input_file)
 
-			# pass the first line containing the Header
-			_ = self.__pass_header(reader)
+			# get the length of every row
+			output_len = len(MatchFormatEnum)
 
-			# for every record in the reader, parse it into the correct format and store it in the self.result list
+			# for every record in the reader, parse it into the correct format and store it in the self.__result list
 			for record in reader:
-				output_record = [''] * len(self.__final_format.header)
+				output_record = [''] * output_len
 
-				# add source of information
-				output_record[self.__final_format.get_index('Source')] = self.__input_format.get_format_name()
+				# add source name
+				output_record[MatchFormatEnum.source] = self.__input_format.format_name
 
 				# create name and add it into result row
-				output_record[self.__final_format.get_index('Name')] = self.__create_name(record)
+				output_record[MatchFormatEnum.name] = self.__create_name(record)
 
 				# copy all relevant existing items from record to output record
-				for input_index in range(0, len(record)):
-					item = record[input_index]
+				for input_column_name in reader.fieldnames:
+					item = record[input_column_name]
 
-					output_column_name = self.__input_format.get_mapped_column_name(self.__input_format.get_column_name(input_index))
-					if output_column_name is not None:
-						new_index = self.__final_format.get_index(output_column_name)
-						output_record[new_index] = item
+					output_column = self.__input_format.get_mapped_column_name(input_column_name)
+					# output_column is of MatchFormatEnum type -> is int if is not none
+
+					if output_column is not None:
+						output_record[output_column] = item
 
 				# get ID or create a new one
-				id_index = self.__final_format.get_index('ID')
-
 				record_id = existing_records.get_id(output_record)
+
+				# id was not found, match does not yet exist in our database
 				if record_id is None:
 					record_id = existing_records.get_new_id()
-					output_record[id_index] = record_id
+					output_record[MatchFormatEnum.id] = record_id
 
+					# add new record to the existing ones
+					new_records_found = True
 					existing_records.add_record(output_record)
+
+				# id was found, match does exist
 				else:
-					output_record[id_index] = record_id
+					output_record[MatchFormatEnum.id] = record_id
+
+				# add the record to the result list
 				self.__result.append(output_record)
 
-		existing_records.save_to_file()
-
-	def __create_name(self, row):
-		name = [
-			row[self.__input_format.get_index("First Name")],
-			row[self.__input_format.get_index("Middle Name")],
-			row[self.__input_format.get_index("Last Name")]
-		]
-
-		return re.sub(' +', ' ', " ".join(name))
+		if new_records_found:
+			existing_records.save_to_file()
 
 	def save_to_file(self, output_filename):
 		with open(output_filename, "w", newline='', encoding="utf-8-sig") as output_file:
@@ -159,6 +159,11 @@ class MatchParser:
 				writer.writerow(row)
 
 	@staticmethod
-	def __pass_header(reader):
-		for header in reader:
-			return header
+	def __create_name(row):
+		name = [
+			row["First Name"],
+			row["Middle Name"],
+			row["Last Name"]
+		]
+
+		return re.sub(' +', ' ', " ".join(name))
