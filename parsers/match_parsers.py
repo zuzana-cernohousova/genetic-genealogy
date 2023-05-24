@@ -89,7 +89,7 @@ class MatchParser:
 		if input_database == Databases.FTDNA:
 			self.__input_format = FTDNAMatchFormat()
 		elif input_database == Databases.GEDMATCH:
-			raise NotImplementedError()
+			raise NotImplementedError("Cannot parse data from GEDMATCH")
 
 		self.__final_format = MatchFormat()
 		self.__result = [self.__final_format.header()]
