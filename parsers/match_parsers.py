@@ -16,6 +16,7 @@ class MatchDatabase:
 
 	def get_id(self, parsed_record):
 		""" If the parsed_record already exists, finds it and returns the record ID, else returns None."""
+		match_record = None
 
 		for old_record in self.__database:
 			match = True
@@ -24,14 +25,15 @@ class MatchDatabase:
 			for index in MatchFormatEnum:
 				if index == MatchFormatEnum.id:
 					continue
+
 				if old_record[index] != parsed_record[index]:
 					match = False
 					break
-
 			if match:
-				return old_record[MatchFormatEnum.id]
+				match_record = old_record
+				break
 
-			return None
+		return match_record
 
 	def get_new_id(self):
 		"""Creates a new maximum ID and returns it."""
@@ -47,7 +49,7 @@ class MatchDatabase:
 		match_name = re.sub(' +', ' ', match_name)
 
 		for record in self.__database:
-			if record[MatchFormatEnum.name] == match_name:
+			if record[MatchFormatEnum.person_name] == match_name:
 				return record[MatchFormatEnum.id]
 
 		return -1
@@ -55,14 +57,23 @@ class MatchDatabase:
 	def __load_from_file(self):
 		"""Reads and stores the file as list of lists representing the rows of the csv file."""
 		result = []
-
 		biggest_id = 0
 
 		try:
 			with open(self.__file_name, 'r', encoding="utf-8-sig") as input_file:
 				reader = csv.DictReader(input_file)
+				new_fieldnames = []
+
+				for index in reader.fieldnames:
+					for value in MatchFormatEnum:
+						if value.name == index:
+							new_fieldnames.append(value)
+							break
+
+				reader.fieldnames = new_fieldnames
 
 				for record in reader:
+					# print(record)
 					record_id = int(record[MatchFormatEnum.id])
 					if record_id > biggest_id:
 						biggest_id = record_id
@@ -121,7 +132,7 @@ class MatchParser:
 				output_record[MatchFormatEnum.source] = self.__input_format.format_name
 
 				# create name and add it into result row
-				output_record[MatchFormatEnum.name] = self.__create_name(record)
+				output_record[MatchFormatEnum.person_name] = self.__create_name(record)
 
 				# copy all relevant existing items from record to output record
 				for input_column_name in reader.fieldnames:
