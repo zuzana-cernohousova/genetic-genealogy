@@ -80,20 +80,26 @@ class InputFormat(ABC):
 		return self.header[index]
 
 
-class FTDNAMatchFormat:
-	__headers_mapping = {
-		'Match Date': 'Match date',
-		'Relationship Range': 'Relationship range',
-		'Shared DNA': 'Total cM',
-		'Longest Block': 'Largest segment cM',
-		'Linked Relationship': 'Linked relationship',
-		'Ancestral Surnames': 'Ancestral surnames',
-		'Y - DNA Haplogroup': 'Y haplogroup',
-		'mtDNA Haplogroup': 'mt haplogroup',
-		'Notes': 'Notes',
-		'Matching Bucket': 'Matching bucket',
-		'X - Match': 'X total cM'
-	}
+class FTDNAMatchFormat(InputFormat):
+	@property
+	def format_name(self):
+		return "FamilyTreeDNA"
+
+	@property
+	def __mapping(self):
+		return {
+			'Match Date': 'Match date',
+			'Relationship Range': 'Relationship range',
+			'Shared DNA': 'Total cM',
+			'Longest Block': 'Largest segment cM',
+			'Linked Relationship': 'Linked relationship',
+			'Ancestral Surnames': 'Ancestral surnames',
+			'Y - DNA Haplogroup': 'Y haplogroup',
+			'mtDNA Haplogroup': 'mt haplogroup',
+			'Notes': 'Notes',
+			'Matching Bucket': 'Matching bucket',
+			'X - Match': 'X total cM'
+		}
 
 	@property
 	def header(self):
@@ -102,22 +108,6 @@ class FTDNAMatchFormat:
 			'Shared DNA', 'Longest Block', 'Linked Relationship', 'Ancestral Surnames', 'Y-DNA Haplogroup',
 			'mtDNA Haplogroup', 'Notes', 'Matching Bucket', 'X-Match'
 		]
-
-	def get_index(self, column_name):
-		return self.header.index(column_name)
-
-	def get_column_name(self, index):
-		return self.header[index]
-
-	def get_mapped_column_name(self, ftdna_column_name):
-		if ftdna_column_name in self.__headers_mapping.keys():
-			return self.__headers_mapping[ftdna_column_name]
-		else:
-			return None
-
-	@staticmethod
-	def get_format_name():
-		return "FamilyTreeDNA"
 
 
 class GEDMatchMatchFormat:
