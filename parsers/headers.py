@@ -120,6 +120,14 @@ class SharedMatchesFormat:
 		return self.header.index(column_name)
 
 
+class SharedMatchesFormatEnum(Enum):
+	id_1 = 0
+	name_1 = 1
+	id_2 = 2
+	name_2 = 3
+	total_cm = 4
+
+
 class SegmentIntersectionFormat:
 	@property
 	def header(self):
@@ -127,6 +135,16 @@ class SegmentIntersectionFormat:
 
 	def get_index(self, column_name):
 		return self.header.index(column_name)
+
+
+class SegmentIntersectionFormatEnum(Enum):
+	id_1 = 0
+	id_2 = 1
+	segment_1_id = 2
+	segment_2_id = 3
+	start = 4
+	end = 5
+	length_cm = 6
 
 
 class ClusterFormat:
@@ -144,7 +162,35 @@ class ClusterFormat:
 		return self.header.index(column_name)
 
 
+class ClusterFormatEnum(Enum):
+	cluster_id = 0
+	id = 1
+	name = 2
+	source = 3
+	total_cm = 4
+	largest_segment_cm = 5
+	mt_haplogroup = 6
+	y_haplogroup = 7
+	x_total_cm = 8
+	kit_age = 9
+	generations = 10
+	match_number = 11
+	kit_id = 12
+	e_mail = 13
+	ged_wiki_tree = 14
+	sex = 15
+	x_largest_segment_cm = 16
+	ged_match_source = 17
+	snps_overlap = 18
+	match_date = 19
+	relationship_range = 20
+	linked_relationship = 21
+	ancestral_surnames = 22
+	notes = 23
+	matching_bucket = 24
+
 # endregion
+
 
 # region Source formats
 # region Match formats
@@ -178,10 +224,11 @@ class FTDNAMatchFormat(InputFormat):
 			'mtDNA Haplogroup', 'Notes', 'Matching Bucket', 'X-Match'
 		]
 
+
 # endregion
 
-
 # region Segment formats
+
 
 class FTDNASegmentFormat(InputFormat):
 	@property
