@@ -153,25 +153,6 @@ class FTDNASegmentFormat(InputFormat):
 		}
 
 
-class GedMatchSegmentFormat:
-	def get_index(self, column_name):
-		raise NotImplementedError()
-
-	@property
-	def header(self):
-		raise NotImplementedError()
-
-	def get_column_name(self, index):
-		raise NotImplementedError()
-
-	def get_mapped_column_name(self, gedmatch_column_name):
-		raise NotImplementedError()
-
-	@staticmethod
-	def get_format_name():
-		return "GEDMatch"
-
-
 class SharedMatchesFormat:
 	@property
 	def header(self):
