@@ -30,26 +30,31 @@ class InputFormat(ABC):
 		pass
 
 	def validate_format(self, other_header):
+		"""Compares the given header and the header of this format as sets."""
 		if set("".join(item.split()).lower() for item in other_header) != set("".join(item.split()).lower() for item in self.header):
 			return False
 		return True
 
 	def get_mapped_column_name(self, source_column_name):
+		"""Gets the corresponding column name defined by this format."""
 		if source_column_name in self.mapping.keys():
 			return self.mapping[source_column_name]
 		else:
 			return None
 
 	def get_index(self, column_name):
+		"""Gets the index of the column defined by the column name."""
 		return self.header.index(column_name)
 
 	def get_column_name(self, index):
+		"""Gets the name of the column defined by the index."""
 		return self.header[index]
 
 
 class FormatEnum(IntEnum):
 	@classmethod
 	def get_header(cls):
+		"""Returns the names of all the enum values in a list ordered by their values."""
 		return [item.name for item in cls]
 
 
@@ -87,6 +92,7 @@ class MatchFormatEnum(FormatEnum):
 	matching_bucket = 23
 
 
+# todo remove
 class SegmentFormat:
 	@property
 	def header(self):
@@ -109,6 +115,7 @@ class SegmentFormatEnum(FormatEnum):
 	density = 8
 
 
+# todo remove
 class SharedMatchesFormat:
 	@property
 	def header(self):
@@ -126,6 +133,7 @@ class SharedMatchesFormatEnum(FormatEnum):
 	total_cm = 4
 
 
+# todo remove
 class SegmentIntersectionFormat:
 	@property
 	def header(self):
@@ -145,6 +153,7 @@ class SegmentIntersectionFormatEnum(FormatEnum):
 	length_cm = 6
 
 
+# todo remove
 class ClusterFormat:
 	@property
 	def header(self):
@@ -194,6 +203,7 @@ class ClusterFormatEnum(FormatEnum):
 # region Match formats
 
 class FTDNAMatchFormat(InputFormat):
+	"""Describes the format of matches downloaded from FamilyTreeDNA."""
 	@property
 	def format_name(self):
 		return "FamilyTreeDNA"
@@ -229,6 +239,7 @@ class FTDNAMatchFormat(InputFormat):
 
 
 class FTDNASegmentFormat(InputFormat):
+	"""Describes the format of segments downloaded from FamilyTreeDNA"""
 	@property
 	def format_name(self):
 		return "FamilyTreeDNA"
