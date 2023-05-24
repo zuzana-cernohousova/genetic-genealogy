@@ -110,6 +110,18 @@ class FTDNAMatchFormat(InputFormat):
 		]
 
 
+class SegmentFormatEnum:
+	segment_id = 0
+	id = 1
+	name = 2
+	chromosome_id = 3
+	start = 4
+	end = 5
+	length_cm = 6
+	snps = 7
+	density = 8
+
+
 class SegmentFormat:
 	@property
 	def header(self):
