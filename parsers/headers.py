@@ -70,7 +70,7 @@ class MatchFormat:
 
 class MatchFormatEnum(FormatEnum):
 	id = 0
-	name = 1
+	person_name = 1
 	source = 2
 	total_cm = 3
 	largest_segment_cm = 4
