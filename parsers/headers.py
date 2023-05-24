@@ -1,3 +1,4 @@
+import re
 from enum import IntEnum, Enum
 from abc import ABC, abstractmethod
 
@@ -28,6 +29,11 @@ class InputFormat(ABC):
 	def format_name(self):
 		"""Represents the name of the source database."""
 		pass
+
+	def validate_format(self, other_header):
+		if set(re.sub(" +", " ", item) for item in other_header) != set(re.sub(" +", " ", item) for item in self.header):
+			return False
+		return True
 
 	def get_mapped_column_name(self, source_column_name):
 		if source_column_name in self.mapping.keys():
