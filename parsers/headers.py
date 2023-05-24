@@ -88,17 +88,17 @@ class FTDNAMatchFormat(InputFormat):
 	@property
 	def __mapping(self):
 		return {
-			'Match Date': 'Match date',
-			'Relationship Range': 'Relationship range',
-			'Shared DNA': 'Total cM',
-			'Longest Block': 'Largest segment cM',
-			'Linked Relationship': 'Linked relationship',
-			'Ancestral Surnames': 'Ancestral surnames',
-			'Y - DNA Haplogroup': 'Y haplogroup',
-			'mtDNA Haplogroup': 'mt haplogroup',
-			'Notes': 'Notes',
-			'Matching Bucket': 'Matching bucket',
-			'X - Match': 'X total cM'
+			'Match Date': MatchFormatEnum.match_date,
+			'Relationship Range': MatchFormatEnum.relationship_range,
+			'Shared DNA': MatchFormatEnum.total_cm,
+			'Longest Block': MatchFormatEnum.largest_segment_cm,
+			'Linked Relationship': MatchFormatEnum.linked_relationship,
+			'Ancestral Surnames': MatchFormatEnum.ancestral_surnames,
+			'Y - DNA Haplogroup': MatchFormatEnum.y_haplogroup,
+			'mtDNA Haplogroup': MatchFormatEnum.mt_haplogroup,
+			'Notes': MatchFormatEnum.notes,
+			'Matching Bucket': MatchFormatEnum.matching_bucket,
+			'X - Match': MatchFormatEnum.x_total_cm
 		}
 
 	@property
