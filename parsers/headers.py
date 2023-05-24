@@ -132,36 +132,25 @@ class SegmentFormat:
 		return self.header.index(column_name)
 
 
-class FTDNASegmentFormat:
+class FTDNASegmentFormat(InputFormat):
+	@property
+	def format_name(self):
+		return "FamilyTreeDNA"
 
 	@property
 	def header(self):
 		return ['Match Name', 'Chromosome', 'Start Location', 'End Location', 'Centimorgans', 'Matching SNPs']
 
-	__headers_mapping = {
-		'Match Name': 'Name',
-		'Chromosome': 'Chromosome ID',
-		'Start Location': 'Start',
-		'End Location': 'End',
-		'Centimorgans': 'Length cM',
-		'Matching SNPs': 'SNPs'
-	}
-
-	def get_index(self, column_name):
-		return self.header.index(column_name)
-
-	def get_column_name(self, index):
-		return self.header[index]
-
-	def get_mapped_column_name(self, ftdna_column_name):
-		if ftdna_column_name in self.__headers_mapping.keys():
-			return self.__headers_mapping[ftdna_column_name]
-		else:
-			return None
-
-	@staticmethod
-	def get_format_name():
-		return "FamilyTreeDNA"
+	@property
+	def __mapping(self):
+		return {
+			'Match Name': 'Name',
+			'Chromosome': 'Chromosome ID',
+			'Start Location': 'Start',
+			'End Location': 'End',
+			'Centimorgans': 'Length cM',
+			'Matching SNPs': 'SNPs'
+		}
 
 
 class GedMatchSegmentFormat:
