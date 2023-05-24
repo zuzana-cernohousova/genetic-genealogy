@@ -110,25 +110,6 @@ class FTDNAMatchFormat(InputFormat):
 		]
 
 
-class GEDMatchMatchFormat:
-	@property
-	def header(self):
-		raise NotImplementedError()
-
-	def get_index(self, column_name):
-		raise NotImplementedError()
-
-	def get_column_name(self, index):
-		raise NotImplementedError()
-
-	def get_mapped_column_name(self, gedmatch_column_name):
-		raise NotImplementedError()
-
-	@staticmethod
-	def get_format_name():
-		return "GEDMatch"
-
-
 class SegmentFormat:
 	@property
 	def header(self):
