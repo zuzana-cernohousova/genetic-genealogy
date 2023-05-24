@@ -124,12 +124,11 @@ class MatchParser:
 			# create csv DictReader
 			reader = csv.DictReader(input_file)
 
-			# get the length of every row
-			output_len = len(MatchFormatEnum)
-
 			# for every record in the reader, parse it into the correct format and store it in the self.__result list
 			for record in reader:
-				output_record = [''] * output_len
+				output_record = {}
+				for index in MatchFormatEnum:
+					output_record[index] = ""
 
 				# add source name
 				output_record[MatchFormatEnum.source] = self.__input_format.format_name
@@ -146,6 +145,7 @@ class MatchParser:
 
 					if output_column is not None:
 						output_record[output_column] = item
+
 
 				# get ID or create a new one
 				record_id = existing_records.get_id(output_record)
