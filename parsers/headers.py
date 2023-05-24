@@ -19,7 +19,7 @@ class InputFormat(ABC):
 
 	@property
 	@abstractmethod
-	def __mapping(self):
+	def mapping(self):
 		"""Represents the mapping between the source format and the final format."""
 		pass
 
@@ -30,8 +30,8 @@ class InputFormat(ABC):
 		pass
 
 	def get_mapped_column_name(self, source_column_name):
-		if source_column_name in self.__mapping.keys():
-			return self.__mapping[source_column_name]
+		if source_column_name in self.mapping.keys():
+			return self.mapping[source_column_name]
 		else:
 			return None
 
@@ -207,7 +207,7 @@ class FTDNAMatchFormat(InputFormat):
 		return "FamilyTreeDNA"
 
 	@property
-	def __mapping(self):
+	def mapping(self):
 		return {
 			'Match Date': MatchFormatEnum.match_date,
 			'Relationship Range': MatchFormatEnum.relationship_range,
@@ -246,7 +246,7 @@ class FTDNASegmentFormat(InputFormat):
 		return ['Match Name', 'Chromosome', 'Start Location', 'End Location', 'Centimorgans', 'Matching SNPs']
 
 	@property
-	def __mapping(self):
+	def mapping(self):
 		return {
 			'Match Name': SegmentFormatEnum.name,
 			'Chromosome': SegmentFormatEnum.chromosome_id,
