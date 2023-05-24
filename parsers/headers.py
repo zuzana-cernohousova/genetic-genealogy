@@ -1,4 +1,3 @@
-import re
 from enum import IntEnum, Enum
 from abc import ABC, abstractmethod
 
@@ -31,7 +30,7 @@ class InputFormat(ABC):
 		pass
 
 	def validate_format(self, other_header):
-		if set(re.sub(" +", " ", item) for item in other_header) != set(re.sub(" +", " ", item) for item in self.header):
+		if set("".join(item.split()).lower() for item in other_header) != set("".join(item.split()).lower() for item in self.header):
 			return False
 		return True
 
