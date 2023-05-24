@@ -54,19 +54,6 @@ class FormatEnum(IntEnum):
 # region Application formats
 # defined by this application
 
-class MatchFormat:
-	@property
-	def header(self):
-		return [
-			'ID', 'Name', 'Source', 'Total cM', 'Largest segment cM', 'mt haplogroup', 'Y haplogroup', 'X total cM',
-			'Kit age', 'Generations', 'Match number', 'Kit ID', 'E-mail', 'GED WikiTree', 'Sex',
-			'X largest segment cM', 'GEDmatch source', 'SNPs overlap', 'Match date', 'Relationship range',
-			'Linked relationship', 'Ancestral surnames', 'Notes', 'Matching bucket'
-		]
-
-	def get_index(self, column_name):
-		return self.header.index(column_name)
-
 
 class MatchFormatEnum(FormatEnum):
 	id = 0
