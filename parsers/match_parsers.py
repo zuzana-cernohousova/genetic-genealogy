@@ -34,13 +34,16 @@ class MatchDatabase:
 			return None
 
 	def get_new_id(self):
+		"""Creates a new maximum ID and returns it."""
 		self.__biggest_ID += 1
 		return self.__biggest_ID
 
 	def add_record(self, complete_parsed_record):
+		"""Adds a complete parsed record to the database list."""
 		self.__database.append(complete_parsed_record)
 
 	def get_id_from_match_name(self, match_name):
+		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
 		match_name = re.sub(' +', ' ', match_name)
 
 		for record in self.__database:
@@ -50,6 +53,7 @@ class MatchDatabase:
 		return -1
 
 	def __load_from_file(self):
+		"""Reads and stores the file as list of lists representing the rows of the csv file."""
 		result = []
 
 		biggest_id = 0
@@ -59,7 +63,7 @@ class MatchDatabase:
 				reader = csv.DictReader(input_file)
 
 				for record in reader:
-					record_id = int(MatchFormatEnum.id)
+					record_id = int(record[MatchFormatEnum.id])
 					if record_id > biggest_id:
 						biggest_id = record_id
 
@@ -96,7 +100,7 @@ class MatchParser:
 
 	def parse_file(self, filename):
 		"""Reads the file under filename and parses the records into
-		the format specified by MatchFormatEnum"""
+		the format specified by MatchFormatEnum."""
 
 		existing_records = MatchDatabase()
 		new_records_found = False
@@ -152,6 +156,7 @@ class MatchParser:
 			existing_records.save_to_file()
 
 	def save_to_file(self, output_filename):
+		"""Saves the output to the given file."""
 		with open(output_filename, "w", newline='', encoding="utf-8-sig") as output_file:
 			writer = csv.writer(output_file)
 
