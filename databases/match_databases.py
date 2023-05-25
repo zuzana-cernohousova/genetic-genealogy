@@ -5,6 +5,58 @@ from abc import ABC, abstractmethod
 from parsers.headers import MatchFormatEnum
 
 
+class CSVInputOutput:
+	@staticmethod
+	def load_csv(filename, format, searched_id):
+		"""Reads the given csv file, finds the largest id, returns the id and the file as a list of rows (dicts)"""
+
+		result = []
+		biggest_id = 0
+
+		try:
+			with open(filename, 'r', encoding="utf-8-sig") as input_file:
+				reader = csv.DictReader(input_file)
+				new_fieldnames = []
+
+				if reader.fieldnames is not None:
+					for index in reader.fieldnames:
+						for value in format:
+							if value.name == index:
+								new_fieldnames.append(value)
+								break
+
+				reader.fieldnames = new_fieldnames
+
+				for record in reader:
+					# print(record)
+					record_id = int(record[searched_id])
+					if record_id > biggest_id:
+						biggest_id = record_id
+
+						result.append(record)
+
+		except IOError:
+			# if the file does not exist or cannot be read, do nothing
+			pass
+
+		return biggest_id, result
+
+	@staticmethod
+	def save_csv(database, filename, format):
+		"""Saves the database to the given csv file."""
+		# file will be opened or created
+		with open(filename, "w", newline='', encoding="utf-8-sig") as output_file:
+			writer = csv.writer(output_file)
+
+			writer.writerow(format.get_header())
+
+			for row in database:
+				if type(row) is dict:
+					writer.writerow(row.values())
+				else:  # list
+					writer.writerow(row)
+
+
 class MatchDatabase(ABC):
 	@abstractmethod
 	def load(self):
@@ -72,48 +124,10 @@ class CSVMatchDatabase(MatchDatabase):
 	def load(self):
 		"""Reads the given csv file and stores it in the database"""
 
-		result = []
-		biggest_id = 0
-
-		try:
-			with open(self.__file_name, 'r', encoding="utf-8-sig") as input_file:
-				reader = csv.DictReader(input_file)
-				new_fieldnames = []
-
-				if reader.fieldnames is not None:
-					for index in reader.fieldnames:
-						for value in MatchFormatEnum:
-							if value.name == index:
-								new_fieldnames.append(value)
-								break
-
-				reader.fieldnames = new_fieldnames
-
-				for record in reader:
-					# print(record)
-					record_id = int(record[MatchFormatEnum.id])
-					if record_id > biggest_id:
-						biggest_id = record_id
-
-						result.append(record)
-
-		except IOError:
-			# if the file does not exist or cannot be read, do nothing
-			pass
-
-		self.largest_ID = biggest_id
-		self.database = result
+		self.largest_ID, self.database = CSVInputOutput.load_csv(self.__file_name, MatchFormatEnum, MatchFormatEnum.id)
 
 	def save(self):
 		"""Saves the database to the given csv file."""
 		# file will be opened or created
-		with open(self.__file_name, "w", newline='', encoding="utf-8-sig") as output_file:
-			writer = csv.writer(output_file)
 
-			writer.writerow(MatchFormatEnum.get_header())
-
-			for row in self.database:
-				if type(row) is dict:
-					writer.writerow(row.values())
-				else:  # list
-					writer.writerow(row)
+		CSVInputOutput.save_csv(self.database, self.__file_name, MatchFormatEnum)
