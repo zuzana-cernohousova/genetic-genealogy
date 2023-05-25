@@ -2,7 +2,7 @@ import csv
 import re
 from abc import ABC, abstractmethod
 
-from databases.match_databases import CSVMatchDatabase
+from databases.match_databases import CSVMatchDatabase, CSVInputOutput
 from parsers.headers import FTDNAMatchFormat, MatchFormatEnum
 
 
@@ -22,13 +22,8 @@ class MatchParser(ABC):
 
 	def save_to_file(self, output_filename):
 		"""Saves the output to the given file."""
-		with open(output_filename, "w", newline='', encoding="utf-8-sig") as output_file:
-			writer = csv.writer(output_file)
-			writer.writerow(MatchFormatEnum.get_header())
 
-			for row in self.result:
-				writer.writerow(row.values())
-
+		CSVInputOutput.save_csv(self.result, output_filename, MatchFormatEnum)
 
 
 class FTDNAMatchParser(MatchParser):
