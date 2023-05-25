@@ -12,13 +12,10 @@ me_group.add_argument("--gedmatch", action="store_true")
 args = args_parser.parse_args()
 
 if args.ftdna:
-	parser = FTDNASegmentParser("ftdna")
+	parser = FTDNASegmentParser()
 
 elif args.gedmatch:
-	raise Exception("Cannot parse GEDmatch segment data yet. IMPLEMENT!")
-
-else:
-	raise Exception("unknown source")
+	raise NotImplementedError("Cannot parse GEDmatch segment data yet.")
 
 source_file = args.source_file
 output_file = args.output_file
