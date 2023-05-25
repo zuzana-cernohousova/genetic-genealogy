@@ -21,14 +21,13 @@ class CSVInputOutput:
 				if reader.fieldnames is not None:
 					for index in reader.fieldnames:
 						for value in database_format:
-							if value.person_name == index:
+							if value.name == index:
 								new_fieldnames.append(value)
 								break
 
 				reader.fieldnames = new_fieldnames
 
 				for record in reader:
-					# print(record)
 					record_id = int(record[searched_id])
 					if record_id > biggest_id:
 						biggest_id = record_id
