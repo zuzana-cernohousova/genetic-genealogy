@@ -7,7 +7,7 @@ from parsers.headers import MatchFormatEnum
 
 class CSVInputOutput:
 	@staticmethod
-	def load_csv(filename, format, searched_id):
+	def load_csv(filename, database_format, searched_id):
 		"""Reads the given csv file, finds the largest id, returns the id and the file as a list of rows (dicts)"""
 
 		result = []
@@ -20,7 +20,7 @@ class CSVInputOutput:
 
 				if reader.fieldnames is not None:
 					for index in reader.fieldnames:
-						for value in format:
+						for value in database_format:
 							if value.name == index:
 								new_fieldnames.append(value)
 								break
@@ -42,13 +42,13 @@ class CSVInputOutput:
 		return biggest_id, result
 
 	@staticmethod
-	def save_csv(database, filename, format):
+	def save_csv(database, filename, database_format):
 		"""Saves the database to the given csv file."""
 		# file will be opened or created
 		with open(filename, "w", newline='', encoding="utf-8-sig") as output_file:
 			writer = csv.writer(output_file)
 
-			writer.writerow(format.get_header())
+			writer.writerow(database_format.get_header())
 
 			for row in database:
 				if type(row) is dict:
