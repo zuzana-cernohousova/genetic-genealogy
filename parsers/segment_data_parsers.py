@@ -2,7 +2,7 @@ import csv
 import re
 
 from parsers.match_parsers import CSVMatchDatabase
-from parsers.headers import FTDNASegmentFormat, SegmentFormat, GedMatchSegmentFormat
+from parsers.headers import FTDNASegmentFormat, SegmentFormat
 
 
 class SegmentDatabase:
@@ -75,9 +75,6 @@ class SegmentParser:
 
 		if source_database == "ftdna":
 			self.__input_format = FTDNASegmentFormat()
-
-		elif source_database == "gedmatch":
-			self.__input_format = GedMatchSegmentFormat()
 
 		self.__final_format = SegmentFormat()
 
