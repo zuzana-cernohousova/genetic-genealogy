@@ -107,14 +107,13 @@ class SegmentFormatEnum(FormatEnum):
 	segment_id = 0
 	id = 1
 	person_name = 2
-	chromosome_id = 3
-	start = 4
-	end = 5
-	length_cm = 6
-	snps = 7
-	density = 8
-	source = 9  # source database
-
+	source = 3
+	chromosome_id = 4
+	start = 5
+	end = 6
+	length_cm = 7
+	snps = 8
+	density = 9
 
 # todo remove
 class SharedMatchesFormat:
@@ -252,7 +251,6 @@ class FTDNASegmentFormat(InputFormat):
 	@property
 	def mapping(self):
 		return {
-			'Match Name': SegmentFormatEnum.person_name,
 			'Chromosome': SegmentFormatEnum.chromosome_id,
 			'Start Location': SegmentFormatEnum.start,
 			'End Location': SegmentFormatEnum.end,
