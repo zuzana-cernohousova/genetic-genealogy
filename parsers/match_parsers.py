@@ -132,6 +132,8 @@ class MatchParser:
 		the format specified by MatchFormatEnum."""
 
 		existing_records = CSVMatchDatabase()
+		existing_records.load()
+
 		new_records_found = False
 
 		# read file
