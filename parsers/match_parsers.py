@@ -1,20 +1,53 @@
 import csv
 import re
+from abc import ABC, abstractmethod
 
 from databases.match_databases import CSVMatchDatabase
-from parsers.headers import FTDNAMatchFormat, Databases, MatchFormatEnum
+from parsers.headers import FTDNAMatchFormat, MatchFormatEnum
 
 
-class MatchParser:
+class MatchParser(ABC):
 
-	def __init__(self, input_database):
+	def __init__(self):
+		self.result = []
 
-		if input_database == Databases.FTDNA:
-			self.__input_format = FTDNAMatchFormat()
-		elif input_database == Databases.GEDMATCH:
-			raise NotImplementedError("Cannot parse data from GEDMATCH")
+	@property
+	@abstractmethod
+	def input_format(self):
+		pass
 
-		self.__result = []
+	@abstractmethod
+	def parse_file(self, filename):
+		pass
+
+	def save_to_file(self, output_filename):
+		"""Saves the output to the given file."""
+		with open(output_filename, "w", newline='', encoding="utf-8-sig") as output_file:
+			writer = csv.writer(output_file)
+			writer.writerow(MatchFormatEnum.get_header())
+
+			for row in self.result:
+				writer.writerow(row.values())
+
+	@staticmethod
+	def create_name(row):
+		name = [
+			row["First Name"],
+			row["Middle Name"],
+			row["Last Name"]
+		]
+
+		return re.sub(' +', ' ', " ".join(name))
+
+
+class FTDNAMatchParser(MatchParser):
+
+	def __init__(self):
+		super().__init__()
+
+	@property
+	def input_format(self):
+		return FTDNAMatchFormat()
 
 	def parse_file(self, filename):
 		"""Reads the file under filename and parses the records into
@@ -37,16 +70,16 @@ class MatchParser:
 					output_record[index] = ""
 
 				# add source name
-				output_record[MatchFormatEnum.source] = self.__input_format.format_name
+				output_record[MatchFormatEnum.source] = self.input_format.format_name
 
 				# create name and add it into result row
-				output_record[MatchFormatEnum.person_name] = self.__create_name(record)
+				output_record[MatchFormatEnum.person_name] = self.create_name(record)
 
 				# copy all relevant existing items from record to output record
 				for input_column_name in reader.fieldnames:
 					item = record[input_column_name]
 
-					output_column = self.__input_format.get_mapped_column_name(input_column_name)
+					output_column = self.input_format.get_mapped_column_name(input_column_name)
 					# output_column is of MatchFormatEnum type -> is int if is not none
 
 					if output_column is not None:
@@ -69,26 +102,7 @@ class MatchParser:
 					output_record[MatchFormatEnum.id] = record_id
 
 				# add the record to the result list
-				self.__result.append(output_record)
+				self.result.append(output_record)
 
 		if new_records_found:
 			existing_records.save()
-
-	def save_to_file(self, output_filename):
-		"""Saves the output to the given file."""
-		with open(output_filename, "w", newline='', encoding="utf-8-sig") as output_file:
-			writer = csv.writer(output_file)
-			writer.writerow(MatchFormatEnum.get_header())
-
-			for row in self.__result:
-				writer.writerow(row.values())
-
-	@staticmethod
-	def __create_name(row):
-		name = [
-			row["First Name"],
-			row["Middle Name"],
-			row["Last Name"]
-		]
-
-		return re.sub(' +', ' ', " ".join(name))
