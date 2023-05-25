@@ -29,15 +29,6 @@ class MatchParser(ABC):
 			for row in self.result:
 				writer.writerow(row.values())
 
-	@staticmethod
-	def create_name(row):
-		name = [
-			row["First Name"],
-			row["Middle Name"],
-			row["Last Name"]
-		]
-
-		return re.sub(' +', ' ', " ".join(name))
 
 
 class FTDNAMatchParser(MatchParser):
@@ -73,7 +64,7 @@ class FTDNAMatchParser(MatchParser):
 				output_record[MatchFormatEnum.source] = self.input_format.format_name
 
 				# create name and add it into result row
-				output_record[MatchFormatEnum.person_name] = self.create_name(record)
+				output_record[MatchFormatEnum.person_name] = self.__create_name(record)
 
 				# copy all relevant existing items from record to output record
 				for input_column_name in reader.fieldnames:
@@ -106,3 +97,13 @@ class FTDNAMatchParser(MatchParser):
 
 		if new_records_found:
 			existing_records.save()
+
+	@staticmethod
+	def __create_name(row):
+		name = [
+			row["First Name"],
+			row["Middle Name"],
+			row["Last Name"]
+		]
+
+		return re.sub(' +', ' ', " ".join(name))
