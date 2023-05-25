@@ -32,7 +32,7 @@ class CSVInputOutput:
 					if record_id > biggest_id:
 						biggest_id = record_id
 
-						result.append(record)
+					result.append(record)
 
 		except IOError:
 			# if the file does not exist or cannot be read, do nothing
