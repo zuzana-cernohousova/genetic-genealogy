@@ -1,97 +1,117 @@
 import csv
 import re
+from abc import ABC, abstractmethod
 
-from parsers.match_parsers import CSVMatchDatabase
-from parsers.headers import FTDNASegmentFormat, SegmentFormat
+from databases.match_databases import CSVMatchDatabase, CSVInputOutput
+from databases.segment_databases import CSVSegmentDatabase
+from parsers.headers import FTDNASegmentFormat, SegmentFormatEnum
 
 
+class SegmentParser(ABC):
+	def __init__(self):
+		self.result = []
 
-class SegmentParser:
+	@property
+	@abstractmethod
+	def input_format(self):
+		pass
 
-	def __init__(self, source_database):
+	@abstractmethod
+	def parse_file(self, filename):
+		pass
 
-		if source_database not in ["ftdna", "gedmatch"]:
-			raise Exception("Unknown format.")
+	def save_to_file(self, output_filename):
+		"""Saves the output to the given file."""
 
-		if source_database == "ftdna":
-			self.__input_format = FTDNASegmentFormat()
+		CSVInputOutput.save_csv(self.result, output_filename, SegmentFormatEnum)
 
-		self.__final_format = SegmentFormat()
 
-		self.result = [self.__final_format.header]
-		self.person_ID_not_matched = False
+class FTDNASegmentParser(SegmentParser):
+
+	def __init__(self):
+		super().__init__()
+
+	@property
+	def input_format(self):
+		return FTDNASegmentFormat()
 
 	def parse_file(self, filename):
 		existing_matches = CSVMatchDatabase()
-		existing_segments = SegmentDatabase()
+		existing_matches.load()
+
+		existing_segments = CSVSegmentDatabase()
+		existing_segments.load()
+
+		new_segment = False
+		person_id_not_matched = False
 
 		with open(filename, "r", encoding="utf-8-sig") as input_file:
-			reader = csv.reader(input_file)
-			header = self.__pass_header(reader)
+			reader = csv.DictReader(input_file)
 
-			if header != self.__input_format.header:
-				raise Exception("Input file is in incorrect format.")
+			# check if the file is in the correct format
+			self.input_format.validate_format(reader.fieldnames)
 
 			for record in reader:
-				output_row = [''] * len(self.__final_format.header)
+				output_segment = {}
+				for index in SegmentFormatEnum:
+					output_segment[index] = ""
 
-				# add source
-				output_row[self.__final_format.get_index("Source")] = self.__input_format.get_format_name()
+				# add SOURCE name
+				output_segment[SegmentFormatEnum.source] = self.input_format.format_name
 
-				# get person name and id from it
-				name_column_name = self.__input_format.get_mapped_column_name('Match Name')
-				name_index = self.__final_format.get_index(name_column_name)
+				# create NAME and add it to result
+				name = self.__create_name(record)
+				output_segment[SegmentFormatEnum.person_name] = name
 
-				name = re.sub(' +', ' ', record[self.__input_format.get_index('Match Name')])
-				output_row[name_index] = name
-
-				# extract person id from match name and add it
+				# extract PERSON ID from name and add it to result
 				person_id = existing_matches.get_id_from_match_name(name)
 
-				if person_id == -1:  # no matching person found
-					self.person_ID_not_matched = True
-				output_row[self.__final_format.get_index("ID")] = person_id
+				if person_id is None:  # no matching person found
+					person_id_not_matched = True
+					person_id = -1 	# change id to special value
 
-				# copy all remaining relevant existing information
-				for input_index in range(0, len(record)):
-					if input_index == self.__input_format.get_index("Match Name"):
-						continue  # name already parsed
+				output_segment[SegmentFormatEnum.id] = person_id
 
-					item = record[input_index]
-					final_column_name = self.__input_format.get_mapped_column_name(self.__input_format.get_column_name(input_index))
-					if final_column_name is not None:
-						new_index = self.__final_format.get_index(final_column_name)
-						output_row[new_index] = item
+				# copy all REMAINING existing information = MAPPED FIELDS
+				for input_column_name in reader.fieldnames:
+					item = record[input_column_name]
 
-				# get and add segment id
-				segment_id = existing_segments.get_segment_id(output_row)
+					output_column = self.input_format.get_mapped_column_name(input_column_name)
+					# output_column is of SegmentFormatEnum type -> is int if is not none
+
+					if output_column is not None:
+						output_segment[output_column] = item
+
+				# get and add SEGMENT ID
+				segment_id = existing_segments.get_segment_id(output_segment)
+
 				if segment_id is None:
+					# no match found - create new id and add to database
 					segment_id = existing_segments.get_new_segment_id()
-					output_row[self.__final_format.get_index("Segment ID")] = segment_id
-					existing_segments.add_segment(output_row)
-				output_row[self.__final_format.get_index("Segment ID")] = segment_id
+					output_segment[SegmentFormatEnum.segment_id] = segment_id
 
-				self.result.append(output_row)
+					new_segment = True
+					existing_segments.add_segment(output_segment)
 
-		existing_segments.save_to_file()
-		self.__print_message()
+				else:
+					output_segment[segment_id] = segment_id
 
-	def save_to_file(self, output_filename):
-		with open(output_filename, "w", newline='', encoding="utf-8-sig") as output_file:
-			writer = csv.writer(output_file)
+				self.result.append(output_segment)
 
-			for row in self.result:
-				writer.writerow(row)
+		if new_segment:
+			existing_segments.save()
+
+		if person_id_not_matched:
+			self.__print_message()
 
 	@staticmethod
-	def __pass_header(reader):
-		for header in reader:
-			return header
-
-	def __print_message(self):
-		if self.person_ID_not_matched:
-			print("""AT LEAST ONE id DID NOT MATCH
+	def __print_message():
+		print("""AT LEAST ONE id DID NOT MATCH
 	please check that all files are current
 		if not, please rerun the procedure with current information
 		if yes, please correct the files manually
 		""")
+
+	@staticmethod
+	def __create_name(record):
+		return re.sub(' +', ' ', record['Match Name'])

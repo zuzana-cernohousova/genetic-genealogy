@@ -7,7 +7,7 @@ from databases.match_databases import CSVInputOutput
 
 class SegmentDatabase(ABC):
 	@abstractmethod
-	def load(self):  # todo call load in usage
+	def load(self):
 		pass
 
 	@abstractmethod

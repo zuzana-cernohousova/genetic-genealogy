@@ -1,4 +1,4 @@
-from parsers.segment_data_parsers import SegmentParser
+from parsers.segment_data_parsers import FTDNASegmentParser
 import argparse
 
 args_parser = argparse.ArgumentParser()
@@ -12,7 +12,7 @@ me_group.add_argument("--gedmatch", action="store_true")
 args = args_parser.parse_args()
 
 if args.ftdna:
-	parser = SegmentParser("ftdna")
+	parser = FTDNASegmentParser("ftdna")
 
 elif args.gedmatch:
 	raise Exception("Cannot parse GEDmatch segment data yet. IMPLEMENT!")
