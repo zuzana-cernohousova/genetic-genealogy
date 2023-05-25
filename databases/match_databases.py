@@ -21,7 +21,7 @@ class CSVInputOutput:
 				if reader.fieldnames is not None:
 					for index in reader.fieldnames:
 						for value in database_format:
-							if value.name == index:
+							if value.person_name == index:
 								new_fieldnames.append(value)
 								break
 
@@ -107,7 +107,7 @@ class MatchDatabase(ABC):
 			if record[MatchFormatEnum.person_name] == match_name:
 				return record[MatchFormatEnum.id]
 
-		return -1 # todo change to None
+		return None
 
 
 class CSVMatchDatabase(MatchDatabase):
