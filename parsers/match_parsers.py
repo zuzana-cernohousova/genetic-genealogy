@@ -49,6 +49,9 @@ class FTDNAMatchParser(MatchParser):
 			# create csv DictReader
 			reader = csv.DictReader(input_file)
 
+			# check if the file is in the correct format
+			self.input_format.validate_format(reader.fieldnames)
+
 			# for every record in the reader, parse it into the correct format and store it in the self.__result list
 			for record in reader:
 				output_record = {}
