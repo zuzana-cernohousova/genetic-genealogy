@@ -2,7 +2,7 @@ import csv
 import os
 import re
 
-from parsers.match_parsers import MatchDatabase
+from parsers.match_parsers import CSVMatchDatabase
 from parsers.headers import SharedMatchesFormat, FTDNAMatchFormat
 
 
@@ -16,7 +16,7 @@ class SharedMatchesJoinerFTDNA:
 	__files_paths = []
 	__ID_not_matched = False
 
-	__matches_database = MatchDatabase()
+	__matches_database = CSVMatchDatabase()
 
 	def add_file(self, path):
 		self.__files_paths.append(path)

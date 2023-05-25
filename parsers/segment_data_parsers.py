@@ -1,7 +1,7 @@
 import csv
 import re
 
-from parsers.match_parsers import MatchDatabase
+from parsers.match_parsers import CSVMatchDatabase
 from parsers.headers import FTDNASegmentFormat, SegmentFormat, GedMatchSegmentFormat
 
 
@@ -85,7 +85,7 @@ class SegmentParser:
 		self.person_ID_not_matched = False
 
 	def parse_file(self, filename):
-		existing_matches = MatchDatabase()
+		existing_matches = CSVMatchDatabase()
 		existing_segments = SegmentDatabase()
 
 		with open(filename, "r", encoding="utf-8-sig") as input_file:
