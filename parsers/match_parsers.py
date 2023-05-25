@@ -1,24 +1,27 @@
 import csv
 import re
+from abc import ABC, abstractmethod
 
 from parsers.headers import FTDNAMatchFormat, Databases, MatchFormatEnum
 
 
-class MatchDatabase:
-	"""
-	Loads all match data from file and holds it.
-	"""
+class MatchDatabase(ABC):
+	@abstractmethod
+	def load(self):
+		pass
 
-	__file_name = "all_matches.csv"
+	@abstractmethod
+	def save(self):
+		pass
 
-	def __init__(self):
-		self.__database = self.__load_from_file()
+	database = []
+	largest_ID = 0
 
 	def get_id(self, parsed_record):
 		""" If the parsed_record already exists, finds it and returns the record ID, else returns None."""
 		match_record_id = None
 
-		for old_record in self.__database:
+		for old_record in self.database:
 			match = True
 
 			# compare all fields except for the id field
@@ -37,25 +40,36 @@ class MatchDatabase:
 
 	def get_new_id(self):
 		"""Creates a new maximum ID and returns it."""
-		self.__biggest_ID += 1
-		return self.__biggest_ID
+		self.largest_ID += 1
+		return self.largest_ID
 
 	def add_record(self, complete_parsed_record):
 		"""Adds a complete parsed record to the database list."""
-		self.__database.append(complete_parsed_record)
+		self.database.append(complete_parsed_record)
 
 	def get_id_from_match_name(self, match_name):
 		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
 		match_name = re.sub(' +', ' ', match_name)
 
-		for record in self.__database:
+		for record in self.database:
 			if record[MatchFormatEnum.person_name] == match_name:
 				return record[MatchFormatEnum.id]
 
 		return -1
 
-	def __load_from_file(self):
-		"""Reads and stores the file as list of lists representing the rows of the csv file."""
+
+class CSVMatchDatabase(MatchDatabase):
+	"""
+	Loads all match data from file and holds it.
+	"""
+
+	def __init__(self):
+		self.__file_name = "all_matches.csv"
+		self.__database = []
+
+	def load(self):
+		"""Reads the given csv file and stores it in the database"""
+
 		result = []
 		biggest_id = 0
 
@@ -84,10 +98,11 @@ class MatchDatabase:
 			# if the file does not exist or cannot be read, do nothing
 			pass
 
-		self.__biggest_ID = biggest_id
+		self.largest_ID = biggest_id
 		return result
 
-	def save_to_file(self):
+	def save(self):
+		"""Saves the database to the given csv file."""
 		# file will be opened or created
 		with open(self.__file_name, "w", newline='', encoding="utf-8-sig") as output_file:
 			writer = csv.writer(output_file)
@@ -116,7 +131,7 @@ class MatchParser:
 		"""Reads the file under filename and parses the records into
 		the format specified by MatchFormatEnum."""
 
-		existing_records = MatchDatabase()
+		existing_records = CSVMatchDatabase()
 		new_records_found = False
 
 		# read file
@@ -146,7 +161,6 @@ class MatchParser:
 					if output_column is not None:
 						output_record[output_column] = item
 
-
 				# get ID or create a new one
 				record_id = existing_records.get_id(output_record)
 
@@ -167,7 +181,7 @@ class MatchParser:
 				self.__result.append(output_record)
 
 		if new_records_found:
-			existing_records.save_to_file()
+			existing_records.save()
 
 	def save_to_file(self, output_filename):
 		"""Saves the output to the given file."""
