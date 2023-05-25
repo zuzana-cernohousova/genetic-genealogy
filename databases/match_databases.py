@@ -55,7 +55,7 @@ class MatchDatabase(ABC):
 			if record[MatchFormatEnum.person_name] == match_name:
 				return record[MatchFormatEnum.id]
 
-		return -1
+		return -1 # todo change to None
 
 
 class CSVMatchDatabase(MatchDatabase):
@@ -65,6 +65,8 @@ class CSVMatchDatabase(MatchDatabase):
 
 	def __init__(self):
 		self.__file_name = "all_matches.csv"
+		# todo load file_name from configuration file
+
 		self.__database = []
 
 	def load(self):
@@ -78,11 +80,12 @@ class CSVMatchDatabase(MatchDatabase):
 				reader = csv.DictReader(input_file)
 				new_fieldnames = []
 
-				for index in reader.fieldnames:
-					for value in MatchFormatEnum:
-						if value.name == index:
-							new_fieldnames.append(value)
-							break
+				if reader.fieldnames is not None:
+					for index in reader.fieldnames:
+						for value in MatchFormatEnum:
+							if value.name == index:
+								new_fieldnames.append(value)
+								break
 
 				reader.fieldnames = new_fieldnames
 
@@ -99,7 +102,7 @@ class CSVMatchDatabase(MatchDatabase):
 			pass
 
 		self.largest_ID = biggest_id
-		return result
+		self.database = result
 
 	def save(self):
 		"""Saves the database to the given csv file."""
@@ -109,7 +112,7 @@ class CSVMatchDatabase(MatchDatabase):
 
 			writer.writerow(MatchFormatEnum.get_header())
 
-			for row in self.__database:
+			for row in self.database:
 				if type(row) is dict:
 					writer.writerow(row.values())
 				else:  # list
