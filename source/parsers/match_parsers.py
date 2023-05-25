@@ -2,8 +2,8 @@ import csv
 import re
 from abc import ABC, abstractmethod
 
-from databases.match_databases import CSVMatchDatabase, CSVInputOutput
-from parsers.headers import FTDNAMatchFormat, MatchFormatEnum
+from source.databases.match_databases import CSVMatchDatabase, CSVInputOutput
+from source.parsers.headers import FTDNAMatchFormat, MatchFormatEnum
 
 
 class MatchParser(ABC):

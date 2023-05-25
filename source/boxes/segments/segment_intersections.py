@@ -1,5 +1,5 @@
 import csv
-from parsers.headers import SegmentIntersectionFormat, SegmentFormat
+from source.parsers.headers import SegmentIntersectionFormat, SegmentFormat
 
 
 class IntersectionFinder:

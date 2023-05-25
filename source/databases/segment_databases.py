@@ -1,8 +1,6 @@
-import csv
-
 from abc import abstractmethod, ABC
-from parsers.headers import SegmentFormatEnum
-from databases.match_databases import CSVInputOutput
+from source.parsers.headers import SegmentFormatEnum
+from source.databases.match_databases import CSVInputOutput
 
 
 class SegmentDatabase(ABC):

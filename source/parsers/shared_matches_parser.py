@@ -2,8 +2,8 @@ import csv
 import os
 import re
 
-from parsers.match_parsers import CSVMatchDatabase
-from parsers.headers import SharedMatchesFormat, FTDNAMatchFormat
+from source.parsers.match_parsers import CSVMatchDatabase
+from source.parsers.headers import SharedMatchesFormat, FTDNAMatchFormat
 
 
 class SharedMatchesJoinerFTDNA:

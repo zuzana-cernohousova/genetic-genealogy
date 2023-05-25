@@ -2,9 +2,9 @@ import csv
 import re
 from abc import ABC, abstractmethod
 
-from databases.match_databases import CSVMatchDatabase, CSVInputOutput
-from databases.segment_databases import CSVSegmentDatabase
-from parsers.headers import FTDNASegmentFormat, SegmentFormatEnum
+from source.databases.match_databases import CSVMatchDatabase, CSVInputOutput
+from source.databases.segment_databases import CSVSegmentDatabase
+from source.parsers.headers import FTDNASegmentFormat, SegmentFormatEnum
 
 
 class SegmentParser(ABC):

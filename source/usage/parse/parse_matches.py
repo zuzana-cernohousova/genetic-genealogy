@@ -1,5 +1,4 @@
-from parsers.match_parsers import FTDNAMatchParser
-from parsers.headers import Databases
+from source.parsers.match_parsers import FTDNAMatchParser
 
 import argparse
 

@@ -39,14 +39,14 @@ o zdrojové databázi vybráním jednoho ze dvou vzájemně se vylučujících a
 *--ftdna* a *--gedmatch.*
 
 Každý záznam ze vstupního souboru je porovnán s "databází" uloženou v souboru
-[all_mathces.csv](all_matches.csv) dosud přidaných osob
+[all_mathces.csv](data/all_matches.csv) dosud přidaných osob
 a pokud je nalezena shoda, je záznamu o osobě přidělené stejné ID.
 V opačném případě je vygenerováno nové, unikátní ID a záznam je přidán do databáze.
 Modifikovány jsou tedy dva soubory - do specifikovaného výstupního souboru 
 je vypsána ta množina záznamů, která je obsažena v souboru vstupním a do souboru
-[all_mathces.csv](all_matches.csv) jsou připsány ty záznamy, které se zde dosud neobjevily.
+[all_mathces.csv](data/all_matches.csv) jsou připsány ty záznamy, které se zde dosud neobjevily.
 
-Pokud [all_mathces.csv](all_matches.csv) neexistuje, je vytvořen nový. 
+Pokud [all_mathces.csv](data/all_matches.csv) neexistuje, je vytvořen nový. 
 
 Použití:
 
@@ -55,7 +55,7 @@ Použití:
     parse_matches.py input_file_from_GEDmatch output_file --gedmatch
 
 ## Parsování sdílených shod
-*[parse_shared_matches.py](usage/parse/parse_shared_matches.py)* provádí propojení a unifikaci souborů obsahujících
+*[parse_shared_matches.py](source/usage/parse/parse_shared_matches.py)* provádí propojení a unifikaci souborů obsahujících
 sdílené shody POI a shod POI.
 
 Sjednocený přehled o shodách shod je vypsán do výstupního souboru, 
@@ -70,13 +70,13 @@ Pokud data pochází z FTDNA, každý vstupní soubor musí obsahovat pouze shod
 které POI sdílí s jednou osobou,
 jméno této osoby musí být názvem tohoto souboru.
 Jméno se by mělo být složeno z prvního i druhého jména a příjmení.
-Pokud jméno není identifikováno v databázi všech shod ([all_mathces.csv](all_matches.csv)),
+Pokud jméno není identifikováno v databázi všech shod ([all_mathces.csv](data/all_matches.csv)),
 místo ID osoby je do výstupního souboru uložena hodnota **-1** a uživatel
 je vyzván k ruční opravě dat nebo jména.
 
 > Kvůli vyhledávání IDs v databázi je tedy potřeba **před parsováním
 > shod shod zpracovat samotné shody POI
-pomocí *[parse_matches.py](usage/parse/parse_matches.py)***.
+pomocí *[parse_matches.py](source/usage/parse/parse_matches.py)***.
 
 Použití:
 
@@ -85,16 +85,16 @@ Použití:
     parse_shared_matches.py output_file --gedmatch -f file_1 file_2 file_3 -d directory_1 directory_2
 
 ## Parsování dat o segmentech
-*[parse_segments.py](usage/parse/parse_segments.py)* zajišťuje transformaci dat o segmentech do unifikovaného formátu.
+*[parse_segments.py](source/usage/parse/parse_segments.py)* zajišťuje transformaci dat o segmentech do unifikovaného formátu.
 
 Pomocí prvního argumentu specifikujte vstupní soubor, pomocí druhého výstupní soubor.
 Jedním z argumentů *--ftdna* nebo *--gedmatch* specifikujte zdrojovou databázi.
 
-Každý záznam je porovnán s "databází" všech segmentů v souboru [all_segments.csv](all_segments.csv). A pokud je nalezena shoda, je segmentu přiděleno stejné segment
+Každý záznam je porovnán s "databází" všech segmentů v souboru [all_segments.csv](data/all_segments.csv). A pokud je nalezena shoda, je segmentu přiděleno stejné segment
 ID. V opačném případě je vygenerováno nové, unikátní segment ID.
 Stejně jako u parsování shod jsou nové záznamy o segmentech přidány do příslušné databáze.
 
-Pokud soubor [all_segments.csv](all_segments.csv) neexistuje, je vytvořen nový.
+Pokud soubor [all_segments.csv](data/all_segments.csv) neexistuje, je vytvořen nový.
 
 Použití:
 
@@ -104,7 +104,7 @@ Použití:
 
 Poznámka:
 
-Pochází-li segment data z FamilyTreeDNA, je  v databázi všech osob ([all_mathces.csv](all_matches.csv))
+Pochází-li segment data z FamilyTreeDNA, je  v databázi všech osob ([all_mathces.csv](data/all_matches.csv))
 pro každý záznam o segmetnu podle jména
 osoby vyhledáno ID osoby, se kterou POI sdílí daný segment.
 Toto ID osoby je pak přidáno k záznamu o segmentu do výstupního souboru.
@@ -113,11 +113,11 @@ Pokud není podle jména danou osobu možné dohledat, je jí přidělena automa
 **-1** a uživatel je vyzván k ručnímu vyhledání dané osoby a ruční opravě záznamu.
 
 ## Hledání průniků segmentů
-*[find_segment_intersections.py](usage/find_segment_intersections.py)* umožňuje najít průniky segmentů.
+*[find_segment_intersections.py](source/usage/find_segment_intersections.py)* umožňuje najít průniky segmentů.
 Program na vstupu bere naparsovaný seznam segmentů v unifikovaném formátu
 jako první parametr a jako druhý parametr bere jméno výstupního souboru.
 
->Je nutné nejdříve naparsovat segmenty pomocí programu *[parse_segments.py](usage/parse/parse_segments.py)*
+>Je nutné nejdříve naparsovat segmenty pomocí programu *[parse_segments.py](source/usage/parse/parse_segments.py)*
 > a výstupní soubor předat jako vstupní soubor tomuto programu
 
 Je možné ze segmentů v zadaném vstupním souboru vyextrahovat všechny možné 

@@ -1,4 +1,4 @@
-from parsers.segment_data_parsers import FTDNASegmentParser
+from source.parsers.segment_data_parsers import FTDNASegmentParser
 import argparse
 
 args_parser = argparse.ArgumentParser()

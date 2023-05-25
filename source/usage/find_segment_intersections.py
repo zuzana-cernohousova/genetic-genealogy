@@ -1,4 +1,4 @@
-from boxes.segments.segment_intersections import IntersectionFinder
+from source.boxes.segments.segment_intersections import IntersectionFinder
 import argparse
 
 args_parser = argparse.ArgumentParser()
