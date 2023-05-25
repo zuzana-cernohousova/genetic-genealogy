@@ -106,13 +106,14 @@ class SegmentFormat:
 class SegmentFormatEnum(FormatEnum):
 	segment_id = 0
 	id = 1
-	name = 2
+	person_name = 2
 	chromosome_id = 3
 	start = 4
 	end = 5
 	length_cm = 6
 	snps = 7
 	density = 8
+	source = 9  # source database
 
 
 # todo remove
@@ -172,7 +173,7 @@ class ClusterFormat:
 class ClusterFormatEnum(FormatEnum):
 	cluster_id = 0
 	id = 1
-	name = 2
+	person_name = 2
 	source = 3
 	total_cm = 4
 	largest_segment_cm = 5
@@ -251,7 +252,7 @@ class FTDNASegmentFormat(InputFormat):
 	@property
 	def mapping(self):
 		return {
-			'Match Name': SegmentFormatEnum.name,
+			'Match Name': SegmentFormatEnum.person_name,
 			'Chromosome': SegmentFormatEnum.chromosome_id,
 			'Start Location': SegmentFormatEnum.start,
 			'End Location': SegmentFormatEnum.end,
