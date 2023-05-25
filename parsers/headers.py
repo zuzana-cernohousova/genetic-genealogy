@@ -92,17 +92,6 @@ class MatchFormatEnum(FormatEnum):
 	matching_bucket = 23
 
 
-# todo remove
-class SegmentFormat:
-	@property
-	def header(self):
-		return ['Segment ID', 'ID', 'Name', 'Source', 'Chromosome ID',
-				'Start', 'End', 'Length cM', 'SNPs', 'Density']
-
-	def get_index(self, column_name):
-		return self.header.index(column_name)
-
-
 class SegmentFormatEnum(FormatEnum):
 	segment_id = 0
 	id = 1
