@@ -1,65 +1,61 @@
 import csv
 
 from abc import abstractmethod, ABC
-from parsers.headers import SegmentFormat
+from parsers.headers import SegmentFormatEnum
+from databases.match_databases import CSVInputOutput
 
 
-class SegmentDatabase:
-	__format = SegmentFormat()
-	__file_name = "all_segments.csv"
+class SegmentDatabase(ABC):
+	@abstractmethod
+	def load(self):  # todo call load in usage
+		pass
 
-	def __init__(self):
-		self.__database = self.__load_from_file()
+	@abstractmethod
+	def save(self):
+		pass
+
+	database = []
+	largest_ID = 0
 
 	def get_segment_id(self, parsed_segment):
-		person_id_index = self.__format.get_index('ID')
+		segment_id = None
 
-		for raw_segment in self.__database:
-			if raw_segment[person_id_index] == parsed_segment[person_id_index]:
-				if raw_segment[2:] == parsed_segment[2:]:  # all other columns must match
-					# todo rewrite so that id does not have to be in the first position
-					return raw_segment[self.__format.get_index("Segment ID")]
+		for old_segment in self.database:
+			match = True
 
-		# if match not found, segment is new
-		return None
+			# compare all fields except for the id field
+			for index in SegmentFormatEnum:
+				if index == SegmentFormatEnum.segment_id:
+					continue
+
+				if old_segment[index] != parsed_segment[index]:
+					match = False
+					break
+			if match:
+				segment_id = old_segment[SegmentFormatEnum.segment_id]
+				break
+
+		return segment_id
 
 	def get_new_segment_id(self):
-		self.__biggest_segment_ID += 1
-		return self.__biggest_segment_ID
+		self.largest_ID += 1
+		return self.largest_ID
 
 	def add_segment(self, complete_parsed_segment):
-		self.__database.append(complete_parsed_segment)
+		self.database.append(complete_parsed_segment)
 
-	def __load_from_file(self):
-		segments = []
 
-		biggest_id = 0
-		segment_id_index = self.__format.get_index("Segment ID")
+class CSVSegmentDatabase(SegmentDatabase):
 
-		try:
-			with open(self.__file_name, 'r', encoding="utf-8-sig") as input_file:
-				reader = csv.reader(input_file)
+	def __init__(self):
+		self.__file_name = "all_segments.csv"
 
-				# skip header
-				for _ in reader:
-					break
+	def load(self):
+		self.largest_ID, self.database = CSVInputOutput.load_csv\
+				(
+					self.__file_name, SegmentFormatEnum,
+					SegmentFormatEnum.segment_id
+				)
 
-				for segment in reader:
-					record_id = int(segment[segment_id_index])
-					if record_id > biggest_id:
-						biggest_id = record_id
-
-					segments.append(segment)
-
-		except IOError:
-			pass
-
-		self.__biggest_segment_ID = biggest_id
-		return segments
-
-	def save_to_file(self):
-		with open(self.__file_name, "w", newline='', encoding="utf-8-sig") as output_file:
-			writer = csv.writer(output_file)
-			writer.writerow(self.__format.header)
-			for row in self.__database:
-				writer.writerow(row)
+	def save(self):
+		CSVInputOutput.save_csv(self.database, self.__file_name, SegmentFormatEnum)
