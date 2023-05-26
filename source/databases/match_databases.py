@@ -56,7 +56,7 @@ class CSVInputOutput:
 					writer.writerow(row)
 
 
-class MatchDatabase(ABC):
+class Database(ABC):
 	@abstractmethod
 	def load(self):
 		pass
@@ -65,26 +65,38 @@ class MatchDatabase(ABC):
 	def save(self):
 		pass
 
+	@property
+	@abstractmethod
+	def format(self):
+		pass
+
+	@property
+	@abstractmethod
+	def main_id(self):
+		pass
+
 	database = []
 	largest_ID = 0
 
 	def get_id(self, parsed_record):
-		""" If the parsed_record already exists, finds it and returns the record ID, else returns None."""
+		""" If the parsed_record already exists,
+		finds it and returns the record ID, else returns None."""
 		match_record_id = None
 
 		for old_record in self.database:
 			match = True
 
 			# compare all fields except for the id field
-			for index in MatchFormatEnum:
-				if index == MatchFormatEnum.id:
+			for index in self.format:
+				if index == self.main_id:
 					continue
 
 				if old_record[index] != parsed_record[index]:
 					match = False
 					break
+
 			if match:
-				match_record_id = old_record[MatchFormatEnum.id]
+				match_record_id = old_record[self.main_id]
 				break
 
 		return match_record_id
@@ -98,13 +110,27 @@ class MatchDatabase(ABC):
 		"""Adds a complete parsed record to the database list."""
 		self.database.append(complete_parsed_record)
 
+
+class MatchDatabase(Database, ABC):
+
+	database = []
+	largest_ID = 0
+
+	@property
+	def format(self):
+		return MatchFormatEnum
+
+	@property
+	def main_id(self):
+		return MatchFormatEnum.id
+
 	def get_id_from_match_name(self, match_name):
 		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
 		match_name = re.sub(' +', ' ', match_name)
 
 		for record in self.database:
-			if record[MatchFormatEnum.person_name] == match_name:
-				return record[MatchFormatEnum.id]
+			if record[self.format.person_name] == match_name:
+				return record[self.main_id]
 
 		return None
 
