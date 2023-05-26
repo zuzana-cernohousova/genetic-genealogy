@@ -1,4 +1,4 @@
-from source.parsers.shared_matches_parser import SharedMatchesJoinerFTDNA
+from source.parsers.shared_matches_parser import FTDNASharedMatchesParser
 import argparse
 
 args_parser = argparse.ArgumentParser()
@@ -16,7 +16,7 @@ args = args_parser.parse_args()
 source_database = args.source_database
 
 if args.ftdna:
-	parser = SharedMatchesJoinerFTDNA()
+	parser = FTDNASharedMatchesParser()
 
 elif args.gedmatch:
 	raise Exception("Sorry, cannot parse GEDmatch data yet.")

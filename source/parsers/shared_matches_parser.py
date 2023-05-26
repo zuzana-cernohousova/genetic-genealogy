@@ -1,16 +1,44 @@
 import csv
 import os
 import re
+from abc import ABC, abstractmethod
 
+from source.databases.databases import CSVInputOutput
 from source.parsers.match_parsers import CSVMatchDatabase
-from source.parsers.headers import SharedMatchesFormat, FTDNAMatchFormat
+from source.parsers.headers import SharedMatchesFormatEnum, FTDNAMatchFormat
 
 
-class SharedMatchesJoinerFTDNA:
-	__final_format = SharedMatchesFormat()
+class SharedMatchesParser(ABC):
+	def __init__(self):
+		self.result = []
+		self.primary_matches = {}
+
+	@property
+	@abstractmethod
+	def input_format(self):
+		pass
+
+	@abstractmethod
+	def load_primary_matches(self, filename):
+		"""Reads the configuration file that determines which persons matches are in which file."""
+		pass
+
+	@abstractmethod
+	def parse_files(self):
+		pass
+
+	def save_to_file(self, output_filename):
+		"""Saves the output to the given file."""
+
+		CSVInputOutput.save_csv(self.result, output_filename, SharedMatchesFormatEnum)
+
+
+class FTDNASharedMatchesParser(SharedMatchesParser):
+	@property
+	def input_format(self):
+		return FTDNAMatchFormat()
+
 	__input_format = FTDNAMatchFormat()
-
-	__result = [__final_format.header]
 	__already_found_pairs = {}
 
 	__files_paths = []
@@ -31,7 +59,7 @@ class SharedMatchesJoinerFTDNA:
 		with open(output_filename, "w", newline='', encoding="utf-8-sig") as output_file:
 			writer = csv.writer(output_file)
 
-			for row in self.__result:
+			for row in self.result:
 				writer.writerow(row)
 
 	def parse_added_files(self):
@@ -50,19 +78,14 @@ class SharedMatchesJoinerFTDNA:
 					raise Exception("Input file is in incorrect format.")
 
 				for row in reader:
-					output_row = [''] * len(self.__final_format.header)
+					output_row = [''] * len(SharedMatchesFormatEnum)
 
-					id_1_index = self.__final_format.get_index("ID 1")
-					name_1_index = self.__final_format.get_index("Name 1")
-					id_2_index = self.__final_format.get_index("ID 2")
-					name_2_index = self.__final_format.get_index("Name 2")
-
-					output_row[id_1_index] = main_person_id
-					output_row[name_1_index] = main_person_name
+					output_row[SharedMatchesFormatEnum.id_1] = main_person_id
+					output_row[SharedMatchesFormatEnum.name_1] = main_person_name
 
 					# get new_person_name
 					new_person_name = self.__create_name(row)
-					output_row[name_2_index] = new_person_name
+					output_row[SharedMatchesFormatEnum.name_2] = new_person_name
 
 					# get id from new_person_name
 					new_person_id = self.__matches_database.get_id_from_match_name(new_person_name)
@@ -70,7 +93,7 @@ class SharedMatchesJoinerFTDNA:
 					if new_person_id == -1:
 						self.__ID_not_matched = True
 
-					output_row[id_2_index] = new_person_id
+					output_row[SharedMatchesFormatEnum.id_2] = new_person_id
 
 					# check if they are the same person
 					if new_person_id == main_person_id:
@@ -84,7 +107,7 @@ class SharedMatchesJoinerFTDNA:
 					self.__add_pair(new_person_id, main_person_id)
 
 					# add to result
-					self.__result.append(output_row)
+					self.result.append(output_row)
 
 		# get rid of parsed files
 		self.__files_paths = []
