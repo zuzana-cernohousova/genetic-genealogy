@@ -2,7 +2,7 @@ import csv
 import re
 from abc import ABC, abstractmethod
 
-from source.databases.match_databases import CSVMatchDatabase, CSVInputOutput, CSVSegmentDatabase
+from source.databases.databases import CSVMatchDatabase, CSVInputOutput, CSVSegmentDatabase
 from source.parsers.headers import FTDNASegmentFormat, SegmentFormatEnum
 
 
