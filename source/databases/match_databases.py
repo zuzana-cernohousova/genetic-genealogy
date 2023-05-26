@@ -2,7 +2,7 @@ import csv
 import re
 from abc import ABC, abstractmethod
 
-from source.parsers.headers import MatchFormatEnum
+from source.parsers.headers import MatchFormatEnum, SegmentFormatEnum
 
 
 class CSVInputOutput:
@@ -111,8 +111,9 @@ class Database(ABC):
 		self.database.append(complete_parsed_record)
 
 
-class MatchDatabase(Database, ABC):
+# region match databases
 
+class MatchDatabase(Database, ABC):
 	database = []
 	largest_ID = 0
 
@@ -156,3 +157,34 @@ class CSVMatchDatabase(MatchDatabase):
 		# file will be opened or created
 
 		CSVInputOutput.save_csv(self.database, self.__file_name, MatchFormatEnum)
+
+
+# endregion
+# region segment databases
+
+class SegmentDatabase(Database, ABC):
+	@property
+	def format(self):
+		return SegmentFormatEnum
+
+	@property
+	def main_id(self):
+		return SegmentFormatEnum.segment_id
+
+
+class CSVSegmentDatabase(SegmentDatabase):
+
+	def __init__(self):
+		self.__file_name = "all_segments.csv"
+
+	def load(self):
+		self.largest_ID, self.database = CSVInputOutput.load_csv \
+				(
+				self.__file_name, SegmentFormatEnum,
+				SegmentFormatEnum.segment_id
+			)
+
+	def save(self):
+		CSVInputOutput.save_csv(self.database, self.__file_name, SegmentFormatEnum)
+
+# endregion

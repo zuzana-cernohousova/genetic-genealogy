@@ -2,8 +2,7 @@ import csv
 import re
 from abc import ABC, abstractmethod
 
-from source.databases.match_databases import CSVMatchDatabase, CSVInputOutput
-from source.databases.segment_databases import CSVSegmentDatabase
+from source.databases.match_databases import CSVMatchDatabase, CSVInputOutput, CSVSegmentDatabase
 from source.parsers.headers import FTDNASegmentFormat, SegmentFormatEnum
 
 
@@ -83,15 +82,15 @@ class FTDNASegmentParser(SegmentParser):
 						output_segment[output_column] = item
 
 				# get and add SEGMENT ID
-				segment_id = existing_segments.get_segment_id(output_segment)
+				segment_id = existing_segments.get_id(output_segment)
 
 				if segment_id is None:
 					# no match found - create new id and add to database
-					segment_id = existing_segments.get_new_segment_id()
+					segment_id = existing_segments.get_new_id()
 					output_segment[SegmentFormatEnum.segment_id] = segment_id
 
 					new_segment = True
-					existing_segments.add_segment(output_segment)
+					existing_segments.add_record(output_segment)
 
 				else:
 					output_segment[segment_id] = segment_id
