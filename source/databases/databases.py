@@ -3,7 +3,7 @@ import re
 from abc import ABC, abstractmethod
 
 from source.parsers.headers import MatchFormatEnum, SegmentFormatEnum
-
+from source.config_reader import ConfigReader
 
 class CSVInputOutput:
 	@staticmethod
@@ -142,9 +142,7 @@ class CSVMatchDatabase(MatchDatabase):
 	"""
 
 	def __init__(self):
-		self.__file_name = "all_matches.csv"
-		# todo load file_name from configuration file
-
+		self.__file_name = ConfigReader.get_match_database_location()
 		self.__database = []
 
 	def load(self):
@@ -175,7 +173,7 @@ class SegmentDatabase(Database, ABC):
 class CSVSegmentDatabase(SegmentDatabase):
 
 	def __init__(self):
-		self.__file_name = "all_segments.csv"
+		self.__file_name = ConfigReader.get_segment_database_location()
 
 	def load(self):
 		self.largest_ID, self.database = CSVInputOutput.load_csv \
