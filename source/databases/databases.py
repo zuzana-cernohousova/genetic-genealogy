@@ -5,9 +5,10 @@ from abc import ABC, abstractmethod
 from source.parsers.headers import MatchFormatEnum, SegmentFormatEnum
 from source.config_reader import ConfigReader
 
+
 class CSVInputOutput:
 	@staticmethod
-	def load_csv(filename, database_format, searched_id):
+	def load_csv_database(filename, database_format, searched_id):
 		"""Reads the given csv file, finds the largest id, returns the id and the file as a list of rows (dicts)"""
 
 		result = []
@@ -127,10 +128,10 @@ class MatchDatabase(Database, ABC):
 
 	def get_id_from_match_name(self, match_name):
 		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
-		match_name = re.sub(' +', ' ', match_name)
+		match_name = re.sub(' +', ' ', match_name).lower()
 
 		for record in self.database:
-			if record[self.format.person_name] == match_name:
+			if record[self.format.person_name].lower() == match_name:
 				return record[self.main_id]
 
 		return None
@@ -148,7 +149,7 @@ class CSVMatchDatabase(MatchDatabase):
 	def load(self):
 		"""Reads the given csv file and stores it in the database"""
 
-		self.largest_ID, self.database = CSVInputOutput.load_csv(self.__file_name, MatchFormatEnum, MatchFormatEnum.id)
+		self.largest_ID, self.database = CSVInputOutput.load_csv_database(self.__file_name, MatchFormatEnum, MatchFormatEnum.id)
 
 	def save(self):
 		"""Saves the database to the given csv file."""
@@ -176,7 +177,7 @@ class CSVSegmentDatabase(SegmentDatabase):
 		self.__file_name = ConfigReader.get_segment_database_location()
 
 	def load(self):
-		self.largest_ID, self.database = CSVInputOutput.load_csv \
+		self.largest_ID, self.database = CSVInputOutput.load_csv_database \
 				(
 				self.__file_name, SegmentFormatEnum,
 				SegmentFormatEnum.segment_id
