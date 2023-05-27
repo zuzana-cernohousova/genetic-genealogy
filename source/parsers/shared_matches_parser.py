@@ -33,8 +33,8 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 	def __init__(self):
 		super().__init__()
 
-		self.__primary_names_not_found = []
-		self.__secondary_names_not_found = []
+		self.__primary_matches_not_found = []
+		self.__secondary_matches_not_found = []
 		self.__already_found_pairs = {}
 		self.__ID_not_matched = False
 
@@ -48,8 +48,14 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 				ID = row["id"]
 				if ID == "":
 					ID = None
+				name = row["name"]
+				if name == "":
+					name = None
 
-				self.primary_matches[(ID, row["name"])] = row["file"]
+				if ID is None and name is None:
+					raise ValueError("No identifier given for a person.")
+
+				self.primary_matches[(ID, name)] = row["file"]
 
 	def parse_files(self):
 		existing_matches = CSVMatchDatabase()
@@ -63,7 +69,13 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 				# if primary_match_id was not filled, try to find it
 				primary_match_id = existing_matches.get_id_from_match_name(primary_match_name)
 				if primary_match_id is None:
-					self.__primary_names_not_found.append(primary_match_name)
+					self.__primary_matches_not_found.append(primary_match_name)
+					continue
+
+			if primary_match_name is None:
+				primary_match = existing_matches.get_record_from_id(primary_match_id, MatchFormatEnum.id)
+				if primary_match is None:
+					self.__primary_matches_not_found.append("id = " + primary_match_id)
 					continue
 
 			with open(self.primary_matches[key], 'r', encoding="utf-8-sig") as file:
@@ -80,7 +92,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 
 					# if the person was not found in POIs matches, skip it, but add it to not found names
 					if secondary_match_id is None:
-						self.__secondary_names_not_found.append(secondary_match[MatchFormatEnum.person_name])
+						self.__secondary_matches_not_found.append(secondary_match[MatchFormatEnum.person_name])
 						continue
 
 					# if the two people are the same, skip the secondary one
@@ -110,15 +122,15 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 			self.__already_found_pairs[key_id] = [value_id]
 
 	def print_message(self):
-		if len(self.__primary_names_not_found) == 0 and len(self.__secondary_names_not_found) == 0:
+		if len(self.__primary_matches_not_found) == 0 and len(self.__secondary_matches_not_found) == 0:
 			print("All primary and secondary matches were identified")
 			return
-		if len(self.__primary_names_not_found) > 0:
+		if len(self.__primary_matches_not_found) > 0:
 			print("These names of primary matches were not identified")
-			for name in self.__primary_names_not_found:
+			for name in self.__primary_matches_not_found:
 				print(name)
 
-		if len(self.__secondary_names_not_found) > 0:
+		if len(self.__secondary_matches_not_found) > 0:
 			print("These names of secondary matches were not identified")
-			for name in self.__secondary_names_not_found:
+			for name in self.__secondary_matches_not_found:
 				print(name)

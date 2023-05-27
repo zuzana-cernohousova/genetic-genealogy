@@ -106,6 +106,13 @@ class Database(ABC):
 		"""Adds a complete parsed record to the database list."""
 		self.database.append(complete_parsed_record)
 
+	def get_record_from_id(self, record_id, id_type):
+		for record in self.database:
+			if record[id_type] == record_id:
+				return record
+
+		return None
+
 
 # region match databases
 
