@@ -6,8 +6,7 @@ from source.databases.databases import CSVMatchDatabase, CSVInputOutput
 from source.parsers.headers import FTDNAMatchFormat, MatchFormatEnum
 
 
-class MatchParser(ABC):
-
+class Parser(ABC):
 	def __init__(self):
 		self.result = []
 
@@ -15,10 +14,21 @@ class MatchParser(ABC):
 	def parse_file(self, filename):
 		pass
 
+	@property
+	@abstractmethod
+	def output_format(self):
+		pass
+
 	def save_to_file(self, output_filename):
 		"""Saves the output to the given file."""
 
-		CSVInputOutput.save_csv(self.result, MatchFormatEnum, filename=output_filename)
+		CSVInputOutput.save_csv(self.result, self.output_format, filename=output_filename)
+
+
+class MatchParser(Parser,ABC):
+	@property
+	def output_format(self):
+		return MatchFormatEnum
 
 
 class FTDNAMatchParser(MatchParser):
