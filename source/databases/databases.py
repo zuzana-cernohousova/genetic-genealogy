@@ -1,5 +1,6 @@
 import csv
 import re
+import sys
 from abc import ABC, abstractmethod
 
 from source.parsers.headers import MatchFormatEnum, SegmentFormatEnum
@@ -42,19 +43,27 @@ class CSVInputOutput:
 		return biggest_id, result
 
 	@staticmethod
-	def save_csv(database, filename, database_format):
-		"""Saves the database to the given csv file."""
-		# file will be opened or created
-		with open(filename, "w", newline='', encoding="utf-8-sig") as output_file:
-			writer = csv.writer(output_file)
+	def save_csv(database, database_format, filename=None):
+		"""Saves the database to the given csv file or to standard output if no file is given."""
 
-			writer.writerow(database_format.get_header())
+		# no filename given --> write to stdout
+		if filename is None:
+			CSVInputOutput.__write_to_writer(database, database_format, csv.writer(sys.stdout))
 
-			for row in database:
-				if type(row) is dict:
-					writer.writerow(row.values())
-				else:  # list
-					writer.writerow(row)
+		else:
+			# file will be opened or created
+			with open(filename, "w", newline='', encoding="utf-8-sig") as output_file:
+				CSVInputOutput.__write_to_writer(database, database_format,csv.writer(output_file))
+
+	@staticmethod
+	def __write_to_writer(database, database_format,writer):
+		writer.writerow(database_format.get_header())
+
+		for row in database:
+			if type(row) is dict:
+				writer.writerow(row.values())
+			else:  # list
+				writer.writerow(row)
 
 
 class Database(ABC):
@@ -153,7 +162,7 @@ class CSVMatchDatabase(MatchDatabase):
 		"""Saves the database to the given csv file."""
 		# file will be opened or created
 
-		CSVInputOutput.save_csv(self.database, self.__file_name, MatchFormatEnum)
+		CSVInputOutput.save_csv(self.database, MatchFormatEnum, filename= self.__file_name)
 
 
 # endregion
@@ -178,6 +187,6 @@ class CSVSegmentDatabase(SegmentDatabase):
 			)
 
 	def save(self):
-		CSVInputOutput.save_csv(self.database, self.__file_name, SegmentFormatEnum)
+		CSVInputOutput.save_csv(self.database, SegmentFormatEnum, filename= self.__file_name)
 
 # endregion

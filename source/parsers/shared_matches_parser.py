@@ -25,7 +25,7 @@ class SharedMatchesParser(ABC):
 	def save_to_file(self, output_filename):
 		"""Saves the output to the given file."""
 
-		CSVInputOutput.save_csv(self.result, output_filename, SharedMatchesFormatEnum)
+		CSVInputOutput.save_csv(self.result, SharedMatchesFormatEnum, filename=output_filename)
 
 
 class FTDNASharedMatchesParser(SharedMatchesParser):

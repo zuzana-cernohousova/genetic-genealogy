@@ -18,7 +18,7 @@ class MatchParser(ABC):
 	def save_to_file(self, output_filename):
 		"""Saves the output to the given file."""
 
-		CSVInputOutput.save_csv(self.result, output_filename, MatchFormatEnum)
+		CSVInputOutput.save_csv(self.result, MatchFormatEnum, filename=output_filename)
 
 
 class FTDNAMatchParser(MatchParser):

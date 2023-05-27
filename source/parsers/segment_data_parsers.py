@@ -22,7 +22,7 @@ class SegmentParser(ABC):
 	def save_to_file(self, output_filename):
 		"""Saves the output to the given file."""
 
-		CSVInputOutput.save_csv(self.result, output_filename, SegmentFormatEnum)
+		CSVInputOutput.save_csv(self.result, SegmentFormatEnum, filename=output_filename)
 
 
 class FTDNASegmentParser(SegmentParser):
