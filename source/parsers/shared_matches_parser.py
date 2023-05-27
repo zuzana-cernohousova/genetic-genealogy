@@ -88,8 +88,10 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 						continue
 
 					# if the pair was already identified
-					if primary_match_id in self.__already_found_pairs[secondary_match_id] or secondary_match in \
-							self.__already_found_pairs[primary_match_id]:
+					if (secondary_match_id in self.__already_found_pairs.keys()
+						and primary_match_id in self.__already_found_pairs[secondary_match_id]) \
+							or (primary_match_id in self.__already_found_pairs.keys()
+								and secondary_match in self.__already_found_pairs[primary_match_id]):
 						continue
 
 					output_row = [''] * len(SharedMatchesFormatEnum)
@@ -97,6 +99,8 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 					output_row[SharedMatchesFormatEnum.name_1] = primary_match_name
 					output_row[SharedMatchesFormatEnum.id_2] = secondary_match_id
 					output_row[SharedMatchesFormatEnum.name_2] = secondary_match[MatchFormatEnum.person_name]
+
+					self.result.append(output_row)
 
 	def __add_to_already_found(self, key_id, value_id):
 

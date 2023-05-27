@@ -12,8 +12,6 @@ me_group.add_argument("--gedmatch", action="store_true")
 
 args = args_parser.parse_args()
 
-source_database = args.source_database
-
 if args.ftdna:
 	parser = FTDNASharedMatchesParser()
 
