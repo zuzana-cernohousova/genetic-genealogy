@@ -50,7 +50,7 @@ class FTDNAMatchParser(MatchParser):
 				output_record = self.parse_non_id_columns(record)
 
 				# get ID or create a new one
-				record_id = existing_records.get_id(output_record)
+				record_id = existing_records.get_id(output_record, MatchFormatEnum.id)
 
 				# id was not found, match does not yet exist in our database
 				if record_id is None:

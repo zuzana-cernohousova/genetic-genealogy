@@ -71,15 +71,10 @@ class Database(ABC):
 	def format(self):
 		pass
 
-	@property
-	@abstractmethod
-	def main_id(self):
-		pass
-
 	database = []
 	largest_ID = 0
 
-	def get_id(self, parsed_record):
+	def get_id(self, parsed_record, searched_id_type):
 		""" If the parsed_record already exists,
 		finds it and returns the record ID, else returns None."""
 		match_record_id = None
@@ -88,9 +83,8 @@ class Database(ABC):
 			match = True
 
 			# compare all fields except for the id field
-			key_list = self.format.comparison_key()
-			for index in key_list:
-				if index == self.main_id:
+			for index in self.format.comparison_key():
+				if index == searched_id_type:
 					continue
 
 				if old_record[index] != parsed_record[index]:
@@ -98,10 +92,8 @@ class Database(ABC):
 					break
 
 			if match:
-				match_record_id = old_record[self.main_id]
+				match_record_id = old_record[searched_id_type]
 				break
-
-		# todo zamyslet se nad tím, jak se má chovat tato metoda u takových formátů, které nemají žádné main ID, které má být vyhledáno
 
 		return match_record_id
 
@@ -125,17 +117,13 @@ class MatchDatabase(Database, ABC):
 	def format(self):
 		return MatchFormatEnum
 
-	@property
-	def main_id(self):
-		return MatchFormatEnum.id
-
 	def get_id_from_match_name(self, match_name):
 		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
 		match_name = re.sub(' +', ' ', match_name).lower()
 
 		for record in self.database:
 			if record[self.format.person_name].lower() == match_name:
-				return record[self.main_id]
+				return record[MatchFormatEnum.id]
 
 		return None
 
@@ -168,10 +156,6 @@ class SegmentDatabase(Database, ABC):
 	@property
 	def format(self):
 		return SegmentFormatEnum
-
-	@property
-	def main_id(self):
-		return SegmentFormatEnum.segment_id
 
 
 class CSVSegmentDatabase(SegmentDatabase):
