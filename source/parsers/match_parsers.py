@@ -11,11 +11,6 @@ class MatchParser(ABC):
 	def __init__(self):
 		self.result = []
 
-	@property
-	@abstractmethod
-	def input_format(self):
-		pass
-
 	@abstractmethod
 	def parse_file(self, filename):
 		pass
@@ -31,9 +26,7 @@ class FTDNAMatchParser(MatchParser):
 	def __init__(self):
 		super().__init__()
 
-	@property
-	def input_format(self):
-		return FTDNAMatchFormat()
+	__input_format = FTDNAMatchFormat()
 
 	def parse_file(self, filename):
 		"""Reads the file under filename and parses the records into
@@ -50,29 +43,11 @@ class FTDNAMatchParser(MatchParser):
 			reader = csv.DictReader(input_file)
 
 			# check if the file is in the correct format
-			self.input_format.validate_format(reader.fieldnames)
+			self.__input_format.validate_format(reader.fieldnames)
 
 			# for every record in the reader, parse it into the correct format and store it in the self.__result list
 			for record in reader:
-				output_record = {}
-				for index in MatchFormatEnum:
-					output_record[index] = ""
-
-				# add source name
-				output_record[MatchFormatEnum.source] = self.input_format.format_name
-
-				# create name and add it into result row
-				output_record[MatchFormatEnum.person_name] = self.__create_name(record)
-
-				# copy all relevant existing items from record to output record
-				for input_column_name in reader.fieldnames:
-					item = record[input_column_name]
-
-					output_column = self.input_format.get_mapped_column_name(input_column_name)
-					# output_column is of MatchFormatEnum type -> is int if is not none
-
-					if output_column is not None:
-						output_record[output_column] = item
+				output_record = self.parse_non_id_columns(record)
 
 				# get ID or create a new one
 				record_id = existing_records.get_id(output_record)
@@ -105,3 +80,29 @@ class FTDNAMatchParser(MatchParser):
 		]
 
 		return re.sub(' +', ' ', " ".join(name))
+
+	@staticmethod
+	def parse_non_id_columns(record):
+		input_format = FTDNAMatchParser.__input_format
+
+		output_record = {}
+		for index in MatchFormatEnum:
+			output_record[index] = ""
+
+		# add source name
+		output_record[MatchFormatEnum.source] = input_format.format_name
+
+		# create name and add it into result row
+		output_record[MatchFormatEnum.person_name] = FTDNAMatchParser.__create_name(record)
+
+		# copy all relevant existing items from record to output record
+		for input_column_name in input_format.header:
+			item = record[input_column_name]
+
+			output_column = input_format.get_mapped_column_name(input_column_name)
+			# output_column is of MatchFormatEnum type -> is int if is not none
+
+			if output_column is not None:
+				output_record[output_column] = item
+
+		return output_record
