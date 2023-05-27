@@ -31,7 +31,8 @@ class InputFormat(ABC):
 
 	def validate_format(self, other_header):
 		"""Compares the given header and the header of this format as sets."""
-		if set("".join(item.split()).lower() for item in other_header) != set("".join(item.split()).lower() for item in self.header):
+		if set("".join(item.split()).lower() for item in other_header) != set(
+				"".join(item.split()).lower() for item in self.header):
 			return False
 		return True
 
@@ -56,6 +57,11 @@ class FormatEnum(IntEnum):
 	def get_header(cls):
 		"""Returns the names of all the enum values in a list ordered by their values."""
 		return [item.name for item in cls]
+
+	@property
+	def comparison_key(self):
+		return [key for key in self]
+
 
 # endregion
 
@@ -96,6 +102,17 @@ class MatchFormatEnum(FormatEnum):
 
 
 class SegmentFormatEnum(FormatEnum):
+
+	@property
+	def comparison_key(self):
+		return [
+			SegmentFormatEnum.id,
+			SegmentFormatEnum.person_name,
+			SegmentFormatEnum.chromosome_id,
+			SegmentFormatEnum.start,
+			SegmentFormatEnum.end
+		]
+
 	segment_id = 0
 	id = 1
 	person_name = 2
@@ -179,6 +196,7 @@ class ClusterFormatEnum(FormatEnum):
 	notes = 23
 	matching_bucket = 24
 
+
 # endregion
 
 
@@ -187,6 +205,7 @@ class ClusterFormatEnum(FormatEnum):
 
 class FTDNAMatchFormat(InputFormat):
 	"""Describes the format of matches downloaded from FamilyTreeDNA."""
+
 	@property
 	def format_name(self):
 		return "FamilyTreeDNA"
@@ -223,6 +242,7 @@ class FTDNAMatchFormat(InputFormat):
 
 class FTDNASegmentFormat(InputFormat):
 	"""Describes the format of segments downloaded from FamilyTreeDNA"""
+
 	@property
 	def format_name(self):
 		return "FamilyTreeDNA"
