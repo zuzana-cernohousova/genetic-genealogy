@@ -1,11 +1,9 @@
 import csv
-import os
-import re
 from abc import ABC, abstractmethod
 
 from source.databases.databases import CSVInputOutput
-from source.parsers.match_parsers import CSVMatchDatabase
-from source.parsers.headers import SharedMatchesFormatEnum, FTDNAMatchFormat
+from source.parsers.match_parsers import CSVMatchDatabase, FTDNAMatchParser
+from source.parsers.headers import SharedMatchesFormatEnum, FTDNAMatchFormat, MatchFormatEnum
 
 
 class SharedMatchesParser(ABC):
@@ -13,18 +11,15 @@ class SharedMatchesParser(ABC):
 		self.result = []
 		self.primary_matches = {}
 
-	@property
 	@abstractmethod
-	def input_format(self):
-		pass
-
-	@abstractmethod
-	def load_primary_matches(self, filename):
+	def load_primary_matches(self, config_filename):
 		"""Reads the configuration file that determines which persons matches are in which file."""
 		pass
 
 	@abstractmethod
 	def parse_files(self):
+		"""Parses files, names of these files are given by the configuration loaded
+		from configuration file by the load_primary_matches method"""
 		pass
 
 	def save_to_file(self, output_filename):
@@ -34,121 +29,92 @@ class SharedMatchesParser(ABC):
 
 
 class FTDNASharedMatchesParser(SharedMatchesParser):
-	@property
-	def input_format(self):
-		return FTDNAMatchFormat()
 
-	__input_format = FTDNAMatchFormat()
-	__already_found_pairs = {}
+	def __init__(self):
+		super().__init__()
 
-	__files_paths = []
-	__ID_not_matched = False
+		self.__primary_names_not_found = []
+		self.__secondary_names_not_found = []
+		self.__already_found_pairs = {}
+		self.__ID_not_matched = False
 
-	__matches_database = CSVMatchDatabase()
+	__input_file = FTDNAMatchFormat()
 
-	def add_file(self, path):
-		self.__files_paths.append(path)
+	def load_primary_matches(self, csv_config_filename):
+		with open(csv_config_filename, 'r', encoding="utf-8-sig") as input_file:
+			reader = csv.DictReader(input_file)
 
-	def add_directory(self, directory):
-		for f_name in os.listdir(directory):
-			f = os.path.join(directory, f_name)
+			for row in reader:
+				ID = row["id"]
+				if ID == "":
+					ID = None
 
-			self.__files_paths.append(f)
+				self.primary_matches[(ID, row["name"])] = row["file"]
 
-	def save_to_file(self, output_filename):
-		with open(output_filename, "w", newline='', encoding="utf-8-sig") as output_file:
-			writer = csv.writer(output_file)
+	def parse_files(self):
+		existing_matches = CSVMatchDatabase()
+		existing_matches.load()
 
-			for row in self.result:
-				writer.writerow(row)
+		for key in self.primary_matches:
+			primary_match_id = key[0]
+			primary_match_name = key[1]
 
-	def parse_added_files(self):
-		for filepath in self.__files_paths:
-			filename = os.path.basename(filepath)
+			if primary_match_id is None:
+				# if primary_match_id was not filled, try to find it
+				primary_match_id = existing_matches.get_id_from_match_name(primary_match_name)
+				if primary_match_id is None:
+					self.__primary_names_not_found.append(primary_match_name)
+					continue
 
-			main_person_name = filename.strip(".csv")
-			main_person_id = self.__matches_database.get_id_from_match_name(main_person_name)
+			with open(self.primary_matches[key], 'r', encoding="utf-8-sig") as file:
+				reader = csv.DictReader(file)
 
-			with open(filepath, 'r', encoding="utf-8-sig") as file:
-				reader = csv.reader(file)
-
-				# get and avoid the header
-				header = self.__pass_header(reader)
-				if header != self.__input_format.header:
-					raise Exception("Input file is in incorrect format.")
+				self.__input_file.validate_format(reader.fieldnames)
 
 				for row in reader:
+					# parse secondary match record
+					secondary_match = FTDNAMatchParser.parse_non_id_columns(row)
+
+					# find secondary match id in all matches
+					secondary_match_id = existing_matches.get_id(secondary_match)
+
+					# if the person was not found in POIs matches, skip it, but add it to not found names
+					if secondary_match_id is None:
+						self.__secondary_names_not_found.append(secondary_match[MatchFormatEnum.person_name])
+						continue
+
+					# if the two people are the same, skip the secondary one
+					if secondary_match_id == primary_match_id:
+						continue
+
+					# if the pair was already identified
+					if primary_match_id in self.__already_found_pairs[secondary_match_id] or secondary_match in \
+							self.__already_found_pairs[primary_match_id]:
+						continue
+
 					output_row = [''] * len(SharedMatchesFormatEnum)
+					output_row[SharedMatchesFormatEnum.id_1] = primary_match_id
+					output_row[SharedMatchesFormatEnum.name_1] = primary_match_name
+					output_row[SharedMatchesFormatEnum.id_2] = secondary_match_id
+					output_row[SharedMatchesFormatEnum.name_2] = secondary_match[MatchFormatEnum.person_name]
 
-					output_row[SharedMatchesFormatEnum.id_1] = main_person_id
-					output_row[SharedMatchesFormatEnum.name_1] = main_person_name
+	def __add_to_already_found(self, key_id, value_id):
 
-					# get new_person_name
-					new_person_name = self.__create_name(row)
-					output_row[SharedMatchesFormatEnum.name_2] = new_person_name
-
-					# get id from new_person_name
-					new_person_id = self.__matches_database.get_id_from_match_name(new_person_name)
-
-					if new_person_id == -1:
-						self.__ID_not_matched = True
-
-					output_row[SharedMatchesFormatEnum.id_2] = new_person_id
-
-					# check if they are the same person
-					if new_person_id == main_person_id:
-						continue  # skip if yes
-
-					# check if this pair was previously found
-					if self.__already_found(new_person_id, main_person_id):
-						continue  # skip if yes
-
-					# if this pair was not previously found, add it to dict
-					self.__add_pair(new_person_id, main_person_id)
-
-					# add to result
-					self.result.append(output_row)
-
-		# get rid of parsed files
-		self.__files_paths = []
-		self.__print_message()
-
-	def __create_name(self, row):
-		name = [
-			row[self.__input_format.get_index("First Name")],
-			row[self.__input_format.get_index("Middle Name")],
-			row[self.__input_format.get_index("Last Name")]
-		]
-		return re.sub(' +', ' ', " ".join(name))
-
-	def __print_message(self):
-		if self.__ID_not_matched:
-			print("""AT LEAST ONE id DID NOT MATCH
-	please check that all files are current
-		if not, please rerun the procedure with current information
-		if yes, please curate the files manually
-		""")
-
-	def __already_found(self, new_person_id, main_person_id):
-		if new_person_id in self.__already_found_pairs.keys():
-			if main_person_id in self.__already_found_pairs[new_person_id]:
-				# if previously found, don't add again
-				return True
-		return False
-
-	def __add_pair(self, new_person_id, main_person_id):
-		if main_person_id in self.__already_found_pairs.keys():
-			self.__already_found_pairs[main_person_id].append(new_person_id)
+		if key_id in self.__already_found_pairs.keys():
+			self.__already_found_pairs[key_id].append(value_id)
 		else:
-			self.__already_found_pairs[main_person_id] = [new_person_id]
+			self.__already_found_pairs[key_id] = [value_id]
 
-	@staticmethod
-	def __pass_header(reader):
-		for row in reader:
-			return row
+	def print_message(self):
+		if len(self.__primary_names_not_found) == 0 and len(self.__secondary_names_not_found) == 0:
+			print("All primary and secondary matches were identified")
+			return
+		if len(self.__primary_names_not_found) > 0:
+			print("These names of primary matches were not identified")
+			for name in self.__primary_names_not_found:
+				print(name)
 
-	@staticmethod
-	def __get_column_index(header, column_name):
-		if column_name in header:
-			return header.index(column_name)
-		return -1
+		if len(self.__secondary_names_not_found) > 0:
+			print("These names of secondary matches were not identified")
+			for name in self.__secondary_names_not_found:
+				print(name)

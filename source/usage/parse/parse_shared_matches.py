@@ -3,9 +3,8 @@ import argparse
 
 args_parser = argparse.ArgumentParser()
 
+args_parser.add_argument("config_file")  # todo rename parameter
 args_parser.add_argument("output_file")
-args_parser.add_argument("-d", "--directories", nargs="+")
-args_parser.add_argument("-f", "--files", nargs="+")
 
 me_group = args_parser.add_mutually_exclusive_group(required=True)
 me_group.add_argument("--ftdna", action="store_true")
@@ -19,26 +18,11 @@ if args.ftdna:
 	parser = FTDNASharedMatchesParser()
 
 elif args.gedmatch:
-	raise Exception("Sorry, cannot parse GEDmatch data yet.")
+	raise NotImplementedError("Cannot parse GEDMatch data yet.")
 
-else:
-	raise Exception("Unknown source in the first argument.")
+parser.load_primary_matches(args.config_file)
 
-source_files = args.files
-source_directories = args.directories
+parser.parse_files()
+parser.print_message()
 
-if source_files is None and source_directories is None:
-	raise Exception("At least one source file or source directory is required.")
-
-output_file = args.output_file
-
-if source_directories is not None:
-	for directory in source_directories:
-		parser.add_directory(directory)
-
-if source_files is not None:
-	for file in source_files:
-		parser.add_file(file)
-
-parser.parse_added_files()
-parser.save_to_file(output_file)
+parser.save_to_file(args.output_file)
