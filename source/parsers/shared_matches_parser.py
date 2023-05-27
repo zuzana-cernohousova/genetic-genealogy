@@ -76,7 +76,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 					secondary_match = FTDNAMatchParser.parse_non_id_columns(row)
 
 					# find secondary match id in all matches
-					secondary_match_id = existing_matches.get_id(secondary_match)
+					secondary_match_id = existing_matches.get_id(secondary_match, MatchFormatEnum.id)
 
 					# if the person was not found in POIs matches, skip it, but add it to not found names
 					if secondary_match_id is None:
