@@ -104,15 +104,6 @@ class SegmentFormatEnum(FormatEnum):
 	snps = 8
 	density = 9
 
-# todo remove
-class SharedMatchesFormat:
-	@property
-	def header(self):
-		return ["ID 1", "Name 1", "ID 2", "Name 2", "Total cM"]
-
-	def get_index(self, column_name):
-		return self.header.index(column_name)
-
 
 class SharedMatchesFormatEnum(FormatEnum):
 	id_1 = 0
