@@ -88,7 +88,8 @@ class Database(ABC):
 			match = True
 
 			# compare all fields except for the id field
-			for index in self.format:
+			key_list = self.format.comparison_key()
+			for index in key_list:
 				if index == self.main_id:
 					continue
 
@@ -99,6 +100,8 @@ class Database(ABC):
 			if match:
 				match_record_id = old_record[self.main_id]
 				break
+
+		# todo zamyslet se nad tím, jak se má chovat tato metoda u takových formátů, které nemají žádné main ID, které má být vyhledáno
 
 		return match_record_id
 

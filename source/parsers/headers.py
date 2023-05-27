@@ -58,9 +58,9 @@ class FormatEnum(IntEnum):
 		"""Returns the names of all the enum values in a list ordered by their values."""
 		return [item.name for item in cls]
 
-	@property
-	def comparison_key(self):
-		return [key for key in self]
+	@classmethod
+	def comparison_key(cls):
+		return [key for key in cls]
 
 
 # endregion
@@ -71,9 +71,9 @@ class FormatEnum(IntEnum):
 
 
 class MatchFormatEnum(FormatEnum):
-	@property
-	def comparison_key(self):
-		return [MatchFormatEnum.person_name, MatchFormatEnum.source]
+	@classmethod
+	def comparison_key(cls):
+		return [cls.person_name, cls.source]
 
 	id = 0
 	person_name = 1
