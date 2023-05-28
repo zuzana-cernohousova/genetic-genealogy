@@ -3,7 +3,7 @@ import re
 from abc import ABC, abstractmethod
 
 from source.databases.databases import CSVMatchDatabase, CSVInputOutput
-from source.parsers.headers import FTDNAMatchFormat, MatchFormatEnum, FormatEnum
+from source.parsers.headers import FTDNAMatchFormat, MatchFormatEnum, FormatEnum, SourceEnum
 
 
 class Parser(ABC):
@@ -17,7 +17,7 @@ class Parser(ABC):
 
 	@property
 	@abstractmethod
-	def output_format(self) -> FormatEnum:
+	def output_format(self):
 		"""Defines the format of the parsed data."""
 		pass
 
@@ -62,7 +62,7 @@ class FTDNAMatchParser(MatchParser):
 				output_record = self.parse_non_id_columns(record)
 
 				# get ID or create a new one
-				record_id = existing_records.get_id(output_record, MatchFormatEnum.id)
+				record_id = existing_records.get_id(output_record, MatchFormatEnum.id, self.__input_format.get_source_id())
 
 				# id was not found, match does not yet exist in our database
 				if record_id is None:

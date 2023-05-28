@@ -3,7 +3,7 @@ import re
 from abc import ABC
 
 from source.databases.databases import CSVMatchDatabase, CSVSegmentDatabase
-from source.parsers.headers import FTDNASegmentFormat, SegmentFormatEnum
+from source.parsers.headers import FTDNASegmentFormat, SegmentFormatEnum, SourceEnum
 from source.parsers.match_parsers import Parser
 
 
@@ -54,6 +54,8 @@ class FTDNASegmentParser(SegmentParser):
 				if person_id is None:  # no matching person found
 					person_id_not_matched = True
 					person_id = -1 	# change id to special value
+					# todo skip person if not found
+					# todo if once not found dont search again
 
 				output_segment[self.output_format.id] = person_id
 
@@ -68,7 +70,7 @@ class FTDNASegmentParser(SegmentParser):
 						output_segment[output_column] = item
 
 				# get and add SEGMENT ID
-				segment_id = existing_segments.get_id(output_segment, self.output_format.segment_id)
+				segment_id = existing_segments.get_id(output_segment, self.output_format.segment_id, self.__input_format.get_source_id())
 
 				if segment_id is None:
 					# no match found - create new id and add to database

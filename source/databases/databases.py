@@ -83,7 +83,7 @@ class Database(ABC):
 	database = []
 	largest_ID = 0
 
-	def get_id(self, parsed_record, searched_id_type):
+	def get_id(self, parsed_record, searched_id_type, source):
 		""" If the parsed_record already exists,
 		finds it and returns the record ID, else returns None."""
 		match_record_id = None
@@ -92,7 +92,7 @@ class Database(ABC):
 			match = True
 
 			# compare all fields except for the id field
-			for index in self.format.comparison_key():
+			for index in self.format.comparison_key(source= source):
 				if index == searched_id_type:
 					continue
 

@@ -36,7 +36,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 		self.__already_found_pairs = {}
 		self.__ID_not_matched = False
 
-	__input_file = FTDNAMatchFormat()
+	__input_format = FTDNAMatchFormat()
 
 	def load_primary_matches(self, csv_config_filename):
 		with open(csv_config_filename, 'r', encoding="utf-8-sig") as input_file:
@@ -81,14 +81,14 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 			with open(self.primary_matches[key], 'r', encoding="utf-8-sig") as file:
 				reader = csv.DictReader(file)
 
-				self.__input_file.validate_format(reader.fieldnames)
+				self.__input_format.validate_format(reader.fieldnames)
 
 				for row in reader:
 					# parse secondary match record
 					secondary_match = FTDNAMatchParser.parse_non_id_columns(row)
 
 					# find secondary match id in all matches
-					secondary_match_id = existing_matches.get_id(secondary_match, MatchFormatEnum.id)
+					secondary_match_id = existing_matches.get_id(secondary_match, MatchFormatEnum.id, source= self.__input_format.get_source_id())
 
 					# if the person was not found in POIs matches, skip it, but add it to not found names
 					if secondary_match_id is None:

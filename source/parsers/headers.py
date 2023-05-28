@@ -1,6 +1,11 @@
 from enum import IntEnum, Enum
 from abc import ABC, abstractmethod
 
+
+class SourceEnum(Enum):
+	GEDMatch= 0
+	FamilyTreeDNA = 1
+
 # region Application defined formats
 # defined by this application
 
@@ -18,7 +23,7 @@ class FormatEnum(IntEnum):
 		return [item.name for item in cls]
 
 	@classmethod
-	def comparison_key(cls):
+	def comparison_key(cls, source: SourceEnum = None):
 		"""Returns all the values in this enum class that
 		should be taken into consideration while comparing two records of this format."""
 		return [key for key in cls]
@@ -28,8 +33,17 @@ class MatchFormatEnum(FormatEnum):
 	"""This class defines the format of parsed match data."""
 
 	@classmethod
-	def comparison_key(cls):
-		return [cls.id, cls.person_name, cls.source]
+	def comparison_key(cls, source: SourceEnum = None):
+		"""If source is stated, returns source specific identification
+		(gedmatch_kit_id if GEDmatch or person_name if FTDNA)
+		 else returns id."""
+
+		if source == SourceEnum.GEDMatch:
+			return [cls.gedmatch_kit_id]
+		elif source == SourceEnum.FamilyTreeDNA:
+			return [cls.person_name]
+
+		return [cls.id]
 
 	id = 0
 	person_name = 1
@@ -42,7 +56,7 @@ class MatchFormatEnum(FormatEnum):
 	kit_age = 8
 	generations = 9
 	match_number = 10
-	kit_id = 11
+	gedmatch_kit_id = 11
 	e_mail = 12
 	ged_wiki_tree = 13
 	sex = 14
@@ -61,7 +75,7 @@ class SegmentFormatEnum(FormatEnum):
 	"""This class defines the format of parsed segment data."""
 
 	@classmethod
-	def comparison_key(cls):
+	def comparison_key(cls, source: SourceEnum =None):
 		return [
 			cls.segment_id,
 			cls.id,
@@ -185,11 +199,11 @@ class InputFormat(ABC):
 		pass
 
 	@classmethod
-	@abstractmethod
 	def format_name(cls) -> str:
 		"""Returns the name of the source database.
 		Is used as a text representation of source identification"""
-		pass
+
+		return cls.get_source_id().name
 
 	@classmethod
 	def validate_format(cls, other_header) -> bool:
@@ -222,6 +236,11 @@ class InputFormat(ABC):
 		"""Gets the name of the column defined by the index."""
 		return cls.header()[index]
 
+	@classmethod
+	@abstractmethod
+	def get_source_id(cls) -> SourceEnum:
+		pass
+
 
 # region Match formats
 
@@ -229,8 +248,8 @@ class FTDNAMatchFormat(InputFormat):
 	"""Describes the format of matches downloaded from FamilyTreeDNA."""
 
 	@classmethod
-	def format_name(cls):
-		return "FamilyTreeDNA"
+	def get_source_id(cls):
+		return SourceEnum.FamilyTreeDNA
 
 	@classmethod
 	def mapping(cls):
@@ -266,8 +285,8 @@ class FTDNASegmentFormat(InputFormat):
 	"""Describes the format of segments downloaded from FamilyTreeDNA."""
 
 	@classmethod
-	def format_name(cls):
-		return "FamilyTreeDNA"
+	def get_source_id(cls):
+		return SourceEnum.FamilyTreeDNA
 
 	@classmethod
 	def header(cls):
