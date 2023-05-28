@@ -11,45 +11,45 @@ class Databases(Enum):
 
 
 class InputFormat(ABC):
-	@property
+	@classmethod
 	@abstractmethod
-	def header(self):
+	def header(cls):
 		"""Represents the header of the given format."""
 		pass
 
-	@property
+	@classmethod
 	@abstractmethod
-	def mapping(self):
+	def mapping(cls):
 		"""Represents the mapping between the source format and the final format."""
 		pass
 
-	@property
+	@classmethod
 	@abstractmethod
-	def format_name(self):
+	def format_name(cls):
 		"""Represents the name of the source database."""
 		pass
 
 	def validate_format(self, other_header):
 		"""Compares the given header and the header of this format as sets."""
 		if set("".join(item.split()).lower() for item in other_header) != set(
-				"".join(item.split()).lower() for item in self.header):
+				"".join(item.split()).lower() for item in self.header()):
 			return False
 		return True
 
 	def get_mapped_column_name(self, source_column_name):
 		"""Gets the corresponding column name defined by this format."""
-		if source_column_name in self.mapping.keys():
-			return self.mapping[source_column_name]
+		if source_column_name in self.mapping().keys():
+			return self.mapping()[source_column_name]
 		else:
 			return None
 
 	def get_index(self, column_name):
 		"""Gets the index of the column defined by the column name."""
-		return self.header.index(column_name)
+		return self.header().index(column_name)
 
 	def get_column_name(self, index):
 		"""Gets the name of the column defined by the index."""
-		return self.header[index]
+		return self.header()[index]
 
 
 class FormatEnum(IntEnum):
@@ -206,11 +206,9 @@ class ClusterFormatEnum(FormatEnum):
 class FTDNAMatchFormat(InputFormat):
 	"""Describes the format of matches downloaded from FamilyTreeDNA."""
 
-	@property
 	def format_name(self):
 		return "FamilyTreeDNA"
 
-	@property
 	def mapping(self):
 		return {
 			'Match Date': MatchFormatEnum.match_date,
@@ -226,7 +224,6 @@ class FTDNAMatchFormat(InputFormat):
 			'X - Match': MatchFormatEnum.x_total_cm
 		}
 
-	@property
 	def header(self):
 		return [
 			'Full Name', 'First Name', 'Middle Name', 'Last Name', 'Match Date', 'Relationship Range',
@@ -243,15 +240,12 @@ class FTDNAMatchFormat(InputFormat):
 class FTDNASegmentFormat(InputFormat):
 	"""Describes the format of segments downloaded from FamilyTreeDNA"""
 
-	@property
 	def format_name(self):
 		return "FamilyTreeDNA"
 
-	@property
 	def header(self):
 		return ['Match Name', 'Chromosome', 'Start Location', 'End Location', 'Centimorgans', 'Matching SNPs']
 
-	@property
 	def mapping(self):
 		return {
 			'Chromosome': SegmentFormatEnum.chromosome_id,
