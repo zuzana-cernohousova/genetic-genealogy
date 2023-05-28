@@ -1,15 +1,17 @@
 import csv
 from abc import ABC, abstractmethod
 
-from source.databases.databases import CSVInputOutput
-from source.parsers.match_parsers import CSVMatchDatabase, FTDNAMatchParser
+from source.parsers.match_parsers import CSVMatchDatabase, FTDNAMatchParser, Parser
 from source.parsers.headers import SharedMatchesFormatEnum, FTDNAMatchFormat, MatchFormatEnum
 
 
-class SharedMatchesParser(ABC):
+class SharedMatchesParser(Parser, ABC):
 	def __init__(self):
-		self.result = []
+		super().__init__()
 		self.primary_matches = {}
+
+	def output_format(self):
+		return SharedMatchesFormatEnum
 
 	@abstractmethod
 	def load_primary_matches(self, config_filename):
@@ -17,15 +19,10 @@ class SharedMatchesParser(ABC):
 		pass
 
 	@abstractmethod
-	def parse_files(self):
+	def parse(self, filename=None):
 		"""Parses files, names of these files are given by the configuration loaded
 		from configuration file by the load_primary_matches method"""
 		pass
-
-	def save_to_file(self, output_filename):
-		"""Saves the output to the given file."""
-
-		CSVInputOutput.save_csv(self.result, SharedMatchesFormatEnum, filename=output_filename)
 
 
 class FTDNASharedMatchesParser(SharedMatchesParser):
@@ -57,7 +54,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 
 				self.primary_matches[(ID, name)] = row["file"]
 
-	def parse_files(self):
+	def parse(self, filename=None):
 		existing_matches = CSVMatchDatabase()
 		existing_matches.load()
 

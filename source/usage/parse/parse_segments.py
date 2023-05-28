@@ -20,5 +20,5 @@ elif args.gedmatch:
 source_file = args.source_file
 output_file = args.output_file
 
-parser.parse_file(source_file)
+parser.parse(source_file)
 parser.save_to_file(output_file)

@@ -1,28 +1,16 @@
 import csv
 import re
-from abc import ABC, abstractmethod
+from abc import ABC
 
-from source.databases.databases import CSVMatchDatabase, CSVInputOutput, CSVSegmentDatabase
+from source.databases.databases import CSVMatchDatabase, CSVSegmentDatabase
 from source.parsers.headers import FTDNASegmentFormat, SegmentFormatEnum
+from source.parsers.match_parsers import Parser
 
 
-class SegmentParser(ABC):
-	def __init__(self):
-		self.result = []
-
+class SegmentParser(Parser, ABC):
 	@property
-	@abstractmethod
-	def input_format(self):
-		pass
-
-	@abstractmethod
-	def parse_file(self, filename):
-		pass
-
-	def save_to_file(self, output_filename):
-		"""Saves the output to the given file."""
-
-		CSVInputOutput.save_csv(self.result, SegmentFormatEnum, filename=output_filename)
+	def output_format(self):
+		return SegmentFormatEnum
 
 
 class FTDNASegmentParser(SegmentParser):
@@ -30,11 +18,7 @@ class FTDNASegmentParser(SegmentParser):
 	def __init__(self):
 		super().__init__()
 
-	@property
-	def input_format(self):
-		return FTDNASegmentFormat()
-
-	def parse_file(self, filename):
+	def parse(self, filename):
 		existing_matches = CSVMatchDatabase()
 		existing_matches.load()
 
@@ -48,7 +32,7 @@ class FTDNASegmentParser(SegmentParser):
 			reader = csv.DictReader(input_file)
 
 			# check if the file is in the correct format
-			self.input_format.validate_format(reader.fieldnames)
+			FTDNASegmentFormat.validate_format(reader.fieldnames)
 
 			for record in reader:
 				output_segment = {}
@@ -75,7 +59,7 @@ class FTDNASegmentParser(SegmentParser):
 				for input_column_name in reader.fieldnames:
 					item = record[input_column_name]
 
-					output_column = self.input_format.get_mapped_column_name(input_column_name)
+					output_column = FTDNASegmentFormat.get_mapped_column_name(input_column_name)
 					# output_column is of SegmentFormatEnum type -> is int if is not none
 
 					if output_column is not None:

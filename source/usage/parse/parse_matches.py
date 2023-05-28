@@ -18,5 +18,5 @@ if args.ftdna:
 elif args.gedmatch:
 	raise NotImplementedError("Cannot parse data from GEDMATCH")
 
-parser.parse_file(args.source_file)  # will always be not none, because ftdna or gedmatch is required
+parser.parse(args.source_file)  # will always be not none, because ftdna or gedmatch is required
 parser.save_to_file(args.output_file)

@@ -11,7 +11,7 @@ class Parser(ABC):
 		self.result = []
 
 	@abstractmethod
-	def parse_file(self, filename):
+	def parse(self, filename):
 		pass
 
 	@property
@@ -21,7 +21,6 @@ class Parser(ABC):
 
 	def save_to_file(self, output_filename):
 		"""Saves the output to the given file."""
-
 		CSVInputOutput.save_csv(self.result, self.output_format, filename=output_filename)
 
 
@@ -38,7 +37,7 @@ class FTDNAMatchParser(MatchParser):
 
 	__input_format = FTDNAMatchFormat()
 
-	def parse_file(self, filename):
+	def parse(self, filename):
 		"""Reads the file under filename and parses the records into
 		the format specified by MatchFormatEnum."""
 
