@@ -18,6 +18,8 @@ class FTDNASegmentParser(SegmentParser):
 	def __init__(self):
 		super().__init__()
 
+	__input_format = FTDNASegmentFormat
+
 	def parse(self, filename):
 		existing_matches = CSVMatchDatabase()
 		existing_matches.load()
@@ -32,7 +34,7 @@ class FTDNASegmentParser(SegmentParser):
 			reader = csv.DictReader(input_file)
 
 			# check if the file is in the correct format
-			FTDNASegmentFormat.validate_format(reader.fieldnames)
+			self.__input_format.validate_format(reader.fieldnames)
 
 			for record in reader:
 				output_segment = {}
@@ -40,7 +42,7 @@ class FTDNASegmentParser(SegmentParser):
 					output_segment[index] = ""
 
 				# add SOURCE name
-				output_segment[SegmentFormatEnum.source] = self.input_format.format_name
+				output_segment[SegmentFormatEnum.source] = self.__input_format.format_name()
 
 				# create NAME and add it to result
 				name = self.__create_name(record)
@@ -59,7 +61,7 @@ class FTDNASegmentParser(SegmentParser):
 				for input_column_name in reader.fieldnames:
 					item = record[input_column_name]
 
-					output_column = FTDNASegmentFormat.get_mapped_column_name(input_column_name)
+					output_column = self.__input_format.get_mapped_column_name(input_column_name)
 					# output_column is of SegmentFormatEnum type -> is int if is not none
 
 					if output_column is not None:

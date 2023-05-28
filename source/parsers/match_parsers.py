@@ -35,7 +35,7 @@ class FTDNAMatchParser(MatchParser):
 	def __init__(self):
 		super().__init__()
 
-	__input_format = FTDNAMatchFormat()
+	__input_format = FTDNAMatchFormat
 
 	def parse(self, filename):
 		"""Reads the file under filename and parses the records into
@@ -99,13 +99,13 @@ class FTDNAMatchParser(MatchParser):
 			output_record[index] = ""
 
 		# add source name
-		output_record[MatchFormatEnum.source] = input_format.format_name
+		output_record[MatchFormatEnum.source] = input_format.format_name()
 
 		# create name and add it into result row
 		output_record[MatchFormatEnum.person_name] = FTDNAMatchParser.__create_name(record)
 
 		# copy all relevant existing items from record to output record
-		for input_column_name in input_format.header:
+		for input_column_name in input_format.header():
 			item = record[input_column_name]
 
 			output_column = input_format.get_mapped_column_name(input_column_name)
