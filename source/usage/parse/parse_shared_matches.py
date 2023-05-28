@@ -20,7 +20,7 @@ elif args.gedmatch:
 
 parser.load_primary_matches(args.config_file)
 
-parser.parse_files()
+parser.parse()
 parser.print_message()
 
 parser.save_to_file(args.output_file)

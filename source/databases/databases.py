@@ -56,7 +56,7 @@ class CSVInputOutput:
 				CSVInputOutput.__write_to_writer(database, database_format,csv.writer(output_file))
 
 	@staticmethod
-	def __write_to_writer(database, database_format,writer):
+	def __write_to_writer(database, database_format, writer):
 		writer.writerow(database_format.get_header())
 
 		for row in database:
