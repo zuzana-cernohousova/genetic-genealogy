@@ -5,6 +5,7 @@ import argparse
 args_parser = argparse.ArgumentParser()
 args_parser.add_argument("source_file")
 args_parser.add_argument("-of", "--output_file")
+args_parser.add_argument("-v", "--verbose", action="store_true")
 
 me_group = args_parser.add_mutually_exclusive_group(required=True)
 me_group.add_argument("--ftdna", action="store_true")
@@ -20,3 +21,6 @@ elif args.gedmatch:
 
 parser.parse(args.source_file)  # will always be not none, because ftdna or gedmatch is required
 parser.save_to_file(args.output_file)
+
+if args.verbose:
+	parser.print_message()

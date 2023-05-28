@@ -36,6 +36,7 @@ class FTDNAMatchParser(MatchParser):
 
 	def __init__(self):
 		super().__init__()
+		self.__new_matches = []
 
 	__input_format = FTDNAMatchFormat
 
@@ -73,6 +74,8 @@ class FTDNAMatchParser(MatchParser):
 					new_records_found = True
 					existing_records.add_record(output_record)
 
+					self.__new_matches.append(output_record)
+
 				# id was found, match does exist
 				else:
 					output_record[MatchFormatEnum.id] = record_id
@@ -83,6 +86,14 @@ class FTDNAMatchParser(MatchParser):
 		# if new records were found during parsing, save the database
 		if new_records_found:
 			existing_records.save()
+
+	def print_message(self):
+		if len(self.__new_matches) == 0:
+			print("No new matches found.")
+		else:
+			print("These new matches were found:")
+			for new_match in self.__new_matches:
+				print("id= " + str(new_match[self.output_format.id]) + ", name= " + new_match[self.output_format.person_name])
 
 	@staticmethod
 	def __create_name(row):
