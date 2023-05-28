@@ -3,7 +3,7 @@ import re
 from abc import ABC, abstractmethod
 
 from source.databases.databases import CSVMatchDatabase, CSVInputOutput
-from source.parsers.headers import FTDNAMatchFormat, MatchFormatEnum
+from source.parsers.headers import FTDNAMatchFormat, MatchFormatEnum, FormatEnum
 
 
 class Parser(ABC):
@@ -12,19 +12,21 @@ class Parser(ABC):
 
 	@abstractmethod
 	def parse(self, filename):
+		"""Parse data in file defined by filename."""
 		pass
 
 	@property
 	@abstractmethod
-	def output_format(self):
+	def output_format(self) -> FormatEnum:
+		"""Defines the format of the parsed data."""
 		pass
 
 	def save_to_file(self, output_filename):
-		"""Saves the output to the given file."""
+		"""Saves the result of parsing to the given file."""
 		CSVInputOutput.save_csv(self.result, self.output_format, filename=output_filename)
 
 
-class MatchParser(Parser,ABC):
+class MatchParser(Parser, ABC):
 	@property
 	def output_format(self):
 		return MatchFormatEnum
@@ -56,6 +58,7 @@ class FTDNAMatchParser(MatchParser):
 
 			# for every record in the reader, parse it into the correct format and store it in the self.__result list
 			for record in reader:
+				# create a new dict for the record and fill it with non-id columns
 				output_record = self.parse_non_id_columns(record)
 
 				# get ID or create a new one
@@ -77,21 +80,29 @@ class FTDNAMatchParser(MatchParser):
 				# add the record to the result list
 				self.result.append(output_record)
 
+		# if new records were found during parsing, save the database
 		if new_records_found:
 			existing_records.save()
 
 	@staticmethod
 	def __create_name(row):
+		"""Create unified name from """
+
+		# these values will be used for creating name
 		name = [
 			row["First Name"],
 			row["Middle Name"],
 			row["Last Name"]
 		]
 
+		# delete additional spaces and return
 		return re.sub(' +', ' ', " ".join(name))
 
 	@staticmethod
-	def parse_non_id_columns(record):
+	def parse_non_id_columns(record) -> dict:
+		"""Parses all columns that are not defined by this application (all except for id)
+		and don't therefore require no database access."""
+
 		input_format = FTDNAMatchParser.__input_format
 
 		output_record = {}
