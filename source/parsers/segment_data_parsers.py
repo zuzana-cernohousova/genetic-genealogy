@@ -3,17 +3,19 @@ import re
 from abc import ABC
 
 from source.databases.databases import CSVMatchDatabase, CSVSegmentDatabase
-from source.parsers.headers import FTDNASegmentFormat, SegmentFormatEnum, SourceEnum
+from source.parsers.headers import FTDNASegmentFormat, SegmentFormatEnum
 from source.parsers.match_parsers import Parser
 
 
 class SegmentParser(Parser, ABC):
+	"""Class used for parsing segments. Child classes are used for parsing input from different databases."""
 	@property
 	def output_format(self):
 		return SegmentFormatEnum
 
 
 class FTDNASegmentParser(SegmentParser):
+	"""Parses segments from FamilyTreeDNA database."""
 
 	def __init__(self):
 		super().__init__()
@@ -22,6 +24,7 @@ class FTDNASegmentParser(SegmentParser):
 	__input_format = FTDNASegmentFormat
 
 	def parse(self, filename):
+		# create and load databases
 		existing_matches = CSVMatchDatabase()
 		existing_matches.load()
 
@@ -31,6 +34,7 @@ class FTDNASegmentParser(SegmentParser):
 		new_segment = False
 
 		with open(filename, "r", encoding="utf-8-sig") as input_file:
+			# read this file with csv reader, read as dictionaries
 			reader = csv.DictReader(input_file)
 
 			# check if the file is in the correct format
@@ -46,6 +50,7 @@ class FTDNASegmentParser(SegmentParser):
 
 				# extract PERSON ID from name
 				person_id = existing_matches.get_id_from_match_name(name)
+				# todo create hash table by names
 
 				# does person exist?
 				if person_id is None:  # no matching person found
@@ -83,6 +88,7 @@ class FTDNASegmentParser(SegmentParser):
 					segment_id = existing_segments.get_new_id()
 					output_segment[self.output_format.segment_id] = segment_id
 
+					# take note of newly found segment
 					new_segment = True
 					existing_segments.add_record(output_segment)
 
@@ -95,10 +101,11 @@ class FTDNASegmentParser(SegmentParser):
 			existing_segments.save()
 
 	def print_message(self):
+		"""Prints names of all the people who were not identified based on their names, if any were not."""
 		if len(self.__unidentified_names) == 0:
 			print("All names were identified.")
 		else:
-			print("These name could not be identified.")
+			print("These name could not be identified:")
 			for name in self.__unidentified_names:
 				print(name)
 
