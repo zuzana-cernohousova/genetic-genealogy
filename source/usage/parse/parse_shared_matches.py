@@ -5,6 +5,7 @@ args_parser = argparse.ArgumentParser()
 
 args_parser.add_argument("config_file")  # todo rename parameter
 args_parser.add_argument("-of","--output_file")
+args_parser.add_argument("-v", "--verbose", action="store_true")
 
 me_group = args_parser.add_mutually_exclusive_group(required=True)
 me_group.add_argument("--ftdna", action="store_true")
@@ -19,6 +20,7 @@ elif args.gedmatch:
 	raise NotImplementedError("Cannot parse GEDMatch data yet.")
 
 parser.parse(args.config_file)
-parser.print_message()
-
 parser.save_to_file(args.output_file)
+
+if args.verbose:
+	parser.print_message()
