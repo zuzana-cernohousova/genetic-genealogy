@@ -39,8 +39,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 
 		self.__primary_matches_not_found = []
 		self.__secondary_matches_not_found = []
-		self.__already_found_pairs = {}  # todo change to list of sets
-		self.__ID_not_matched = False
+		self.__already_found_pairs = []
 
 	__input_format = FTDNAMatchFormat()
 
@@ -116,11 +115,11 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 						continue
 
 					# if the pair was already identified
-					if (secondary_match_id in self.__already_found_pairs.keys()
-						and primary_match_id in self.__already_found_pairs[secondary_match_id]) \
-							or (primary_match_id in self.__already_found_pairs.keys()
-								and secondary_match in self.__already_found_pairs[primary_match_id]):
+					if {primary_match_id, secondary_match_id} in self.__already_found_pairs:
 						continue
+
+					# add to already found pairs
+					self.__already_found_pairs.append({primary_match_id, secondary_match_id})
 
 					# create output record and add all columns gained from FamilyTreeDNA
 					output_row = [''] * len(SharedMatchesFormatEnum)
@@ -130,12 +129,6 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 					output_row[SharedMatchesFormatEnum.name_2] = secondary_match[MatchFormatEnum.person_name]
 
 					self.result.append(output_row)
-
-	def __add_to_already_found(self, key_id, value_id):
-		if key_id in self.__already_found_pairs.keys():
-			self.__already_found_pairs[key_id].append(value_id)
-		else:
-			self.__already_found_pairs[key_id] = [value_id]
 
 	def print_message(self):
 		"""Prints which matches were not identified in matches database if any were not."""
