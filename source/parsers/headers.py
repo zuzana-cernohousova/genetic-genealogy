@@ -210,10 +210,12 @@ class ClusterFormatEnum(FormatEnum):
 class FTDNAMatchFormat(InputFormat):
 	"""Describes the format of matches downloaded from FamilyTreeDNA."""
 
+	@classmethod
 	def format_name(cls):
 		return "FamilyTreeDNA"
 
-	def mapping(self):
+	@classmethod
+	def mapping(cls):
 		return {
 			'Match Date': MatchFormatEnum.match_date,
 			'Relationship Range': MatchFormatEnum.relationship_range,
@@ -228,7 +230,8 @@ class FTDNAMatchFormat(InputFormat):
 			'X - Match': MatchFormatEnum.x_total_cm
 		}
 
-	def header(self):
+	@classmethod
+	def header(cls):
 		return [
 			'Full Name', 'First Name', 'Middle Name', 'Last Name', 'Match Date', 'Relationship Range',
 			'Shared DNA', 'Longest Block', 'Linked Relationship', 'Ancestral Surnames', 'Y-DNA Haplogroup',
@@ -244,13 +247,16 @@ class FTDNAMatchFormat(InputFormat):
 class FTDNASegmentFormat(InputFormat):
 	"""Describes the format of segments downloaded from FamilyTreeDNA"""
 
-	def format_name(self):
+	@classmethod
+	def format_name(cls):
 		return "FamilyTreeDNA"
 
-	def header(self):
+	@classmethod
+	def header(cls):
 		return ['Match Name', 'Chromosome', 'Start Location', 'End Location', 'Centimorgans', 'Matching SNPs']
 
-	def mapping(self):
+	@classmethod
+	def mapping(cls):
 		return {
 			'Chromosome': SegmentFormatEnum.chromosome_id,
 			'Start Location': SegmentFormatEnum.start,
