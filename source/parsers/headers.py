@@ -106,9 +106,8 @@ class MatchFormatEnum(FormatEnum):
 
 
 class SegmentFormatEnum(FormatEnum):
-
-	@property
-	def comparison_key(self):
+	@classmethod
+	def comparison_key(cls):
 		return [
 			SegmentFormatEnum.id,
 			SegmentFormatEnum.person_name,
