@@ -38,15 +38,15 @@ class FTDNASegmentParser(SegmentParser):
 
 			for record in reader:
 				output_segment = {}
-				for index in SegmentFormatEnum:
+				for index in self.output_format:
 					output_segment[index] = ""
 
 				# add SOURCE name
-				output_segment[SegmentFormatEnum.source] = self.__input_format.format_name()
+				output_segment[self.output_format.source] = self.__input_format.format_name()
 
 				# create NAME and add it to result
 				name = self.__create_name(record)
-				output_segment[SegmentFormatEnum.person_name] = name
+				output_segment[self.output_format.person_name] = name
 
 				# extract PERSON ID from name and add it to result
 				person_id = existing_matches.get_id_from_match_name(name)
@@ -55,7 +55,7 @@ class FTDNASegmentParser(SegmentParser):
 					person_id_not_matched = True
 					person_id = -1 	# change id to special value
 
-				output_segment[SegmentFormatEnum.id] = person_id
+				output_segment[self.output_format.id] = person_id
 
 				# copy all REMAINING existing information = MAPPED FIELDS
 				for input_column_name in reader.fieldnames:
@@ -68,18 +68,18 @@ class FTDNASegmentParser(SegmentParser):
 						output_segment[output_column] = item
 
 				# get and add SEGMENT ID
-				segment_id = existing_segments.get_id(output_segment, SegmentFormatEnum.segment_id)
+				segment_id = existing_segments.get_id(output_segment, self.output_format.segment_id)
 
 				if segment_id is None:
 					# no match found - create new id and add to database
 					segment_id = existing_segments.get_new_id()
-					output_segment[SegmentFormatEnum.segment_id] = segment_id
+					output_segment[self.output_format.segment_id] = segment_id
 
 					new_segment = True
 					existing_segments.add_record(output_segment)
 
 				else:
-					output_segment[segment_id] = segment_id
+					output_segment[self.output_format.segment_id] = segment_id
 
 				self.result.append(output_segment)
 
