@@ -20,7 +20,7 @@ class SharedMatchesParser(Parser, ABC):
 		pass
 
 	@abstractmethod
-	def parse(self, filename=None):
+	def parse(self, filename):
 		"""Parses files, names of these files are given by the configuration loaded
 		from configuration file by the load_primary_matches method"""
 		pass
@@ -55,7 +55,9 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 
 				self.primary_matches[(ID, name)] = row["file"]
 
-	def parse(self, filename=None):
+	def parse(self, filename):
+		self.load_primary_matches(filename)
+
 		existing_matches = CSVMatchDatabase()
 		existing_matches.load()
 

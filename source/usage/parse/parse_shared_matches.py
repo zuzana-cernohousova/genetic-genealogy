@@ -18,9 +18,7 @@ if args.ftdna:
 elif args.gedmatch:
 	raise NotImplementedError("Cannot parse GEDMatch data yet.")
 
-parser.load_primary_matches(args.config_file)
-
-parser.parse()
+parser.parse(args.config_file)
 parser.print_message()
 
 parser.save_to_file(args.output_file)
