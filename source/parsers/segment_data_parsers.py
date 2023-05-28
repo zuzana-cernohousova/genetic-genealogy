@@ -17,6 +17,7 @@ class FTDNASegmentParser(SegmentParser):
 
 	def __init__(self):
 		super().__init__()
+		self.__unidentified_names = []
 
 	__input_format = FTDNASegmentFormat
 
@@ -28,7 +29,6 @@ class FTDNASegmentParser(SegmentParser):
 		existing_segments.load()
 
 		new_segment = False
-		person_id_not_matched = False
 
 		with open(filename, "r", encoding="utf-8-sig") as input_file:
 			reader = csv.DictReader(input_file)
@@ -37,6 +37,23 @@ class FTDNASegmentParser(SegmentParser):
 			self.__input_format.validate_format(reader.fieldnames)
 
 			for record in reader:
+				# get person NAME
+				name = self.__create_name(record)
+
+				# if name was already marked as unidentified, don't try to extract id
+				if name in self.__unidentified_names:
+					continue
+
+				# extract PERSON ID from name
+				person_id = existing_matches.get_id_from_match_name(name)
+
+				# does person exist?
+				if person_id is None:  # no matching person found
+					self.__unidentified_names.append(name)
+					continue
+
+				# person exists, create the WHOLE OUTPUT RECORD
+
 				output_segment = {}
 				for index in self.output_format:
 					output_segment[index] = ""
@@ -44,19 +61,8 @@ class FTDNASegmentParser(SegmentParser):
 				# add SOURCE name
 				output_segment[self.output_format.source] = self.__input_format.format_name()
 
-				# create NAME and add it to result
-				name = self.__create_name(record)
+				# add NAME, ID to result
 				output_segment[self.output_format.person_name] = name
-
-				# extract PERSON ID from name and add it to result
-				person_id = existing_matches.get_id_from_match_name(name)
-
-				if person_id is None:  # no matching person found
-					person_id_not_matched = True
-					person_id = -1 	# change id to special value
-					# todo skip person if not found
-					# todo if once not found dont search again
-
 				output_segment[self.output_format.id] = person_id
 
 				# copy all REMAINING existing information = MAPPED FIELDS
@@ -88,16 +94,13 @@ class FTDNASegmentParser(SegmentParser):
 		if new_segment:
 			existing_segments.save()
 
-		if person_id_not_matched:
-			self.__print_message()
-
-	@staticmethod
-	def __print_message():
-		print("""AT LEAST ONE id DID NOT MATCH
-	please check that all files are current
-		if not, please rerun the procedure with current information
-		if yes, please correct the files manually
-		""")
+	def print_message(self):
+		if len(self.__unidentified_names) == 0:
+			print("All names were identified.")
+		else:
+			print("These name could not be identified.")
+			for name in self.__unidentified_names:
+				print(name)
 
 	@staticmethod
 	def __create_name(record):

@@ -4,6 +4,7 @@ import argparse
 args_parser = argparse.ArgumentParser()
 args_parser.add_argument("source_file")
 args_parser.add_argument("-of","--output_file")
+args_parser.add_argument("-v", "--verbose", action="store_true")
 
 me_group = args_parser.add_mutually_exclusive_group(required=True)
 me_group.add_argument("--ftdna", action="store_true")
@@ -22,3 +23,6 @@ output_file = args.output_file
 
 parser.parse(source_file)
 parser.save_to_file(output_file)
+
+if args.verbose:
+	parser.print_message()
