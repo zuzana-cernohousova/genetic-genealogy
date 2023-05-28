@@ -10,6 +10,7 @@ class SharedMatchesParser(Parser, ABC):
 		super().__init__()
 		self.primary_matches = {}
 
+	@property
 	def output_format(self):
 		return SharedMatchesFormatEnum
 
