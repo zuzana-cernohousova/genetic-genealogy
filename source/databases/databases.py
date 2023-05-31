@@ -165,7 +165,16 @@ class CSVMatchDatabase(MatchDatabase):
 
 	def __init__(self):
 		super().__init__()
-		self.__file_name = ConfigReader.get_match_database_location()
+		self.__file_name = ""
+
+	def load(self, filename=None):
+		"""Reads the given csv file and stores it in the database.
+		If filename is specified, the file is used, else path is read from project configuraiton."""
+
+		if filename:
+			self.__file_name = filename
+		else:
+			self.__file_name = ConfigReader.get_match_database_location()
 
 		self.largest_ID, self.database = CSVInputOutput.load_csv_database(self.__file_name, MatchFormatEnum,
 																		  MatchFormatEnum.id)
