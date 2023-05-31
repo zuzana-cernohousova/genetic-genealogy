@@ -166,10 +166,18 @@ class MatchDatabase(Database, ABC):
 
 		return None
 
-	def get_id(self, parsed_record, source , searched_id_type = MatchFormatEnum.id):
+	def get_id(self, parsed_record, source, searched_id_type=MatchFormatEnum.id):
 		potential_record = self.get_record_from_match_name(parsed_record[self.format.person_name])
+
 		if potential_record is not None:
-			return potential_record[self.format.id]
+			for key in self.format.comparison_key():
+				if key == searched_id_type:
+					continue
+				if potential_record[key] != parsed_record[key]:
+					return None
+
+			return potential_record[searched_id_type]
+
 		return None
 
 	def get_record_from_id(self, record_id):
