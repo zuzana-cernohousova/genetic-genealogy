@@ -54,7 +54,7 @@ class CSVInputOutput:
 		else:
 			# file will be opened or created
 			with open(filename, "w", newline='', encoding="utf-8-sig") as output_file:
-				CSVInputOutput.__write_to_writer(database, database_format,csv.writer(output_file))
+				CSVInputOutput.__write_to_writer(database, database_format, csv.writer(output_file))
 
 	@staticmethod
 	def __write_to_writer(database, database_format, writer):
@@ -94,7 +94,7 @@ class Database(ABC):
 			match = True
 
 			# compare all fields except for the id field
-			for index in self.format.comparison_key(source= source):
+			for index in self.format.comparison_key(source=source):
 				if index == searched_id_type:
 					continue
 
@@ -128,17 +128,32 @@ class Database(ABC):
 # region match databases
 
 class MatchDatabase(Database, ABC):
+	def __init__(self):
+		super().__init__()
+		self.ids_by_name = {}
+
+	def create_ids_by_name_dict(self):
+		"""Creates a dictionary of person IDs. The keys are person names."""
+		result = {}
+		for row in self.database:
+			result[row[self.format.person_name].lower()] = row[self.format.id]
+
+		self.ids_by_name = result
+
 	@property
 	def format(self):
 		return MatchFormatEnum
 
 	def get_id_from_match_name(self, match_name):
 		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
+
+		if self.ids_by_name == {}:
+			self.create_ids_by_name_dict()
+
 		match_name = re.sub(' +', ' ', match_name).lower()
 
-		for record in self.database:
-			if record[self.format.person_name].lower() == match_name:
-				return record[MatchFormatEnum.id]
+		if match_name in self.ids_by_name.keys():
+			return self.ids_by_name[match_name]
 
 		return None
 
@@ -152,16 +167,14 @@ class CSVMatchDatabase(MatchDatabase):
 		super().__init__()
 		self.__file_name = ConfigReader.get_match_database_location()
 
-	def load(self):
-		"""Reads the given csv file and stores it in the database"""
-
-		self.largest_ID, self.database = CSVInputOutput.load_csv_database(self.__file_name, MatchFormatEnum, MatchFormatEnum.id)
+		self.largest_ID, self.database = CSVInputOutput.load_csv_database(self.__file_name, MatchFormatEnum,
+																		  MatchFormatEnum.id)
 
 	def save(self):
 		"""Saves the database to the given csv file."""
 		# file will be opened or created
 
-		CSVInputOutput.save_csv(self.database, MatchFormatEnum, filename= self.__file_name)
+		CSVInputOutput.save_csv(self.database, MatchFormatEnum, filename=self.__file_name)
 
 
 # endregion
@@ -186,6 +199,6 @@ class CSVSegmentDatabase(SegmentDatabase):
 			)
 
 	def save(self):
-		CSVInputOutput.save_csv(self.database, SegmentFormatEnum, filename= self.__file_name)
+		CSVInputOutput.save_csv(self.database, SegmentFormatEnum, filename=self.__file_name)
 
 # endregion
