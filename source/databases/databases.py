@@ -132,7 +132,7 @@ class MatchDatabase(Database, ABC):
 		super().__init__()
 		self.ids_by_name = {}
 
-	def create_ids_by_name_dict(self):
+	def __create_ids_by_name_dict(self):
 		"""Creates a dictionary of person IDs. The keys are person names."""
 		result = {}
 		for row in self.database:
@@ -148,7 +148,7 @@ class MatchDatabase(Database, ABC):
 		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
 
 		if self.ids_by_name == {}:
-			self.create_ids_by_name_dict()
+			self.__create_ids_by_name_dict()
 
 		match_name = re.sub(' +', ' ', match_name).lower()
 
