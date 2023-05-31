@@ -34,30 +34,29 @@ class CSVInputOutput:
 		return biggest_id, result
 
 	@staticmethod
-	def load_csv(filename, format):
+	def load_csv(filename, input_format_enum):
 		result = []
 		with open(filename, 'r', encoding="utf-8-sig") as input_file:
 			reader = csv.DictReader(input_file)
-			CSVInputOutput.__replace_fieldnames(reader, format)
+			CSVInputOutput.__replace_fieldnames(reader, input_format_enum)
 
 			for record in reader:
 				result.append(record)
 		return result
 
 	@staticmethod
-	def __replace_fieldnames(dict_reader, format):
+	def __replace_fieldnames(dict_reader, input_format_enum):
 		new_fieldnames = []
 
 		# replace fieldnames with enum values
 		if dict_reader.fieldnames is not None:
 			for index in dict_reader.fieldnames:
-				for value in format:
+				for value in input_format_enum:
 					if value.name == index:
 						new_fieldnames.append(value)
 						break
 
 		dict_reader.fieldnames = new_fieldnames
-
 
 	@staticmethod
 	def save_csv(database, database_format, filename=None):
