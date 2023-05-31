@@ -1,22 +1,28 @@
-from source.boxes.segments.segment_intersections import IntersectionFinder
+from source.boxes.segments.segment_intersections import CSVIntersectionFinder
 import argparse
 
 args_parser = argparse.ArgumentParser()
 
-args_parser.add_argument("source_file")
-args_parser.add_argument("output_file")
+args_parser.add_argument("-sf", "--source_file")
+args_parser.add_argument("-of", "--output_file")
 
-args_parser.add_argument("-id", "--personID", type=int)
+group = args_parser.add_mutually_exclusive_group()
+group.add_argument("-sid", "--segment_id", type=int)
+group.add_argument("-id", "--person_id", type=int)
 
 args = args_parser.parse_args()
 
-finder = IntersectionFinder()
+finder = CSVIntersectionFinder()
 finder.load_segments(args.source_file)
 
-if args.personID is not None:
-	finder.find_intersection(args.personID)
+intersections = []
 
+if args.segment_id is not None:
+	intersections = finder.find_intersections_of_segment(args.segment_id)
+elif args.person_id is not None:
+	intersections = finder.find_intersections_of_person(args.person_id)
 else:
-	finder.find_all_intersections()
+	intersections = finder.find_all_intersections()
 
-finder.save_to_file(args.output_file)
+
+finder.save_intersections(intersections, args.output_file)

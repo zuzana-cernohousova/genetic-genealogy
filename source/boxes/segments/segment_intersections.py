@@ -1,102 +1,148 @@
 import csv
-from source.parsers.headers import SegmentIntersectionFormat, SegmentFormat
+from abc import ABC, abstractmethod
+
+from source.config_reader import ConfigReader
+from source.databases.databases import CSVInputOutput
+from source.parsers.headers import SegmentIntersectionFormatEnum, SegmentFormatEnum
 
 
-class IntersectionFinder:
-	__segments_by_id = {}
-	__segments = []
+class IntersectionFinder(ABC):
+	@abstractmethod
+	def load_segments(self, source):
+		pass
 
-	__segments_format = SegmentFormat()
-	__final_format = SegmentIntersectionFormat()
+	@abstractmethod
+	def save_intersections(self, result, output_destination):
+		pass
 
-	__result = []
+	def __init__(self):
+		self.segments = []
 
-	@staticmethod
-	def __pass_header(reader):
-		for header in reader:
-			return header
+		self.segments_by_id = {}
+		self.segments_by_chromosome = {}
 
-	def load_segments(self, segments_filename):
-		with open(segments_filename, 'r', encoding="utf-8-sig") as f:
-			reader = csv.reader(f)
+	__segment_format = SegmentFormatEnum
+	__output_format = SegmentIntersectionFormatEnum
 
-			header = self.__pass_header(reader)
-			if header != self.__segments_format.header:
-				raise Exception("Input file is in incorrect format.")
+	def __create_segments_by_id(self):
+		for segment in self.segments:
+			# create a dict where ids are keys
+			self.segments_by_id[segment[self.__segment_format.segment_id]] = segment
 
-			for row in reader:
-				self.__segments.append(row)
-				id = int(row[self.__segments_format.get_index('ID')])
+	def __create_segments_by_chromosome(self):
+		# create a dict where chromosome ids are keys and values are lists of segments
+		# will be used for faster computation
+		for segment in self.segments:
+			chrom_id = segment[self.__segment_format.chromosome_id]
+			if chrom_id in self.segments_by_chromosome.keys():
+				self.segments_by_chromosome[chrom_id].append(segment)
+			else:
+				self.segments_by_chromosome[chrom_id] = [segment]
 
-				if id in self.__segments_by_id.keys():
-					self.__segments_by_id[id].append(row)
-				else:
-					self.__segments_by_id[id] = [row]
-
-	def find_intersection(self, ID):
-		result = [self.__final_format.header]
-
-		if ID in self.__segments_by_id.keys():
-			s_segments = self.__segments_by_id[ID]
-
-		else:
+	def find_intersections_of_segment(self, segment_id) -> list:
+		"""Finds all segments that intersect specified segment,
+		finds the intersection endpoints."""
+		result = []
+		if segment_id not in self.segments_by_id.keys():
 			return None
 
-		ch_index = self.__segments_format.get_index('Chromosome ID')
-		start_index = self.__segments_format.get_index('Start')
-		end_index = self.__segments_format.get_index('End')
-		id_index = self.__segments_format.get_index('ID')
+		sf = self.__segment_format
 
-		for s in s_segments:
-			for r in self.__segments:
-				if s[id_index] == r[id_index]:
-					continue
+		segment = self.segments_by_id[segment_id]
+		chromosome_id = segment[sf.chromosome_id]
+		if chromosome_id not in self.segments_by_chromosome.keys():
+			return None
 
-				if s[ch_index] != r[ch_index]:
-					continue
+		chromosome = self.segments_by_chromosome[chromosome_id]
 
-				intersection = self.__get_intersection((int(s[start_index]), int(s[end_index])),
-													   (int(r[start_index]), int(r[end_index])))
+		for s in chromosome:
+			if s[sf.segment_id] == segment_id:
+				continue
 
-				if intersection is None:
-					continue
+			intersection = self.__check_and_get_intersection(s, segment)
 
-				output_row = self.__fill_output_row(s, r, intersection)
+			if intersection is not None:
+				output_row = self.__fill_output_row(s, segment, intersection)
 				result.append(output_row)
 
-		self.__result = result
 		return result
 
-	def find_all_intersections(self):  # todo only find everything once
-		final_result = [self.__final_format.header]
-		for ID in self.__segments_by_id.keys():
+	def find_intersections_of_person(self, person_id) -> list:
+		"""Finds all intersections of all segments shared with a given person."""
+		result = []
+		for segment in self.__get_segments_of_person(person_id):
+			result.extend(self.find_intersections_of_segment(segment[self.__segment_format.segment_id]))
 
-			res = self.find_intersection(ID)
-			if len(res) > 1:
-				res = res[1:]
-			else:
-				res = []
+		return result
 
-			final_result.extend(res)
+	def __get_segments_of_person(self, person_id):
+		result = []
 
-		self.__result = final_result
+		for segment in self.segments:
+			if segment[self.__segment_format.id] == person_id:
+				result.append(segment)
 
-	def save_to_file(self, output_filename):
-		with open(output_filename, "w", newline='', encoding="utf-8-sig") as output_file:
-			writer = csv.writer(output_file)
+		return result
 
-			for row in self.__result:
-				writer.writerow(row)
+	def find_all_intersections(self) -> list:
+		"""Finds all intersections of all segments loaded."""
+		sf = self.__segment_format
+		result = []
+
+		if self.segments_by_chromosome == {}:
+			self.__create_segments_by_chromosome()
+
+		for chrom_id in self.segments_by_chromosome:
+			chromosome = self.segments_by_chromosome[chrom_id]
+
+			# sort all segments on one chromosome by start
+			chromosome.sort(key=lambda x: int(x[self.__segment_format.start]))
+
+			# go from the start and keep track of which segments have not yet ended
+			open = []
+			for segment in chromosome:
+				current_position = segment[self.__segment_format.start]
+
+				for o in open:
+					if int(o[sf.end]) < int(current_position):
+						# close ended segment
+						open.remove(o)
+						continue
+
+					# if segment has not ended yet, there is an intersection
+					intersection = self.__check_and_get_intersection(segment, o)
+
+					if intersection is None:
+						print("meow")
+
+					output_row = self.__fill_output_row(segment, o, intersection)
+					result.append(output_row)
+
+				# open current segment
+				open.append(segment)
+
+		return result
+
 
 	@staticmethod
-	def __get_intersection(coords1, coords2):
-		coords = [(coords1, coords2), (coords2, coords1)]
+	def __check_and_get_intersection(segment_s, segment_r):
+		sf = IntersectionFinder.__segment_format
+		coords = [
+			(
+				(segment_s[sf.start], segment_s[sf.end]),
+				(segment_r[sf.start], segment_r[sf.end])
+			),
+			(
+				(segment_r[sf.start], segment_r[sf.end]),
+				(segment_s[sf.start], segment_s[sf.end])
+			)
+		]
 
 		for cs in coords:
-			s_s = cs[0][0]
-			s_e = cs[0][1]
-			r_s = cs[1][0]
-			r_e = cs[1][1]
+			s_s = int(cs[0][0])
+			s_e = int(cs[0][1])
+			r_s = int(cs[1][0])
+			r_e = int(cs[1][1])
 
 			if s_s <= r_s <= s_e:
 				if r_e <= s_e:
@@ -110,18 +156,40 @@ class IntersectionFinder:
 		return None
 
 	def __fill_output_row(self, s1, s2, intersection):
-		ff = self.__final_format
-		sf = self.__segments_format
+		sf = self.__segment_format
+		of = self.__output_format
 
-		row = [''] * len(ff.header)
+		row = ['' for _ in of]
 
-		row[ff.get_index('ID 1')] = s1[sf.get_index('ID')]
-		row[ff.get_index('ID 2')] = s2[sf.get_index('ID')]
-		row[ff.get_index('Segment 1 ID')] = s1[sf.get_index('Segment ID')]
-		row[ff.get_index('Segment 2 ID')] = s2[sf.get_index('Segment ID')]
+		row[of.id_1] = s1[sf.id]
+		row[of.id_2] = s2[sf.id]
 
-		row[ff.get_index('Start')] = intersection[0]
-		row[ff.get_index('End')] = intersection[1]
-		row[ff.get_index('Length')] = intersection[1] - intersection[0] + 1
+		row[of.segment_1_id] = s1[sf.segment_id]
+		row[of.segment_2_id] = s2[sf.segment_id]
+
+		row[of.start] = intersection[0]
+		row[of.end] = intersection[1]
+		row[of.length_snp] = intersection[1] - intersection[0] + 1
 
 		return row
+
+
+class CSVIntersectionFinder(IntersectionFinder):
+	def __init__(self):
+		super(CSVIntersectionFinder, self).__init__()
+
+	__segment_format = SegmentFormatEnum
+
+	def load_segments(self, segments_filename=None):
+		"""Loads segments from CSV file. If filename is not specified, segment database specified in
+		project configuration is used.
+		Build a dictionary of segments over ids and over chromosomes."""
+		if segments_filename is None:
+			segments_filename = ConfigReader.get_segment_database_location()
+
+		self.segments = CSVInputOutput.load_csv(segments_filename, self.__segment_format)
+		self._IntersectionFinder__create_segments_by_id()
+		self._IntersectionFinder__create_segments_by_chromosome()
+
+	def save_intersections(self, result, output_filename=None):
+		CSVInputOutput.save_csv(result, SegmentIntersectionFormatEnum, output_filename)

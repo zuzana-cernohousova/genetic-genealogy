@@ -107,16 +107,6 @@ class SharedMatchesFormatEnum(FormatEnum):
 	total_cm = 4
 
 
-# todo remove
-class SegmentIntersectionFormat:
-	@property
-	def header(self):
-		return ['ID 1', 'ID 2', 'Segment 1 ID', 'Segment 2 ID', 'Start', 'End', 'Length']
-
-	def get_index(self, column_name):
-		return self.header.index(column_name)
-
-
 class SegmentIntersectionFormatEnum(FormatEnum):
 	"""This class defines the format of segment intersection data."""
 
@@ -126,23 +116,7 @@ class SegmentIntersectionFormatEnum(FormatEnum):
 	segment_2_id = 3
 	start = 4
 	end = 5
-	length_cm = 6
-
-
-# todo remove
-class ClusterFormat:
-	@property
-	def header(self):
-		return [
-			'Cluster ID', 'ID', 'Name', 'Source', 'Total cM', 'Largest segment cM', 'mt haplogroup', 'Y haplogroup',
-			'X total cM',
-			'Kit age', 'Generations', 'Match number', 'Kit ID', 'E-mail', 'GED WikiTree', 'Sex',
-			'X largest segment cM', 'GEDmatch source', 'SNPs overlap', 'Match date', 'Relationship range',
-			'Linked relationship', 'Ancestral surnames', 'Notes', 'Matching bucket'
-		]
-
-	def get_index(self, column_name):
-		return self.header.index(column_name)
+	length_snp = 6
 
 
 class ClusterFormatEnum(FormatEnum):
