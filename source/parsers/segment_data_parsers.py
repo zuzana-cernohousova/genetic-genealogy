@@ -3,7 +3,7 @@ import re
 from abc import ABC
 
 from source.databases.databases import CSVMatchDatabase, CSVSegmentDatabase
-from source.parsers.headers import FTDNASegmentFormat, SegmentFormatEnum
+from source.parsers.headers import FTDNASegmentFormat, SegmentFormatEnum, MatchFormatEnum
 from source.parsers.match_parsers import Parser
 
 
@@ -51,13 +51,13 @@ class FTDNASegmentParser(SegmentParser):
 					continue
 
 				# extract PERSON ID from name
-				person_id = existing_matches.get_id_from_match_name(name)
-				# todo create hash table by names
+				person_record = existing_matches.get_record_from_match_name(name)
 
 				# does person exist?
-				if person_id is None:  # no matching person found
+				if person_record is None:  # no matching person found
 					self.__unidentified_names.append(name)
 					continue
+				person_id = person_record[MatchFormatEnum.id]
 
 				# person exists, create the WHOLE OUTPUT RECORD
 

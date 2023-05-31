@@ -153,7 +153,7 @@ class MatchDatabase(Database, ABC):
 	def format(self):
 		return MatchFormatEnum
 
-	def get_id_from_match_name(self, match_name):
+	def get_record_from_match_name(self, match_name):
 		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
 
 		if self.records_by_name == {}:
@@ -162,7 +162,7 @@ class MatchDatabase(Database, ABC):
 		match_name = re.sub(' +', ' ', match_name).lower()
 
 		if match_name in self.records_by_name.keys():
-			return self.records_by_name[match_name][self.format.id]
+			return self.records_by_name[match_name]
 
 		return None
 

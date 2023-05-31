@@ -75,12 +75,14 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 
 			if primary_match_id is None:
 				# if primary_match_id was not filled, try to find it
-				primary_match_id = existing_matches.get_id_from_match_name(primary_match_name)
+				primary_match = existing_matches.get_record_from_match_name(primary_match_name)
 
 				# not found --> skip
-				if primary_match_id is None:
+				if primary_match is None:
 					self.__primary_matches_not_found.append(primary_match_name)
 					continue
+
+				primary_match_id = primary_match[MatchFormatEnum.id]
 
 			if primary_match_name is None:
 				# if primary_match_name was not filled, try to find it
