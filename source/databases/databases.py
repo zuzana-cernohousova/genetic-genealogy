@@ -117,9 +117,9 @@ class Database(ABC):
 		"""Adds a complete parsed record to the database list."""
 		self.database.append(complete_parsed_record)
 
-	def get_record_from_id(self, record_id, id_type):
+	def get_record_from_column(self, column_value, column):
 		for record in self.database:
-			if record[id_type] == record_id:
+			if record[column] == column_value:
 				return record
 
 		return None
@@ -141,6 +141,14 @@ class MatchDatabase(Database, ABC):
 
 		self.records_by_name = result
 
+	def __create_records_by_id_dict(self):
+		"""Creates a dictionary of person IDs. The keys are person names."""
+		result = {}
+		for row in self.database:
+			result[row[self.format.id]] = row
+
+		self.records_by_id = result
+
 	@property
 	def format(self):
 		return MatchFormatEnum
@@ -155,6 +163,15 @@ class MatchDatabase(Database, ABC):
 
 		if match_name in self.records_by_name.keys():
 			return self.records_by_name[match_name][self.format.id]
+
+		return None
+
+	def get_record_from_id(self, record_id):
+		if self.records_by_id == {}:
+			self.__create_records_by_id_dict()
+
+		if record_id in self.records_by_id.keys():
+			return self.records_by_id[record_id]
 
 		return None
 

@@ -73,7 +73,6 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 			primary_match_id = key[0]
 			primary_match_name = key[1]
 
-			# todo add id and name hashing
 			if primary_match_id is None:
 				# if primary_match_id was not filled, try to find it
 				primary_match_id = existing_matches.get_id_from_match_name(primary_match_name)
@@ -85,12 +84,14 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 
 			if primary_match_name is None:
 				# if primary_match_name was not filled, try to find it
-				primary_match = existing_matches.get_record_from_id(primary_match_id, MatchFormatEnum.id)
+				primary_match = existing_matches.get_record_from_id(primary_match_id)
 
 				# not found --> skip
 				if primary_match is None:
 					self.__primary_matches_not_found.append("id = " + primary_match_id)
 					continue
+
+				primary_match_name = primary_match[MatchFormatEnum.person_name]
 
 			# primary person identified --> find their shared matches
 			with open(self.primary_matches[key], 'r', encoding="utf-8-sig") as file:
