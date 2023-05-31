@@ -18,17 +18,7 @@ class CSVInputOutput:
 		try:
 			with open(filename, 'r', encoding="utf-8-sig") as input_file:
 				reader = csv.DictReader(input_file)
-				new_fieldnames = []
-
-				# replace fieldnames with enum values
-				if reader.fieldnames is not None:
-					for index in reader.fieldnames:
-						for value in database_format:
-							if value.name == index:
-								new_fieldnames.append(value)
-								break
-
-				reader.fieldnames = new_fieldnames
+				CSVInputOutput.__replace_fieldnames(reader, database_format)
 
 				for record in reader:
 					record_id = int(record[searched_id])
@@ -42,6 +32,32 @@ class CSVInputOutput:
 			pass
 
 		return biggest_id, result
+
+	@staticmethod
+	def load_csv(filename, format):
+		result = []
+		with open(filename, 'r', encoding="utf-8-sig") as input_file:
+			reader = csv.DictReader(input_file)
+			CSVInputOutput.__replace_fieldnames(reader, format)
+
+			for record in reader:
+				result.append(record)
+		return result
+
+	@staticmethod
+	def __replace_fieldnames(dict_reader, format):
+		new_fieldnames = []
+
+		# replace fieldnames with enum values
+		if dict_reader.fieldnames is not None:
+			for index in dict_reader.fieldnames:
+				for value in format:
+					if value.name == index:
+						new_fieldnames.append(value)
+						break
+
+		dict_reader.fieldnames = new_fieldnames
+
 
 	@staticmethod
 	def save_csv(database, database_format, filename=None):
@@ -227,6 +243,8 @@ class SegmentDatabase(Database, ABC):
 	@property
 	def format(self):
 		return SegmentFormatEnum
+
+
 
 
 class CSVSegmentDatabase(SegmentDatabase):
