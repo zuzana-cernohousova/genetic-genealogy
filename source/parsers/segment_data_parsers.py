@@ -83,8 +83,9 @@ class FTDNASegmentParser(SegmentParser):
 						output_segment[output_column] = item
 
 				# get and add SEGMENT ID
-				segment_id = existing_segments.get_id(output_segment, self.output_format.segment_id,
-													  self.__input_format.get_source_id())
+				segment_id = existing_segments.get_id(output_segment,
+													  self.__input_format.get_source_id(),
+													  self.output_format.segment_id)
 
 				if segment_id is None:
 					# no match found - create new id and add to database

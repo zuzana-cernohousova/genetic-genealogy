@@ -85,7 +85,7 @@ class Database(ABC):
 	def format(self):
 		pass
 
-	def get_id(self, parsed_record, searched_id_type, source):
+	def get_id(self, parsed_record, source, searched_id_type):
 		""" If the parsed_record already exists,
 		finds it and returns the record ID, else returns None."""
 		match_record_id = None
@@ -164,6 +164,12 @@ class MatchDatabase(Database, ABC):
 		if match_name in self.records_by_name.keys():
 			return self.records_by_name[match_name]
 
+		return None
+
+	def get_id(self, parsed_record, source , searched_id_type = MatchFormatEnum.id):
+		potential_record = self.get_record_from_match_name(parsed_record[self.format.person_name])
+		if potential_record is not None:
+			return potential_record[self.format.id]
 		return None
 
 	def get_record_from_id(self, record_id):

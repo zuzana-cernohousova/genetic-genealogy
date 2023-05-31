@@ -63,7 +63,7 @@ class FTDNAMatchParser(MatchParser):
 				output_record = self.parse_non_id_columns(record)
 
 				# get ID or create a new one
-				record_id = existing_records.get_id(output_record, MatchFormatEnum.id, self.__input_format.get_source_id())
+				record_id = existing_records.get_id(output_record, self.__input_format.get_source_id())
 
 				# id was not found, match does not yet exist in our database
 				if record_id is None:
@@ -93,7 +93,8 @@ class FTDNAMatchParser(MatchParser):
 		else:
 			print("These new matches were found:")
 			for new_match in self.__new_matches:
-				print("id= " + str(new_match[self.output_format.id]) + ", name= " + new_match[self.output_format.person_name])
+				print("id= " + str(new_match[self.output_format.id]) + ", name= " + new_match[
+					self.output_format.person_name])
 
 	@staticmethod
 	def __create_name(row):
