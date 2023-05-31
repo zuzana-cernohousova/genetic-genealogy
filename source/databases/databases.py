@@ -208,17 +208,19 @@ class CSVMatchDatabase(MatchDatabase):
 		else:
 			self.__file_name = ConfigReader.get_match_database_location()
 
-		self.largest_ID, self.database = CSVInputOutput.load_csv_database(self.__file_name, MatchFormatEnum,
-																		  MatchFormatEnum.id)
+		self.largest_ID, self.database = CSVInputOutput.load_csv_database(self.__file_name,
+																		  self.format,
+																		  self.format.id)
 
 	def save(self):
 		"""Saves the database to the given csv file."""
 		# file will be opened or created
 
-		CSVInputOutput.save_csv(self.database, MatchFormatEnum, filename=self.__file_name)
+		CSVInputOutput.save_csv(self.database, self.format, filename=self.__file_name)
 
 
 # endregion
+
 # region segment databases
 
 class SegmentDatabase(Database, ABC):
@@ -240,6 +242,6 @@ class CSVSegmentDatabase(SegmentDatabase):
 			)
 
 	def save(self):
-		CSVInputOutput.save_csv(self.database, SegmentFormatEnum, filename=self.__file_name)
+		CSVInputOutput.save_csv(self.database, self.format, filename=self.__file_name)
 
 # endregion
