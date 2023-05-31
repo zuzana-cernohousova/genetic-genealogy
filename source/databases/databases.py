@@ -130,15 +130,16 @@ class Database(ABC):
 class MatchDatabase(Database, ABC):
 	def __init__(self):
 		super().__init__()
-		self.ids_by_name = {}
+		self.records_by_name = {}
+		self.records_by_id = {}
 
-	def __create_ids_by_name_dict(self):
+	def __create_records_by_name_dict(self):
 		"""Creates a dictionary of person IDs. The keys are person names."""
 		result = {}
 		for row in self.database:
-			result[row[self.format.person_name].lower()] = row[self.format.id]
+			result[row[self.format.person_name].lower()] = row
 
-		self.ids_by_name = result
+		self.records_by_name = result
 
 	@property
 	def format(self):
@@ -147,13 +148,13 @@ class MatchDatabase(Database, ABC):
 	def get_id_from_match_name(self, match_name):
 		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
 
-		if self.ids_by_name == {}:
-			self.__create_ids_by_name_dict()
+		if self.records_by_name == {}:
+			self.__create_records_by_name_dict()
 
 		match_name = re.sub(' +', ' ', match_name).lower()
 
-		if match_name in self.ids_by_name.keys():
-			return self.ids_by_name[match_name]
+		if match_name in self.records_by_name.keys():
+			return self.records_by_name[match_name][self.format.id]
 
 		return None
 
