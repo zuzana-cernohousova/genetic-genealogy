@@ -9,6 +9,7 @@ from source.parsers.match_parsers import Parser
 
 class SegmentParser(Parser, ABC):
 	"""Class used for parsing segments. Child classes are used for parsing input from different databases."""
+
 	@property
 	def output_format(self):
 		return SegmentFormatEnum
@@ -20,6 +21,7 @@ class FTDNASegmentParser(SegmentParser):
 	def __init__(self):
 		super().__init__()
 		self.__unidentified_names = []
+		self.__new_segments_found = False
 
 	__input_format = FTDNASegmentFormat
 
@@ -81,7 +83,8 @@ class FTDNASegmentParser(SegmentParser):
 						output_segment[output_column] = item
 
 				# get and add SEGMENT ID
-				segment_id = existing_segments.get_id(output_segment, self.output_format.segment_id, self.__input_format.get_source_id())
+				segment_id = existing_segments.get_id(output_segment, self.output_format.segment_id,
+													  self.__input_format.get_source_id())
 
 				if segment_id is None:
 					# no match found - create new id and add to database
@@ -98,14 +101,24 @@ class FTDNASegmentParser(SegmentParser):
 				self.result.append(output_segment)
 
 		if new_segment:
+			self.__new_segments_found = True
 			existing_segments.save()
 
 	def print_message(self):
-		"""Prints names of all the people who were not identified based on their names, if any were not."""
+		"""Prints information if new segments were added to the database.
+		Prints names of all the people who were not identified based on their names, if any were not."""
+
+		if self.__new_segments_found:
+			print("New segments were added to the database.")
+		else:
+			print("No new segments were added to the database.")
+
+		print()
+
 		if len(self.__unidentified_names) == 0:
 			print("All names were identified.")
 		else:
-			print("These name could not be identified:")
+			print("These names could not be identified:")
 			for name in self.__unidentified_names:
 				print(name)
 
