@@ -20,6 +20,7 @@ class CSVInputOutput:
 				reader = csv.DictReader(input_file)
 				new_fieldnames = []
 
+				# replace fieldnames with enum values
 				if reader.fieldnames is not None:
 					for index in reader.fieldnames:
 						for value in database_format:
@@ -67,6 +68,10 @@ class CSVInputOutput:
 
 
 class Database(ABC):
+	def __init__(self):
+		self.database = []
+		self.largest_ID = 0
+
 	@abstractmethod
 	def load(self):
 		pass
@@ -79,9 +84,6 @@ class Database(ABC):
 	@abstractmethod
 	def format(self):
 		pass
-
-	database = []
-	largest_ID = 0
 
 	def get_id(self, parsed_record, searched_id_type, source):
 		""" If the parsed_record already exists,
@@ -126,9 +128,6 @@ class Database(ABC):
 # region match databases
 
 class MatchDatabase(Database, ABC):
-	database = []
-	largest_ID = 0
-
 	@property
 	def format(self):
 		return MatchFormatEnum
@@ -150,8 +149,8 @@ class CSVMatchDatabase(MatchDatabase):
 	"""
 
 	def __init__(self):
+		super().__init__()
 		self.__file_name = ConfigReader.get_match_database_location()
-		self.__database = []
 
 	def load(self):
 		"""Reads the given csv file and stores it in the database"""
@@ -175,8 +174,8 @@ class SegmentDatabase(Database, ABC):
 
 
 class CSVSegmentDatabase(SegmentDatabase):
-
 	def __init__(self):
+		super().__init__()
 		self.__file_name = ConfigReader.get_segment_database_location()
 
 	def load(self):
