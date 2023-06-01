@@ -40,7 +40,7 @@ class FTDNAMatchParser(MatchParser):
 
 	__input_format = FTDNAMatchFormat
 
-	def parse(self, filename):
+	def parse(self, filename:str):
 		"""Reads the file under filename and parses the records into
 		the format specified by MatchFormatEnum."""
 
@@ -55,7 +55,8 @@ class FTDNAMatchParser(MatchParser):
 			reader = csv.DictReader(input_file)
 
 			# check if the file is in the correct format
-			self.__input_format.validate_format(reader.fieldnames)
+			if not self.__input_format.validate_format(reader.fieldnames):
+				raise ValueError("Wrong input format.")
 
 			# for every record in the reader, parse it into the correct format and store it in the self.__result list
 			for record in reader:
@@ -97,7 +98,7 @@ class FTDNAMatchParser(MatchParser):
 					self._output_format.person_name])
 
 	@staticmethod
-	def __create_name(row):
+	def __create_name(row: dict):
 		"""Create unified name from """
 
 		# these values will be used for creating name
@@ -111,27 +112,27 @@ class FTDNAMatchParser(MatchParser):
 		return re.sub(' +', ' ', " ".join(name))
 
 	@staticmethod
-	def parse_non_id_columns(record) -> dict:
+	def parse_non_id_columns(record: dict) -> dict:
 		"""Parses all columns that are not defined by this application (all except for id)
-		and don't therefore require no database access."""
+		and therefore does not require database access."""
 
-		input_format = FTDNAMatchParser.__input_format
+		i_f = FTDNAMatchParser.__input_format
 
 		output_record = {}
 		for index in MatchFormatEnum:
 			output_record[index] = ""
 
 		# add source name
-		output_record[MatchFormatEnum.source] = input_format.format_name()
+		output_record[MatchFormatEnum.source] = i_f.format_name()
 
 		# create name and add it into result row
 		output_record[MatchFormatEnum.person_name] = FTDNAMatchParser.__create_name(record)
 
 		# copy all relevant existing items from record to output record
-		for input_column_name in input_format.header():
+		for input_column_name in i_f.get_header():
 			item = record[input_column_name]
 
-			output_column = input_format.get_mapped_column_name(input_column_name)
+			output_column = i_f.get_mapped_column_name(input_column_name)
 			# output_column is of MatchFormatEnum type -> is int if is not none
 
 			if output_column is not None:

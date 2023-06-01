@@ -25,7 +25,7 @@ class FTDNASegmentParser(SegmentParser):
 
 	__input_format = FTDNASegmentFormat
 
-	def parse(self, filename):
+	def parse(self, filename: str):
 		# create and load databases
 		existing_matches = CSVMatchDatabase()
 		existing_matches.load()
@@ -40,7 +40,8 @@ class FTDNASegmentParser(SegmentParser):
 			reader = csv.DictReader(input_file)
 
 			# check if the file is in the correct format
-			self.__input_format.validate_format(reader.fieldnames)
+			if not self.__input_format.validate_format(reader.fieldnames):
+				raise ValueError("Wrong input format.")
 
 			for record in reader:
 				# get person NAME
@@ -124,5 +125,5 @@ class FTDNASegmentParser(SegmentParser):
 				print(name)
 
 	@staticmethod
-	def __create_name(record):
+	def __create_name(record: dict):
 		return re.sub(' +', ' ', record['Match Name'])

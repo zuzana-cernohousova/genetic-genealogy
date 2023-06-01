@@ -3,8 +3,9 @@ from abc import ABC, abstractmethod
 
 
 class SourceEnum(Enum):
-	GEDMatch= 0
+	GEDMatch = 0
 	FamilyTreeDNA = 1
+
 
 # region Application defined formats
 # defined by this application
@@ -75,7 +76,7 @@ class SegmentFormatEnum(FormatEnum):
 	"""This class defines the format of parsed segment data."""
 
 	@classmethod
-	def comparison_key(cls, source: SourceEnum =None):
+	def comparison_key(cls, source: SourceEnum = None):
 		return [
 			cls.segment_id,
 			cls.id,
@@ -126,29 +127,29 @@ class ClusterFormatEnum(FormatEnum):
 	id = 1
 	person_name = 2
 
-	# todo all columns?
-	# source = 3
-	# total_cm = 4
-	# largest_segment_cm = 5
-	# mt_haplogroup = 6
-	# y_haplogroup = 7
-	# x_total_cm = 8
-	# kit_age = 9
-	# generations = 10
-	# match_number = 11
-	# kit_id = 12
-	# e_mail = 13
-	# ged_wiki_tree = 14
-	# sex = 15
-	# x_largest_segment_cm = 16
-	# ged_match_source = 17
-	# snps_overlap = 18
-	# match_date = 19
-	# relationship_range = 20
-	# linked_relationship = 21
-	# ancestral_surnames = 22
-	# notes = 23
-	# matching_bucket = 24
+# todo all columns?
+# source = 3
+# total_cm = 4
+# largest_segment_cm = 5
+# mt_haplogroup = 6
+# y_haplogroup = 7
+# x_total_cm = 8
+# kit_age = 9
+# generations = 10
+# match_number = 11
+# kit_id = 12
+# e_mail = 13
+# ged_wiki_tree = 14
+# sex = 15
+# x_largest_segment_cm = 16
+# ged_match_source = 17
+# snps_overlap = 18
+# match_date = 19
+# relationship_range = 20
+# linked_relationship = 21
+# ancestral_surnames = 22
+# notes = 23
+# matching_bucket = 24
 
 
 # endregion
@@ -161,7 +162,7 @@ class InputFormat(ABC):
 
 	@classmethod
 	@abstractmethod
-	def header(cls) -> list:
+	def get_header(cls) -> list:
 		"""Returns the header of the given format."""
 		pass
 
@@ -180,15 +181,22 @@ class InputFormat(ABC):
 		return cls.get_source_id().name
 
 	@classmethod
-	def validate_format(cls, other_header) -> bool:
-		"""Compares the given header and the header of this format as sets.
-		Lowers all letters and deletes all whitespace characters."""
-		if set("".join(item.split()).lower() for item in other_header) != set(
-				"".join(item.split()).lower() for item in cls.header()):
+	def validate_format(cls, other_header):
+		"""Check if header contains all columns, if not or contains a wrong column, return False.
+		If order is different, create a mapping with the right order."""
+		# todo implement in child classes and check only if necessary columns are there
+
+		lowercase_nowhitespace_header = ["".join(item.split()).lower() for item in cls.get_header()]
+
+		if len(other_header) != len(cls.get_header()):
 			return False
 
-		# todo if the sets are equal but the order is different, change the order of header
-		# now it compares as equal but the order might be wrong and it is not accounted for
+		for item in other_header:
+			item = "".join(item.split()).lower()
+
+			if item not in lowercase_nowhitespace_header:
+				return False
+
 		return True
 
 	@classmethod
@@ -203,12 +211,12 @@ class InputFormat(ABC):
 	def get_index(cls, column_name):
 		"""Gets the index of the column defined by the column name."""
 		# todo create room for error or don't?
-		return cls.header().index(column_name)
+		return cls.get_header().index(column_name)
 
 	@classmethod
 	def get_column_name(cls, index):
 		"""Gets the name of the column defined by the index."""
-		return cls.header()[index]
+		return cls.get_header()[index]
 
 	@classmethod
 	@abstractmethod
@@ -242,7 +250,7 @@ class FTDNAMatchFormat(InputFormat):
 		}
 
 	@classmethod
-	def header(cls):
+	def get_header(cls):
 		return [
 			'Full Name', 'First Name', 'Middle Name', 'Last Name', 'Match Date', 'Relationship Range',
 			'Shared DNA', 'Longest Block', 'Linked Relationship', 'Ancestral Surnames', 'Y-DNA Haplogroup',
@@ -263,7 +271,7 @@ class FTDNASegmentFormat(InputFormat):
 		return SourceEnum.FamilyTreeDNA
 
 	@classmethod
-	def header(cls):
+	def get_header(cls):
 		return ['Match Name', 'Chromosome', 'Start Location', 'End Location', 'Centimorgans', 'Matching SNPs']
 
 	@classmethod

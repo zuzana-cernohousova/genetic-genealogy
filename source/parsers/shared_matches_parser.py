@@ -40,7 +40,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 		self.__secondary_matches_not_found = []
 		self.__already_found_pairs = []
 
-	__input_format = FTDNAMatchFormat()
+	__input_format = FTDNAMatchFormat
 
 	def load_primary_matches(self, csv_config_filename):
 		with open(csv_config_filename, 'r', encoding="utf-8-sig") as input_file:
@@ -98,7 +98,8 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 			with open(self._primary_matches[key], 'r', encoding="utf-8-sig") as file:
 				reader = csv.DictReader(file)
 
-				self.__input_format.validate_format(reader.fieldnames)
+				if not self.__input_format.validate_format(reader.fieldnames):
+					raise ValueError("Wrong input format.")
 
 				for row in reader:
 					# parse secondary match record, use FTDNAMatchParser
