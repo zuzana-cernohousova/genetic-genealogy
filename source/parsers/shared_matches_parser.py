@@ -12,11 +12,10 @@ class SharedMatchesParser(Parser, ABC):
 		super().__init__()
 
 		# create a dict where paths to the files will be stored under the name of the primary match
-		self.primary_matches = {}
+		self._primary_matches = {}
 
 	@property
-	def output_format(self):
-		"""Returns the format out the output data as child class of FormatEnum."""
+	def _output_format(self):
 		return SharedMatchesFormatEnum
 
 	@abstractmethod
@@ -59,7 +58,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 				if ID is None and name is None:
 					raise ValueError("No identifier given for a person.")
 
-				self.primary_matches[(ID, name)] = row["file"]
+				self._primary_matches[(ID, name)] = row["file"]
 
 	def parse(self, filename):
 
@@ -69,7 +68,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 		existing_matches.load()
 
 		# for each person in primary matches, parse their file
-		for key in self.primary_matches:
+		for key in self._primary_matches:
 			primary_match_id = key[0]
 			primary_match_name = key[1]
 
@@ -96,7 +95,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 				primary_match_name = primary_match[MatchFormatEnum.person_name]
 
 			# primary person identified --> find their shared matches
-			with open(self.primary_matches[key], 'r', encoding="utf-8-sig") as file:
+			with open(self._primary_matches[key], 'r', encoding="utf-8-sig") as file:
 				reader = csv.DictReader(file)
 
 				self.__input_format.validate_format(reader.fieldnames)

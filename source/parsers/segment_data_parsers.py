@@ -11,7 +11,7 @@ class SegmentParser(Parser, ABC):
 	"""Class used for parsing segments. Child classes are used for parsing input from different databases."""
 
 	@property
-	def output_format(self):
+	def _output_format(self):
 		return SegmentFormatEnum
 
 
@@ -62,15 +62,15 @@ class FTDNASegmentParser(SegmentParser):
 				# person exists, create the WHOLE OUTPUT RECORD
 
 				output_segment = {}
-				for index in self.output_format:
+				for index in self._output_format:
 					output_segment[index] = ""
 
 				# add SOURCE name
-				output_segment[self.output_format.source] = self.__input_format.format_name()
+				output_segment[self._output_format.source] = self.__input_format.format_name()
 
 				# add NAME, ID to result
-				output_segment[self.output_format.person_name] = name
-				output_segment[self.output_format.id] = person_id
+				output_segment[self._output_format.person_name] = name
+				output_segment[self._output_format.id] = person_id
 
 				# copy all REMAINING existing information = MAPPED FIELDS
 				for input_column_name in reader.fieldnames:
@@ -85,19 +85,19 @@ class FTDNASegmentParser(SegmentParser):
 				# get and add SEGMENT ID
 				segment_id = existing_segments.get_id(output_segment,
 													  self.__input_format.get_source_id(),
-													  self.output_format.segment_id)
+													  self._output_format.segment_id)
 
 				if segment_id is None:
 					# no match found - create new id and add to database
 					segment_id = existing_segments.get_new_id()
-					output_segment[self.output_format.segment_id] = segment_id
+					output_segment[self._output_format.segment_id] = segment_id
 
 					# take note of newly found segment
 					new_segment = True
 					existing_segments.add_record(output_segment)
 
 				else:
-					output_segment[self.output_format.segment_id] = segment_id
+					output_segment[self._output_format.segment_id] = segment_id
 
 				self.result.append(output_segment)
 

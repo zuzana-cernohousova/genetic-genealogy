@@ -17,18 +17,18 @@ class Parser(ABC):
 
 	@property
 	@abstractmethod
-	def output_format(self):
+	def _output_format(self):
 		"""Defines the format of the parsed data."""
 		pass
 
 	def save_to_file(self, output_filename):
 		"""Saves the result of parsing to the given file."""
-		CSVInputOutput.save_csv(self.result, self.output_format, filename=output_filename)
+		CSVInputOutput.save_csv(self.result, self._output_format, filename=output_filename)
 
 
 class MatchParser(Parser, ABC):
 	@property
-	def output_format(self):
+	def _output_format(self):
 		return MatchFormatEnum
 
 
@@ -93,8 +93,8 @@ class FTDNAMatchParser(MatchParser):
 		else:
 			print("These new matches were found:")
 			for new_match in self.__new_matches:
-				print("id= " + str(new_match[self.output_format.id]) + ", name= " + new_match[
-					self.output_format.person_name])
+				print("id= " + str(new_match[self._output_format.id]) + ", name= " + new_match[
+					self._output_format.person_name])
 
 	@staticmethod
 	def __create_name(row):

@@ -84,8 +84,8 @@ class CSVInputOutput:
 
 class Database(ABC):
 	def __init__(self):
-		self.database = []
-		self.largest_ID = 0
+		self._database = []
+		self._largest_ID = 0
 
 	@abstractmethod
 	def load(self):
@@ -105,7 +105,7 @@ class Database(ABC):
 		finds it and returns the record ID, else returns None."""
 		match_record_id = None
 
-		for old_record in self.database:
+		for old_record in self._database:
 			match = True
 
 			# compare all fields except for the id field
@@ -125,15 +125,15 @@ class Database(ABC):
 
 	def get_new_id(self):
 		"""Creates a new maximum ID and returns it."""
-		self.largest_ID += 1
-		return self.largest_ID
+		self._largest_ID += 1
+		return self._largest_ID
 
 	def add_record(self, complete_parsed_record):
 		"""Adds a complete parsed record to the database list."""
-		self.database.append(complete_parsed_record)
+		self._database.append(complete_parsed_record)
 
 	def get_record_from_column(self, column_value, column):
-		for record in self.database:
+		for record in self._database:
 			if record[column] == column_value:
 				return record
 
@@ -151,7 +151,7 @@ class MatchDatabase(Database, ABC):
 	def __create_records_by_name_dict(self):
 		"""Creates a dictionary of person IDs. The keys are person names."""
 		result = {}
-		for row in self.database:
+		for row in self._database:
 			result[row[self.format.person_name].lower()] = row
 
 		self.records_by_name = result
@@ -159,7 +159,7 @@ class MatchDatabase(Database, ABC):
 	def __create_records_by_id_dict(self):
 		"""Creates a dictionary of person IDs. The keys are person names."""
 		result = {}
-		for row in self.database:
+		for row in self._database:
 			result[row[self.format.id]] = row
 
 		self.records_by_id = result
@@ -223,7 +223,7 @@ class CSVMatchDatabase(MatchDatabase):
 		else:
 			self.__file_name = ConfigReader.get_match_database_location()
 
-		self.largest_ID, self.database = CSVInputOutput.load_csv_database(self.__file_name,
+		self._largest_ID, self._database = CSVInputOutput.load_csv_database(self.__file_name,
 																		  self.format,
 																		  self.format.id)
 
@@ -231,7 +231,7 @@ class CSVMatchDatabase(MatchDatabase):
 		"""Saves the database to the given csv file."""
 		# file will be opened or created
 
-		CSVInputOutput.save_csv(self.database, self.format, filename=self.__file_name)
+		CSVInputOutput.save_csv(self._database, self.format, filename=self.__file_name)
 
 
 # endregion
@@ -242,8 +242,6 @@ class SegmentDatabase(Database, ABC):
 	@property
 	def format(self):
 		return SegmentFormatEnum
-
-
 
 
 class CSVSegmentDatabase(SegmentDatabase):
