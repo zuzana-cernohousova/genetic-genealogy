@@ -24,12 +24,12 @@ class IntersectionFinder(ABC):
 	__segment_format = SegmentFormatEnum
 	__output_format = SegmentIntersectionFormatEnum
 
-	def __create_segments_by_id(self):
+	def create_segments_by_id(self):
 		for segment in self.segments:
 			# create a dict where ids are keys
 			self.segments_by_id[segment[self.__segment_format.segment_id]] = segment
 
-	def __create_segments_by_chromosome(self):
+	def create_segments_by_chromosome(self):
 		# create a dict where chromosome ids are keys and values are lists of segments
 		# will be used for faster computation
 		for segment in self.segments:
@@ -90,7 +90,7 @@ class IntersectionFinder(ABC):
 		result = []
 
 		if self.segments_by_chromosome == {}:
-			self.__create_segments_by_chromosome()
+			self.create_segments_by_chromosome()
 
 		for chrom_id in self.segments_by_chromosome:
 			chromosome = self.segments_by_chromosome[chrom_id]
@@ -122,7 +122,6 @@ class IntersectionFinder(ABC):
 				open.append(segment)
 
 		return result
-
 
 	@staticmethod
 	def __check_and_get_intersection(segment_s, segment_r):
@@ -188,8 +187,8 @@ class CSVIntersectionFinder(IntersectionFinder):
 			segments_filename = ConfigReader.get_segment_database_location()
 
 		self.segments = CSVInputOutput.load_csv(segments_filename, self.__segment_format)
-		self._IntersectionFinder__create_segments_by_id()
-		self._IntersectionFinder__create_segments_by_chromosome()
+		self.create_segments_by_id()
+		self.create_segments_by_chromosome()
 
 	def save_intersections(self, result, output_filename=None):
 		CSVInputOutput.save_csv(result, SegmentIntersectionFormatEnum, output_filename)
