@@ -104,7 +104,7 @@ class FTDNAMatchParser(MatchParser):
 
 	@classmethod
 	def __create_name(cls, row: dict):
-		"""Create unified name from """
+		"""Create unified name from name columns."""
 
 		# these values will be used for creating name
 		name = [
