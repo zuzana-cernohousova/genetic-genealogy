@@ -78,7 +78,7 @@ class IntersectionFinder(ABC):
 		result = []
 
 		for segment in self._segments:
-			if segment[self.__segment_format.id] == person_id:
+			if segment[self.__segment_format.person_id] == person_id:
 				result.append(segment)
 
 		return result
@@ -156,8 +156,8 @@ class IntersectionFinder(ABC):
 
 		row = ['' for _ in of]
 
-		row[of.id_1] = s1[sf.id]
-		row[of.id_2] = s2[sf.id]
+		row[of.person_id_1] = s1[sf.person_id]
+		row[of.person_id_2] = s2[sf.person_id]
 
 		row[of.segment_1_id] = s1[sf.segment_id]
 		row[of.segment_2_id] = s2[sf.segment_id]

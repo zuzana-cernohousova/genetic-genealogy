@@ -60,7 +60,7 @@ class FTDNASegmentParser(SegmentParser):
 				if person_record is None:  # no matching person found
 					self.__unidentified_names.append(name)
 					continue
-				person_id = person_record[MatchFormatEnum.id]
+				person_id = person_record[MatchFormatEnum.person_id]
 
 				# person exists, create the WHOLE OUTPUT RECORD
 
@@ -73,7 +73,7 @@ class FTDNASegmentParser(SegmentParser):
 
 				# add NAME, ID to result
 				output_segment[self._output_format.person_name] = name
-				output_segment[self._output_format.id] = person_id
+				output_segment[self._output_format.person_id] = person_id
 
 				# copy all REMAINING existing information = MAPPED FIELDS
 				for input_column_name in reader.fieldnames:

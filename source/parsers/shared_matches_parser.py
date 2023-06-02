@@ -81,7 +81,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 					self.__primary_matches_not_found.append(primary_match_name)
 					continue
 
-				primary_match_id = primary_match[MatchFormatEnum.id]
+				primary_match_id = primary_match[MatchFormatEnum.person_id]
 
 			if primary_match_name is None:
 				# if primary_match_name was not filled, try to find it
@@ -109,7 +109,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 					secondary_match_id = existing_matches.get_id(
 						secondary_match,
 						self.__input_format.get_source_id(),
-						MatchFormatEnum.id
+						MatchFormatEnum.person_id
 					)
 
 					# if the person was not found in POIs matches, skip it, but add it to not found names

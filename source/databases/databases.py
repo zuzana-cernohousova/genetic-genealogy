@@ -170,7 +170,7 @@ class MatchDatabase(Database, ABC):
 		"""Creates a dictionary of person IDs. The keys are person names."""
 		result = {}
 		for row in self._database:
-			result[row[self.format.id]] = row
+			result[row[self.format.person_id]] = row
 
 		self.records_by_id = result
 
@@ -191,7 +191,7 @@ class MatchDatabase(Database, ABC):
 
 		return None
 
-	def get_id(self, parsed_record, source, searched_id_type=MatchFormatEnum.id):
+	def get_id(self, parsed_record, source, searched_id_type=MatchFormatEnum.person_id):
 		"""Gets id of just parsed record using built dictionaries."""
 		potential_record = None
 
@@ -252,7 +252,7 @@ class CSVMatchDatabase(MatchDatabase):
 		self._largest_ID, self._database = CSVInputOutput.load_csv_database(
 			self.__file_name,
 			self.format,
-			self.format.id
+			self.format.person_id
 		)
 
 	def save(self):

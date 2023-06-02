@@ -44,9 +44,9 @@ class MatchFormatEnum(FormatEnum):
 		elif source == SourceEnum.FamilyTreeDNA:
 			return [cls.person_name]
 
-		return [cls.id]
+		return [cls.person_id]
 
-	id = 0
+	person_id = 0
 	person_name = 1
 	source = 2
 	total_cm = 3
@@ -79,7 +79,7 @@ class SegmentFormatEnum(FormatEnum):
 	def comparison_key(cls, source: SourceEnum = None):
 		return [
 			cls.segment_id,
-			cls.id,
+			cls.person_id,
 			cls.person_name,
 			cls.chromosome_id,
 			cls.start,
@@ -87,7 +87,7 @@ class SegmentFormatEnum(FormatEnum):
 		]
 
 	segment_id = 0
-	id = 1
+	person_id = 1
 	person_name = 2
 	source = 3
 	chromosome_id = 4
@@ -111,8 +111,8 @@ class SharedMatchesFormatEnum(FormatEnum):
 class SegmentIntersectionFormatEnum(FormatEnum):
 	"""This class defines the format of segment intersection data."""
 
-	id_1 = 0
-	id_2 = 1
+	person_id_1 = 0
+	person_id_2 = 1
 	segment_1_id = 2
 	segment_2_id = 3
 	start = 4
@@ -124,7 +124,7 @@ class ClusterFormatEnum(FormatEnum):
 	"""This class defines the format of clusters data."""
 
 	cluster_id = 0
-	id = 1
+	person_id = 1
 	person_name = 2
 
 

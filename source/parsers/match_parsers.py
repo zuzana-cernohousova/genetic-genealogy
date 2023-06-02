@@ -74,7 +74,7 @@ class FTDNAMatchParser(MatchParser):
 				# id was not found, match does not yet exist in our database
 				if record_id is None:
 					record_id = existing_records.get_new_id()
-					output_record[MatchFormatEnum.id] = record_id
+					output_record[MatchFormatEnum.person_id] = record_id
 
 					# add new record to the existing ones
 					new_records_found = True
@@ -84,7 +84,7 @@ class FTDNAMatchParser(MatchParser):
 
 				# id was found, match does exist
 				else:
-					output_record[MatchFormatEnum.id] = record_id
+					output_record[MatchFormatEnum.person_id] = record_id
 
 				# add the record to the result list
 				self.result.append(output_record)
@@ -99,7 +99,7 @@ class FTDNAMatchParser(MatchParser):
 		else:
 			print("These new matches were found:")
 			for new_match in self.__new_matches:
-				print("id= " + str(new_match[self._output_format.id]) + ", name= " + new_match[
+				print("id= " + str(new_match[self._output_format.person_id]) + ", name= " + new_match[
 					self._output_format.person_name])
 
 	@classmethod
