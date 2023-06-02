@@ -43,6 +43,8 @@ class FTDNASegmentParser(SegmentParser):
 			if not self.__input_format.validate_format(reader.fieldnames):
 				raise ValueError("Wrong input format.")
 
+			reader.fieldnames = self._get_enum_fieldnames(reader.fieldnames)
+
 			for record in reader:
 				# get person NAME
 				name = self.__create_name(record)
@@ -84,9 +86,11 @@ class FTDNASegmentParser(SegmentParser):
 						output_segment[output_column] = item
 
 				# get and add SEGMENT ID
-				segment_id = existing_segments.get_id(output_segment,
-													  self.__input_format.get_source_id(),
-													  self._output_format.segment_id)
+				segment_id = existing_segments.get_id(
+					output_segment,
+					self.__input_format.get_source_id(),
+					self._output_format.segment_id
+				)
 
 				if segment_id is None:
 					# no match found - create new id and add to database
@@ -124,6 +128,16 @@ class FTDNASegmentParser(SegmentParser):
 			for name in self.__unidentified_names:
 				print(name)
 
-	@staticmethod
-	def __create_name(record: dict):
-		return re.sub(' +', ' ', record['Match Name'])
+	@classmethod
+	def __create_name(cls, record: dict):
+		return re.sub(' +', ' ', record[cls.__input_format.match_name])
+
+	@classmethod
+	def _get_enum_fieldnames(cls, fieldnames):
+		result = []
+		for name in fieldnames:
+			for enum_name in cls.__input_format:
+				if "".join(name.split()).lower() == "".join(enum_name.split()).lower():
+					result.append(enum_name)
+
+		return result
