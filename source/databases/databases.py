@@ -238,9 +238,11 @@ class CSVMatchDatabase(MatchDatabase):
 		else:
 			self.__file_name = ConfigReader.get_match_database_location()
 
-		self._largest_ID, self._database = CSVInputOutput.load_csv_database(self.__file_name,
-																			self.format,
-																			self.format.id)
+		self._largest_ID, self._database = CSVInputOutput.load_csv_database(
+			self.__file_name,
+			self.format,
+			self.format.id
+		)
 
 	def save(self):
 		"""Saves the database to the given csv file."""
