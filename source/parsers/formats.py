@@ -37,7 +37,7 @@ class MatchFormatEnum(FormatEnum):
 	def comparison_key(cls, source: SourceEnum = None):
 		"""If source is stated, returns source specific identification
 		(gedmatch_kit_id if GEDmatch or person_name if FTDNA)
-		 else returns id."""
+		else returns id."""
 
 		if source == SourceEnum.GEDmatch:
 			return [cls.gedmatch_kit_id]
@@ -231,9 +231,9 @@ class FTDNAMatchFormat(InputFormat):
 			cls.relationship_range: MatchFormatEnum.relationship_range,
 			cls.shared_DNA: MatchFormatEnum.total_cm,
 			cls.longest_block: MatchFormatEnum.largest_segment_cm,
-			cls.linked_realtionship: MatchFormatEnum.linked_relationship,
+			cls.linked_relationship: MatchFormatEnum.linked_relationship,
 			cls.ancestral_surnames: MatchFormatEnum.ancestral_surnames,
-			cls.y_hapogroup: MatchFormatEnum.y_haplogroup,
+			cls.y_haplogroup: MatchFormatEnum.y_haplogroup,
 			cls.mt_haplogroup: MatchFormatEnum.mt_haplogroup,
 			cls.notes: MatchFormatEnum.notes,
 			cls.matching_bucket: MatchFormatEnum.matching_bucket,
@@ -248,9 +248,9 @@ class FTDNAMatchFormat(InputFormat):
 	relationship_range = 'Relationship Range'
 	shared_DNA = 'Shared DNA'
 	longest_block = 'Longest Block'
-	linked_realtionship = 'Linked Relationship'
+	linked_relationship = 'Linked Relationship'
 	ancestral_surnames = 'Ancestral Surnames'
-	y_hapogroup = 'Y-DNA Haplogroup'
+	y_haplogroup = 'Y-DNA Haplogroup'
 	mt_haplogroup = 'mtDNA Haplogroup'
 	notes = 'Notes'
 	matching_bucket = 'Matching Bucket'
