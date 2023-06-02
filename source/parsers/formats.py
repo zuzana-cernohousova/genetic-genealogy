@@ -1,8 +1,8 @@
-from enum import IntEnum, Enum
+import enum
 from abc import ABC, abstractmethod
 
 
-class SourceEnum(Enum):
+class SourceEnum(enum.Enum):
 	GEDmatch = 0
 	FamilyTreeDNA = 1
 
@@ -11,7 +11,7 @@ class SourceEnum(Enum):
 # defined by this application
 
 
-class FormatEnum(IntEnum):
+class FormatEnum(enum.IntEnum):
 	"""Child classes of this class define formats of data parsed by this application.
 	Name of a csv column is represented by the value name,
 	preferred location of the column is defined by the value.
@@ -158,14 +158,13 @@ class ClusterFormatEnum(FormatEnum):
 
 # region Source formats
 
-class InputFormat(ABC):
+class InputFormat(ABC, enum.StrEnum):
 	"""Child classes of this class define formats of input data of this application."""
 
 	@classmethod
-	@abstractmethod
 	def get_header(cls) -> list:
 		"""Returns the header of the given format."""
-		pass
+		return [item for item in cls]
 
 	@classmethod
 	@abstractmethod
@@ -187,9 +186,9 @@ class InputFormat(ABC):
 		If order is different, create a mapping with the right order."""
 		# todo implement in child classes and check only if necessary columns are there
 
-		lowercase_nowhitespace_header = ["".join(item.split()).lower() for item in cls.get_header()]
+		lowercase_nowhitespace_header = ["".join(item.split()).lower() for item in cls]
 
-		if len(other_header) != len(cls.get_header()):
+		if len(other_header) != len(cls):
 			return False
 
 		for item in other_header:
@@ -209,17 +208,6 @@ class InputFormat(ABC):
 			return None
 
 	@classmethod
-	def get_index(cls, column_name):
-		"""Gets the index of the column defined by the column name."""
-		# todo create room for error or don't?
-		return cls.get_header().index(column_name)
-
-	@classmethod
-	def get_column_name(cls, index):
-		"""Gets the name of the column defined by the index."""
-		return cls.get_header()[index]
-
-	@classmethod
 	@abstractmethod
 	def get_source_id(cls) -> SourceEnum:
 		pass
@@ -237,26 +225,34 @@ class FTDNAMatchFormat(InputFormat):
 	@classmethod
 	def mapping(cls):
 		return {
-			'Match Date': MatchFormatEnum.match_date,
-			'Relationship Range': MatchFormatEnum.relationship_range,
-			'Shared DNA': MatchFormatEnum.total_cm,
-			'Longest Block': MatchFormatEnum.largest_segment_cm,
-			'Linked Relationship': MatchFormatEnum.linked_relationship,
-			'Ancestral Surnames': MatchFormatEnum.ancestral_surnames,
-			'Y - DNA Haplogroup': MatchFormatEnum.y_haplogroup,
-			'mtDNA Haplogroup': MatchFormatEnum.mt_haplogroup,
-			'Notes': MatchFormatEnum.notes,
-			'Matching Bucket': MatchFormatEnum.matching_bucket,
-			'X - Match': MatchFormatEnum.x_total_cm
+			cls.match_date: MatchFormatEnum.match_date,
+			cls.relationship_range: MatchFormatEnum.relationship_range,
+			cls.shared_DNA: MatchFormatEnum.total_cm,
+			cls.longest_block: MatchFormatEnum.largest_segment_cm,
+			cls.linked_realtionship: MatchFormatEnum.linked_relationship,
+			cls.ancestral_surnames: MatchFormatEnum.ancestral_surnames,
+			cls.y_hapogroup: MatchFormatEnum.y_haplogroup,
+			cls.mt_haplogroup: MatchFormatEnum.mt_haplogroup,
+			cls.notes: MatchFormatEnum.notes,
+			cls.matching_bucket: MatchFormatEnum.matching_bucket,
+			cls.x_match: MatchFormatEnum.x_total_cm
 		}
 
-	@classmethod
-	def get_header(cls):
-		return [
-			'Full Name', 'First Name', 'Middle Name', 'Last Name', 'Match Date', 'Relationship Range',
-			'Shared DNA', 'Longest Block', 'Linked Relationship', 'Ancestral Surnames', 'Y-DNA Haplogroup',
-			'mtDNA Haplogroup', 'Notes', 'Matching Bucket', 'X-Match'
-		]
+	full_name = 'Full Name'
+	first_name = 'First Name'
+	middle_name = 'Middle Name'
+	last_name = 'Last Name'
+	match_date = 'Match Date'
+	relationship_range = 'Relationship Range'
+	shared_DNA = 'Shared DNA'
+	longest_block = 'Longest Block'
+	linked_realtionship = 'Linked Relationship'
+	ancestral_surnames = 'Ancestral Surnames'
+	y_hapogroup = 'Y-DNA Haplogroup'
+	mt_haplogroup = 'mtDNA Haplogroup'
+	notes = 'Notes'
+	matching_bucket = 'Matching Bucket'
+	x_match = 'X-Match'
 
 
 class GEDmatchMatchFormat(InputFormat):
@@ -269,26 +265,33 @@ class GEDmatchMatchFormat(InputFormat):
 	@classmethod
 	def mapping(cls):
 		return {
-			'MatchedKit': MatchFormatEnum.gedmatch_kit_id,
-			'MatchedName': MatchFormatEnum.name,
-			'MatchedEmail': MatchFormatEnum.e_mail,
-			'LargestSeg': MatchFormatEnum.largest_segment_cm,
-			'TotalCM': MatchFormatEnum.total_cm,
-			'Gen': MatchFormatEnum.generations,
-			'LargestXSeg': MatchFormatEnum.x_largest_segment_cm,
-			'TotalXCM': MatchFormatEnum.x_total_cm,
-			'Overlap': MatchFormatEnum.snps_overlap,
-			'CreatedDate': MatchFormatEnum.match_date,
-			'TestCompany': MatchFormatEnum.ged_match_source
-
+			cls.matched_kit: MatchFormatEnum.gedmatch_kit_id,
+			cls.matched_name: MatchFormatEnum.name,
+			cls.matched_email: MatchFormatEnum.e_mail,
+			cls.largest_segment: MatchFormatEnum.largest_segment_cm,
+			cls.total_cm: MatchFormatEnum.total_cm,
+			cls.generations: MatchFormatEnum.generations,
+			cls.x_largest_segment_cm: MatchFormatEnum.x_largest_segment_cm,
+			cls.total_x_cm: MatchFormatEnum.x_total_cm,
+			cls.overlap: MatchFormatEnum.snps_overlap,
+			cls.created_date: MatchFormatEnum.match_date,
+			cls.test_company: MatchFormatEnum.ged_match_source
 		}
 
-	@classmethod
-	def get_header(cls):
-		return [
-			"PrimaryKit", "PrimaryName", "PrimaryEmail", "MatchedKit", "MatchedName", "MatchedEmail",
-			"LargestSeg", "TotalCM", "Gen", "LargestXSeg", "TotalXCM", "Overlap", "CreatedDate", "TestCompany"
-		]
+	primary_kit = "PrimaryKit"
+	primary_name = "PrimaryName"
+	primary_email = "PrimaryEmail"
+	matched_kit = "MatchedKit"
+	matched_name = "MatchedName"
+	matched_email = "MatchedEmail"
+	largest_segment = "LargestSeg"
+	total_cm = "TotalCM"
+	generations = "Gen"
+	x_largest_segment_cm = "LargestXSeg"
+	total_x_cm = "TotalXCM"
+	overlap = "Overlap"
+	created_date = "CreatedDate"
+	test_company = "TestCompany"
 
 
 # endregion
@@ -304,18 +307,21 @@ class FTDNASegmentFormat(InputFormat):
 		return SourceEnum.FamilyTreeDNA
 
 	@classmethod
-	def get_header(cls):
-		return ['Match Name', 'Chromosome', 'Start Location', 'End Location', 'Centimorgans', 'Matching SNPs']
-
-	@classmethod
 	def mapping(cls):
 		return {
-			'Chromosome': SegmentFormatEnum.chromosome_id,
-			'Start Location': SegmentFormatEnum.start,
-			'End Location': SegmentFormatEnum.end,
-			'Centimorgans': SegmentFormatEnum.length_cm,
-			'Matching SNPs': SegmentFormatEnum.snps
+			cls.chromosome: SegmentFormatEnum.chromosome_id,
+			cls.start_location: SegmentFormatEnum.start,
+			cls.end_location: SegmentFormatEnum.end,
+			cls.centimorgans: SegmentFormatEnum.length_cm,
+			cls.matching_snps: SegmentFormatEnum.snps
 		}
+
+	match_name = 'Match Name'
+	chromosome = 'Chromosome'
+	start_location = 'Start Location'
+	end_location = 'End Location'
+	centimorgans = 'Centimorgans'
+	matching_snps = 'Matching SNPs'
 
 # endregion
 # endregion

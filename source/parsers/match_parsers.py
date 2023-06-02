@@ -3,7 +3,7 @@ import re
 from abc import ABC, abstractmethod
 
 from source.databases.databases import CSVMatchDatabase, CSVInputOutput
-from source.parsers.formats import FTDNAMatchFormat, MatchFormatEnum, FormatEnum, SourceEnum
+from source.parsers.formats import FTDNAMatchFormat, MatchFormatEnum
 
 
 class Parser(ABC):
@@ -20,6 +20,7 @@ class Parser(ABC):
 	def _output_format(self):
 		"""Defines the format of the parsed data."""
 		pass
+	# todo change to class attribute
 
 	def save_to_file(self, output_filename):
 		"""Saves the result of parsing to the given file."""
@@ -60,6 +61,8 @@ class FTDNAMatchParser(MatchParser):
 			if not self.__input_format.validate_format(reader.fieldnames):
 				raise ValueError("Wrong input format.")
 
+			reader.fieldnames = self.get_enum_fieldnames(reader.fieldnames)
+
 			# for every record in the reader, parse it into the correct format and store it in the self.__result list
 			for record in reader:
 				# create a new dict for the record and fill it with non-id columns
@@ -99,22 +102,22 @@ class FTDNAMatchParser(MatchParser):
 				print("id= " + str(new_match[self._output_format.id]) + ", name= " + new_match[
 					self._output_format.person_name])
 
-	@staticmethod
-	def __create_name(row: dict):
+	@classmethod
+	def __create_name(cls, row: dict):
 		"""Create unified name from """
 
 		# these values will be used for creating name
 		name = [
-			row["First Name"],
-			row["Middle Name"],
-			row["Last Name"]
+			row[cls.__input_format.first_name],
+			row[cls.__input_format.middle_name],
+			row[cls.__input_format.last_name]
 		]
 
 		# delete additional spaces and return
 		return re.sub(' +', ' ', " ".join(name))
 
-	@staticmethod
-	def parse_non_id_columns(record: dict) -> dict:
+	@classmethod
+	def parse_non_id_columns(cls, record: dict) -> dict:
 		"""Parses all columns that are not defined by this application (all except for id)
 		and therefore does not require database access."""
 
@@ -128,7 +131,7 @@ class FTDNAMatchParser(MatchParser):
 		output_record[MatchFormatEnum.source] = i_f.format_name()
 
 		# create name and add it into result row
-		output_record[MatchFormatEnum.person_name] = FTDNAMatchParser.__create_name(record)
+		output_record[MatchFormatEnum.person_name] = cls.__create_name(record)
 
 		# copy all relevant existing items from record to output record
 		for input_column_name in i_f.get_header():
@@ -141,3 +144,13 @@ class FTDNAMatchParser(MatchParser):
 				output_record[output_column] = item
 
 		return output_record
+
+	@classmethod
+	def get_enum_fieldnames(cls, fieldnames):
+		result = []
+		for name in fieldnames:
+			for enum_name in cls.__input_format:
+				if "".join(name.split()).lower() == "".join(enum_name.split()).lower():
+					result.append(enum_name)
+
+		return result
