@@ -122,22 +122,25 @@ Použití:
     parse_segments.py input_file_from_GEDmatch --gedmatch
 
 ## Hledání průniků segmentů
-*[find_segment_intersections.py](source/usage/find_segment_intersections.py)* umožňuje najít průniky segmentů.
-Program na vstupu bere naparsovaný seznam segmentů v unifikovaném formátu
-jako první parametr a jako druhý parametr bere jméno výstupního souboru.
+Skript *[find_segment_intersections.py](source/usage/find_segment_intersections.py)* umožňuje najít průniky segmentů.
+Parametrem *--source_file* je možné specifikovat vstupní soubor obsahující data o segmentech v unifikovaném formátu.
+Pokud parametr není zadán, je použita databáze segmentů.
+Parametrem *--output_file* je možné zadat výstupní soubor, pokud tak není učiněno,
+výsledek je vypsán na standardní výstup.
 
->Je nutné nejdříve naparsovat segmenty pomocí programu *[parse_segments.py](source/usage/parse/parse_segments.py)*
-> a výstupní soubor předat jako vstupní soubor tomuto programu
-
-Je možné ze segmentů v zadaném vstupním souboru vyextrahovat všechny možné 
-dvojice segmentů, které mají neprázdný průnik.
-Nebo je možné argumentem *-id/--personID* zadat ID osoby a tím omezit,
-které dvojice segmentů budou vypsány pouze na dvojice, kde jedna z osob je
-identifikována tímto ID.
+Jedním z následujících 2 parametrů je definována funkcionalita programu,
+je možné zadat jen jeden.
+Při použítí parametru *-sid/--segment_id* a zadání hodnoty id požadovaného
+segmentu jsou nalezeny všechny průniky s daným zadaným segmentem.
+Při použitá parametru *-id/--person_id* a zadání hodnoty id osoby jsou nalezeny všechny
+průniky se všemi segmenty, která POI sdílí se zadanou osobou.
+Pokud není zadán ani jeden z předchozích parametrů, jsou identifikovány všechny
+průniky mezi segmenty nacházejícími se ve vstupním souboru.
 
 Použití:
 
-    find_segment_intersections.py parsed_segments_file output_file
+    find_segment_intersections.py --source_file parsed_segments_file --output_file all_intersections 
 
-    find_segment_intersections.py parsed_segments_file output_file -id 123
+    find_segment_intersections.py --output_file intersections_of_person_123 -id 123
 
+    find_segment_intersections.py --output_file intersections_of_segment_2431 -sid 2431
