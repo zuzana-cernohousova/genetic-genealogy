@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 
 class SourceEnum(Enum):
-	GEDMatch = 0
+	GEDmatch = 0
 	FamilyTreeDNA = 1
 
 
@@ -39,7 +39,7 @@ class MatchFormatEnum(FormatEnum):
 		(gedmatch_kit_id if GEDmatch or person_name if FTDNA)
 		 else returns id."""
 
-		if source == SourceEnum.GEDMatch:
+		if source == SourceEnum.GEDmatch:
 			return [cls.gedmatch_kit_id]
 		elif source == SourceEnum.FamilyTreeDNA:
 			return [cls.person_name]
@@ -126,6 +126,7 @@ class ClusterFormatEnum(FormatEnum):
 	cluster_id = 0
 	id = 1
 	person_name = 2
+
 
 # todo all columns?
 # source = 3
@@ -255,6 +256,38 @@ class FTDNAMatchFormat(InputFormat):
 			'Full Name', 'First Name', 'Middle Name', 'Last Name', 'Match Date', 'Relationship Range',
 			'Shared DNA', 'Longest Block', 'Linked Relationship', 'Ancestral Surnames', 'Y-DNA Haplogroup',
 			'mtDNA Haplogroup', 'Notes', 'Matching Bucket', 'X-Match'
+		]
+
+
+class GEDmatchMatchFormat(InputFormat):
+	"""Describes the format of matches downloaded from GEDmatch."""
+
+	@classmethod
+	def get_source_id(cls):
+		return SourceEnum.GEDmatch
+
+	@classmethod
+	def mapping(cls):
+		return {
+			'MatchedKit': MatchFormatEnum.gedmatch_kit_id,
+			'MatchedName': MatchFormatEnum.name,
+			'MatchedEmail': MatchFormatEnum.e_mail,
+			'LargestSeg': MatchFormatEnum.largest_segment_cm,
+			'TotalCM': MatchFormatEnum.total_cm,
+			'Gen': MatchFormatEnum.generations,
+			'LargestXSeg': MatchFormatEnum.x_largest_segment_cm,
+			'TotalXCM': MatchFormatEnum.x_total_cm,
+			'Overlap': MatchFormatEnum.snps_overlap,
+			'CreatedDate': MatchFormatEnum.match_date,
+			'TestCompany': MatchFormatEnum.ged_match_source
+
+		}
+
+	@classmethod
+	def get_header(cls):
+		return [
+			"PrimaryKit", "PrimaryName", "PrimaryEmail", "MatchedKit", "MatchedName", "MatchedEmail",
+			"LargestSeg", "TotalCM", "Gen", "LargestXSeg", "TotalXCM", "Overlap", "CreatedDate", "TestCompany"
 		]
 
 
