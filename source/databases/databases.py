@@ -3,7 +3,7 @@ import re
 import sys
 from abc import ABC, abstractmethod
 
-from source.parsers.formats import MatchFormatEnum, SegmentFormatEnum, FormatEnum
+from source.parsers.formats import MatchFormatEnum, SegmentFormatEnum
 from source.config_reader import ConfigReader
 
 

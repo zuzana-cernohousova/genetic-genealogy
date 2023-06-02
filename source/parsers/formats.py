@@ -1,8 +1,8 @@
-import enum
-from abc import ABC, abstractmethod
+from enum import Enum, IntEnum, StrEnum
+from abc import ABC, ABCMeta, abstractmethod
 
 
-class SourceEnum(enum.Enum):
+class SourceEnum(Enum):
 	GEDmatch = 0
 	FamilyTreeDNA = 1
 
@@ -11,7 +11,7 @@ class SourceEnum(enum.Enum):
 # defined by this application
 
 
-class FormatEnum(enum.IntEnum):
+class FormatEnum(IntEnum):
 	"""Child classes of this class define formats of data parsed by this application.
 	Name of a csv column is represented by the value name,
 	preferred location of the column is defined by the value.
@@ -158,7 +158,7 @@ class ClusterFormatEnum(FormatEnum):
 
 # region Source formats
 
-class InputFormat(ABC, enum.StrEnum):
+class InputFormat(StrEnum):
 	"""Child classes of this class define formats of input data of this application."""
 
 	@classmethod
@@ -167,11 +167,11 @@ class InputFormat(ABC, enum.StrEnum):
 		return [item for item in cls]
 
 	@classmethod
-	@abstractmethod
 	def mapping(cls) -> dict:
 		"""Represents the mapping between the source format and the corresponding
 		final, app defined format."""
-		pass
+		raise NotImplementedError()
+		# should not use the abstractmethod decorator, when metaclass is not ABCMeta --> must be overriden or will be error
 
 	@classmethod
 	def format_name(cls) -> str:
@@ -208,9 +208,9 @@ class InputFormat(ABC, enum.StrEnum):
 			return None
 
 	@classmethod
-	@abstractmethod
 	def get_source_id(cls) -> SourceEnum:
-		pass
+		raise NotImplementedError()
+		# same as get_header()
 
 
 # region Match formats
