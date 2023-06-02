@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from source.config_reader import ConfigReader
 from source.databases.databases import CSVInputOutput
-from source.parsers.headers import SegmentIntersectionFormatEnum, SegmentFormatEnum
+from source.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatEnum
 
 
 class IntersectionFinder(ABC):

@@ -2,7 +2,7 @@ import csv
 from abc import ABC, abstractmethod
 
 from source.parsers.match_parsers import CSVMatchDatabase, FTDNAMatchParser, Parser
-from source.parsers.headers import SharedMatchesFormatEnum, FTDNAMatchFormat, MatchFormatEnum
+from source.parsers.formats import SharedMatchesFormatEnum, FTDNAMatchFormat, MatchFormatEnum
 
 
 class SharedMatchesParser(Parser, ABC):

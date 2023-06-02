@@ -3,7 +3,7 @@ import re
 from abc import ABC
 
 from source.databases.databases import CSVMatchDatabase, CSVSegmentDatabase
-from source.parsers.headers import FTDNASegmentFormat, SegmentFormatEnum, MatchFormatEnum
+from source.parsers.formats import FTDNASegmentFormat, SegmentFormatEnum, MatchFormatEnum
 from source.parsers.match_parsers import Parser
 
 

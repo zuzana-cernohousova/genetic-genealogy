@@ -3,7 +3,7 @@ import re
 from abc import ABC, abstractmethod
 
 from source.databases.databases import CSVMatchDatabase, CSVInputOutput
-from source.parsers.headers import FTDNAMatchFormat, MatchFormatEnum, FormatEnum, SourceEnum
+from source.parsers.formats import FTDNAMatchFormat, MatchFormatEnum, FormatEnum, SourceEnum
 
 
 class Parser(ABC):
