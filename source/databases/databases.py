@@ -3,14 +3,15 @@ import re
 import sys
 from abc import ABC, abstractmethod
 
-from source.parsers.headers import MatchFormatEnum, SegmentFormatEnum
+from source.parsers.headers import MatchFormatEnum, SegmentFormatEnum, FormatEnum
 from source.config_reader import ConfigReader
 
 
 class CSVInputOutput:
 	@staticmethod
-	def load_csv_database(filename, database_format, searched_id):
-		"""Reads the given csv file, finds the largest id, returns the id and the file as a list of rows (dicts)"""
+	def load_csv_database(filename, database_format, searched_id) -> (int, list):
+		"""Reads the given csv file, finds the largest id,
+		returns the id and the file as a list of rows (dicts)"""
 
 		result = []
 		biggest_id = 0
@@ -35,6 +36,8 @@ class CSVInputOutput:
 
 	@staticmethod
 	def load_csv(filename, input_format_enum):
+		"""Simply loads a csv file, returns it as a list of dictionaries,
+		where keys are replaced with input_format_enum values."""
 		result = []
 		with open(filename, 'r', encoding="utf-8-sig") as input_file:
 			reader = csv.DictReader(input_file)
@@ -89,20 +92,24 @@ class Database(ABC):
 
 	@abstractmethod
 	def load(self):
+		"""Loads the database."""
 		pass
 
 	@abstractmethod
 	def save(self):
+		"""Saves the database."""
 		pass
 
 	@property
 	@abstractmethod
 	def format(self):
+		"""Represents the format of the database."""
 		pass
 
 	def get_id(self, parsed_record, source, searched_id_type):
 		""" If the parsed_record already exists,
-		finds it and returns the record ID, else returns None."""
+		finds it and returns the record ID (type of id specified by the searched_id_type
+		parameter), else returns None."""
 		match_record_id = None
 
 		for old_record in self._database:
@@ -132,9 +139,12 @@ class Database(ABC):
 		"""Adds a complete parsed record to the database list."""
 		self._database.append(complete_parsed_record)
 
-	def get_record_from_column(self, column_value, column):
+	def get_record_from_column(self, value, column):
+		"""Returns a record with the given value in the given column."""
+		# todo remove, unused
+
 		for record in self._database:
-			if record[column] == column_value:
+			if record[column] == value:
 				return record
 
 		return None
@@ -196,6 +206,11 @@ class MatchDatabase(Database, ABC):
 		return None
 
 	def get_record_from_id(self, record_id):
+		"""Returns a record of given id."""
+		# todo call super().get_record_from_id(), create the method
+		# in subclasses, only specify the main id
+		# rename id to person id, so that it is clear
+
 		if self.records_by_id == {}:
 			self.__create_records_by_id_dict()
 
@@ -224,8 +239,8 @@ class CSVMatchDatabase(MatchDatabase):
 			self.__file_name = ConfigReader.get_match_database_location()
 
 		self._largest_ID, self._database = CSVInputOutput.load_csv_database(self.__file_name,
-																		  self.format,
-																		  self.format.id)
+																			self.format,
+																			self.format.id)
 
 	def save(self):
 		"""Saves the database to the given csv file."""
