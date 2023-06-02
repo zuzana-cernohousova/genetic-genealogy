@@ -194,6 +194,8 @@ class InputFormat(StrEnum):
 		for item in other_header:
 			item = "".join(item.split()).lower()
 
+			# todo store wrong column name
+
 			if item not in lowercase_nowhitespace_header:
 				return False
 
