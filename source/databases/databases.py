@@ -231,7 +231,7 @@ class CSVMatchDatabase(MatchDatabase):
 
 	def load(self, filename=None):
 		"""Reads the given csv file and stores it in the database.
-		If filename is specified, the file is used, else path is read from project configuraiton."""
+		If filename is specified, the file is used, else path is read from project configuration."""
 
 		if filename:
 			self.__file_name = filename

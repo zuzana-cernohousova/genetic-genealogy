@@ -16,7 +16,7 @@ class SegmentParser(Parser, ABC):
 
 
 class FTDNASegmentParser(SegmentParser):
-	"""Parses segments from FamilyTreeDNA database."""
+	"""Parses segment data exported from FamilyTreeDNA database."""
 
 	def __init__(self):
 		super().__init__()

@@ -6,7 +6,7 @@ from source.parsers.headers import SharedMatchesFormatEnum, FTDNAMatchFormat, Ma
 
 
 class SharedMatchesParser(Parser, ABC):
-	"""Parser used for parsing matches in common with other matches - shared matches."""
+	"""Parser used for parsing matches in common with other matches of POI - shared matches."""
 
 	def __init__(self):
 		super().__init__()

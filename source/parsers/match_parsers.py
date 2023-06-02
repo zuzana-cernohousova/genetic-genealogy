@@ -33,6 +33,7 @@ class MatchParser(Parser, ABC):
 
 
 class FTDNAMatchParser(MatchParser):
+	"""Parses data exported from FamilyTreeDNA."""
 
 	def __init__(self):
 		super().__init__()
@@ -40,10 +41,11 @@ class FTDNAMatchParser(MatchParser):
 
 	__input_format = FTDNAMatchFormat
 
-	def parse(self, filename:str):
+	def parse(self, filename: str):
 		"""Reads the file under filename and parses the records into
 		the format specified by MatchFormatEnum."""
 
+		# create and load database
 		existing_records = CSVMatchDatabase()
 		existing_records.load()
 
