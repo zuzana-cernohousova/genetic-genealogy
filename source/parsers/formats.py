@@ -268,7 +268,7 @@ class GEDmatchMatchFormat(InputFormat):
 	def mapping(cls):
 		return {
 			cls.matched_kit: MatchFormatEnum.gedmatch_kit_id,
-			cls.matched_name: MatchFormatEnum.name,
+			cls.matched_name: MatchFormatEnum.person_name,
 			cls.matched_email: MatchFormatEnum.e_mail,
 			cls.largest_segment: MatchFormatEnum.largest_segment_cm,
 			cls.total_cm: MatchFormatEnum.total_cm,
