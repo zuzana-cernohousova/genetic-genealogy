@@ -104,7 +104,7 @@ class FTDNASegmentParser(SegmentParser):
 				else:
 					output_segment[self._output_format.segment_id] = segment_id
 
-				self.result.append(output_segment)
+				self._result.append(output_segment)
 
 		if new_segment:
 			self.__new_segments_found = True

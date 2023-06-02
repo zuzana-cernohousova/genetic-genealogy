@@ -3,16 +3,16 @@ import re
 from abc import ABC, abstractmethod
 
 from source.databases.databases import CSVMatchDatabase, CSVInputOutput
-from source.parsers.formats import FTDNAMatchFormat, MatchFormatEnum
+from source.parsers.formats import FTDNAMatchFormat, MatchFormatEnum, GEDmatchMatchFormat
 
 
 class Parser(ABC):
 	def __init__(self):
-		self.result = []
+		self._result = []
 
+	@classmethod
 	@abstractmethod
-	def parse(self, filename):
-		"""Parse data in file defined by filename."""
+	def _input_format(cls):
 		pass
 
 	@property
@@ -20,27 +20,28 @@ class Parser(ABC):
 	def _output_format(self):
 		"""Defines the format of the parsed data."""
 		pass
+
 	# todo change to class attribute
 
 	def save_to_file(self, output_filename):
 		"""Saves the result of parsing to the given file."""
-		CSVInputOutput.save_csv(self.result, self._output_format, filename=output_filename)
+		CSVInputOutput.save_csv(self._result, self._output_format, filename=output_filename)
 
 
 class MatchParser(Parser, ABC):
-	@property
-	def _output_format(self):
-		return MatchFormatEnum
-
-
-class FTDNAMatchParser(MatchParser):
-	"""Parses data exported from FamilyTreeDNA."""
 
 	def __init__(self):
 		super().__init__()
 		self.__new_matches = []
 
-	__input_format = FTDNAMatchFormat
+	@property
+	def _output_format(self):
+		return MatchFormatEnum
+
+	@classmethod
+	@abstractmethod
+	def parse_non_id_columns(cls, record):
+		pass
 
 	def parse(self, filename: str):
 		"""Reads the file under filename and parses the records into
@@ -58,10 +59,10 @@ class FTDNAMatchParser(MatchParser):
 			reader = csv.DictReader(input_file)
 
 			# check if the file is in the correct format
-			if not self.__input_format.validate_format(reader.fieldnames):
+			if not self._input_format().validate_format(reader.fieldnames):
 				raise ValueError("Wrong input format.")
 
-			reader.fieldnames = self._get_enum_fieldnames(reader.fieldnames)
+			reader.fieldnames = self.__get_enum_fieldnames(reader.fieldnames)
 
 			# for every record in the reader, parse it into the correct format and store it in the self.__result list
 			for record in reader:
@@ -69,7 +70,7 @@ class FTDNAMatchParser(MatchParser):
 				output_record = self.parse_non_id_columns(record)
 
 				# get ID or create a new one
-				record_id = existing_records.get_id(output_record, self.__input_format.get_source_id())
+				record_id = existing_records.get_id(output_record, self._input_format().get_source_id())
 
 				# id was not found, match does not yet exist in our database
 				if record_id is None:
@@ -87,11 +88,22 @@ class FTDNAMatchParser(MatchParser):
 					output_record[MatchFormatEnum.person_id] = record_id
 
 				# add the record to the result list
-				self.result.append(output_record)
+				self._result.append(output_record)
 
 		# if new records were found during parsing, save the database
 		if new_records_found:
 			existing_records.save()
+
+	@classmethod
+	def __get_enum_fieldnames(cls, fieldnames):
+		result = []
+		for name in fieldnames:
+			for enum_name in cls._input_format():
+				if "".join(name.split()).lower() == "".join(enum_name.split()).lower():
+					result.append(enum_name)
+
+		return result
+
 
 	def print_message(self):
 		if len(self.__new_matches) == 0:
@@ -102,15 +114,23 @@ class FTDNAMatchParser(MatchParser):
 				print("id= " + str(new_match[self._output_format.person_id]) + ", name= " + new_match[
 					self._output_format.person_name])
 
+
+class FTDNAMatchParser(MatchParser):
+	"""Parses data exported from FamilyTreeDNA."""
+
+	@classmethod
+	def _input_format(cls):
+		return FTDNAMatchFormat
+
 	@classmethod
 	def __create_name(cls, row: dict):
 		"""Create unified name from name columns."""
 
 		# these values will be used for creating name
 		name = [
-			row[cls.__input_format.first_name],
-			row[cls.__input_format.middle_name],
-			row[cls.__input_format.last_name]
+			row[cls._input_format().first_name],
+			row[cls._input_format().middle_name],
+			row[cls._input_format().last_name]
 		]
 
 		# delete additional spaces and return
@@ -121,7 +141,7 @@ class FTDNAMatchParser(MatchParser):
 		"""Parses all columns that are not defined by this application (all except for id)
 		and therefore does not require database access."""
 
-		i_f = FTDNAMatchParser.__input_format
+		i_f = FTDNAMatchParser._input_format()
 
 		output_record = {}
 		for index in MatchFormatEnum:
@@ -145,12 +165,12 @@ class FTDNAMatchParser(MatchParser):
 
 		return output_record
 
-	@classmethod
-	def _get_enum_fieldnames(cls, fieldnames):
-		result = []
-		for name in fieldnames:
-			for enum_name in cls.__input_format:
-				if "".join(name.split()).lower() == "".join(enum_name.split()).lower():
-					result.append(enum_name)
 
-		return result
+class GEDmatchParser(MatchParser):
+	@classmethod
+	def _input_format(cls):
+		return GEDmatchMatchFormat
+
+	@classmethod
+	def parse_non_id_columns(cls, record):
+		pass

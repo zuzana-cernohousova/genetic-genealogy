@@ -135,7 +135,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 					output_row[SharedMatchesFormatEnum.id_2] = secondary_match_id
 					output_row[SharedMatchesFormatEnum.name_2] = secondary_match[MatchFormatEnum.person_name]
 
-					self.result.append(output_row)
+					self._result.append(output_row)
 
 	def print_message(self):
 		"""Prints which matches were not identified in matches database if any were not."""
