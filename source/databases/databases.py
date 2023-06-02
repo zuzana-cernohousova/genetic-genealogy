@@ -155,8 +155,9 @@ class Database(ABC):
 class MatchDatabase(Database, ABC):
 	def __init__(self):
 		super().__init__()
-		self.records_by_name = {}
-		self.records_by_id = {}
+		self.records_by_name = None
+		self.records_by_id = None
+		self.records_by_gedmatch_id = None
 
 	def __create_records_by_name_dict(self):
 		"""Creates a dictionary of person IDs. The keys are person names."""
@@ -167,12 +168,20 @@ class MatchDatabase(Database, ABC):
 		self.records_by_name = result
 
 	def __create_records_by_id_dict(self):
-		"""Creates a dictionary of person IDs. The keys are person names."""
+		"""Creates a dictionary of person IDs. The keys are person IDs."""
 		result = {}
 		for row in self._database:
 			result[row[self.format.person_id]] = row
 
 		self.records_by_id = result
+
+	def __create_records_by_gedmatch_id_dict(self):
+		"""Creates a dictionary of person IDs. The keys are the GEDmatch identificators."""
+		result = {}
+		for row in self._database:
+			result[row[self.format.gedmatch_kit_id]] = row
+
+		self.records_by_gedmatch_id = result
 
 	@property
 	def format(self):
@@ -181,13 +190,24 @@ class MatchDatabase(Database, ABC):
 	def get_record_from_match_name(self, match_name):
 		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
 
-		if self.records_by_name == {}:
+		if self.records_by_name is None:
 			self.__create_records_by_name_dict()
 
 		match_name = re.sub(' +', ' ', match_name).lower()
 
 		if match_name in self.records_by_name.keys():
 			return self.records_by_name[match_name]
+
+		return None
+
+	def get_record_from_gedmatch_id(self, match_gedmatch_id):
+		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
+
+		if self.records_by_gedmatch_id is None:
+			self.__create_records_by_gedmatch_id_dict()
+
+		if match_gedmatch_id in self.records_by_gedmatch_id.keys():
+			return self.records_by_gedmatch_id[match_gedmatch_id]
 
 		return None
 
@@ -199,20 +219,18 @@ class MatchDatabase(Database, ABC):
 		if source == SourceEnum.FamilyTreeDNA:
 			potential_record = self.get_record_from_match_name(parsed_record[self.format.person_name])
 
-		if potential_record is not None:
-			# name from FamilyTreeDNA does not have to be unique, compare other columns
-			for key in self.format.comparison_key(source=source):
-				if key == searched_id_type:
-					continue
-				if potential_record[key] != parsed_record[key]:
-					return None
+			if potential_record is not None:
+				# name from FamilyTreeDNA does not have to be unique, compare other columns
+				for key in self.format.comparison_key(source=source):
+					if key == searched_id_type:
+						continue
+					if potential_record[key] != parsed_record[key]:
+						return None
 
-			return potential_record[searched_id_type]
+				return potential_record[searched_id_type]
 
 		if source == SourceEnum.GEDmatch:
-			# todo create an dictionary by gedmatch identificators
-			potential_record = None
-			return potential_record
+			return self.get_record_from_gedmatch_id(parsed_record[self.format.gedmatch_kit_id])[self.format.person_id]
 			# just return the potential record gained from the method, gedmatch identificator is unique
 
 		return None

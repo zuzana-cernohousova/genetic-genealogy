@@ -1,4 +1,4 @@
-from source.parsers.match_parsers import FTDNAMatchParser
+from source.parsers.match_parsers import FTDNAMatchParser, GEDmatchMatchParser
 
 import argparse
 
@@ -19,7 +19,7 @@ if args.ftdna:
 	parser = FTDNAMatchParser()
 
 elif args.gedmatch:
-	raise NotImplementedError("Cannot parse data from GEDMATCH")
+	parser = GEDmatchMatchParser()
 
 # parse matches
 parser.parse(args.source_file)  # will always be not none, because ftdna or gedmatch is required

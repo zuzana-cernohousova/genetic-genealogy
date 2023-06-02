@@ -15,9 +15,9 @@ class Parser(ABC):
 	def _input_format(cls):
 		pass
 
-	@property
+	@classmethod
 	@abstractmethod
-	def _output_format(self):
+	def _output_format(cls):
 		"""Defines the format of the parsed data."""
 		pass
 
@@ -25,7 +25,7 @@ class Parser(ABC):
 
 	def save_to_file(self, output_filename):
 		"""Saves the result of parsing to the given file."""
-		CSVInputOutput.save_csv(self._result, self._output_format, filename=output_filename)
+		CSVInputOutput.save_csv(self._result, self._output_format(), filename=output_filename)
 
 
 class MatchParser(Parser, ABC):
@@ -34,13 +34,15 @@ class MatchParser(Parser, ABC):
 		super().__init__()
 		self.__new_matches = []
 
-	@property
-	def _output_format(self):
+	@classmethod
+	def _output_format(cls):
 		return MatchFormatEnum
 
 	@classmethod
 	@abstractmethod
 	def parse_non_id_columns(cls, record):
+		"""Parses all columns that are not defined by this application (all except for id)
+		and therefore does not require database access."""
 		pass
 
 	def parse(self, filename: str):
@@ -104,15 +106,14 @@ class MatchParser(Parser, ABC):
 
 		return result
 
-
 	def print_message(self):
 		if len(self.__new_matches) == 0:
 			print("No new matches found.")
 		else:
 			print("These new matches were found:")
 			for new_match in self.__new_matches:
-				print("id= " + str(new_match[self._output_format.person_id]) + ", name= " + new_match[
-					self._output_format.person_name])
+				print("id= " + str(new_match[self._output_format().person_id]) + ", name= " + new_match[
+					self._output_format().person_name])
 
 
 class FTDNAMatchParser(MatchParser):
@@ -138,23 +139,20 @@ class FTDNAMatchParser(MatchParser):
 
 	@classmethod
 	def parse_non_id_columns(cls, record: dict) -> dict:
-		"""Parses all columns that are not defined by this application (all except for id)
-		and therefore does not require database access."""
-
-		i_f = FTDNAMatchParser._input_format()
+		i_f = cls._input_format()
 
 		output_record = {}
-		for index in MatchFormatEnum:
+		for index in cls._output_format():
 			output_record[index] = ""
 
 		# add source name
-		output_record[MatchFormatEnum.source] = i_f.format_name()
+		output_record[cls._output_format().source] = i_f.format_name()
 
 		# create name and add it into result row
-		output_record[MatchFormatEnum.person_name] = cls.__create_name(record)
+		output_record[cls._output_format().person_name] = cls.__create_name(record)
 
 		# copy all relevant existing items from record to output record
-		for input_column_name in i_f.get_header():
+		for input_column_name in i_f:
 			item = record[input_column_name]
 
 			output_column = i_f.get_mapped_column_name(input_column_name)
@@ -166,11 +164,30 @@ class FTDNAMatchParser(MatchParser):
 		return output_record
 
 
-class GEDmatchParser(MatchParser):
+class GEDmatchMatchParser(MatchParser):
 	@classmethod
 	def _input_format(cls):
 		return GEDmatchMatchFormat
 
 	@classmethod
 	def parse_non_id_columns(cls, record):
-		pass
+		i_f = cls._input_format()
+
+		output_record = {}
+		for index in MatchFormatEnum:
+			output_record[index] = ""
+
+		# add source name
+		output_record[MatchFormatEnum.source] = i_f.format_name()
+
+		# copy all relevant existing items from record to output record
+		for input_column_name in i_f:
+			item = record[input_column_name]
+
+			output_column = i_f.get_mapped_column_name(input_column_name)
+			# output_column is of MatchFormatEnum type -> is int if is not none
+
+			if output_column is not None:
+				output_record[output_column] = "".join(item.split())
+
+		return output_record
