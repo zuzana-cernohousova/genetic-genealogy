@@ -61,7 +61,7 @@ class FTDNAMatchParser(MatchParser):
 			if not self.__input_format.validate_format(reader.fieldnames):
 				raise ValueError("Wrong input format.")
 
-			reader.fieldnames = self.get_enum_fieldnames(reader.fieldnames)
+			reader.fieldnames = self._get_enum_fieldnames(reader.fieldnames)
 
 			# for every record in the reader, parse it into the correct format and store it in the self.__result list
 			for record in reader:
@@ -146,7 +146,7 @@ class FTDNAMatchParser(MatchParser):
 		return output_record
 
 	@classmethod
-	def get_enum_fieldnames(cls, fieldnames):
+	def _get_enum_fieldnames(cls, fieldnames):
 		result = []
 		for name in fieldnames:
 			for enum_name in cls.__input_format:
