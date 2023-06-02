@@ -3,7 +3,7 @@ import re
 import sys
 from abc import ABC, abstractmethod
 
-from source.parsers.formats import MatchFormatEnum, SegmentFormatEnum
+from source.parsers.formats import MatchFormatEnum, SegmentFormatEnum, SourceEnum
 from source.config_reader import ConfigReader
 
 
@@ -192,10 +192,16 @@ class MatchDatabase(Database, ABC):
 		return None
 
 	def get_id(self, parsed_record, source, searched_id_type=MatchFormatEnum.id):
-		potential_record = self.get_record_from_match_name(parsed_record[self.format.person_name])
+		"""Gets id of just parsed record using built dictionaries."""
+		potential_record = None
+
+		# if data is from FamilyTreeDNA, search for the id in records by name
+		if source == SourceEnum.FamilyTreeDNA:
+			potential_record = self.get_record_from_match_name(parsed_record[self.format.person_name])
 
 		if potential_record is not None:
-			for key in self.format.comparison_key():
+			# name from FamilyTreeDNA does not have to be unique, compare other columns
+			for key in self.format.comparison_key(source=source):
 				if key == searched_id_type:
 					continue
 				if potential_record[key] != parsed_record[key]:
@@ -203,13 +209,18 @@ class MatchDatabase(Database, ABC):
 
 			return potential_record[searched_id_type]
 
+		if source == SourceEnum.GEDmatch:
+			# todo create an dictionary by gedmatch identificators
+			potential_record = None
+			return potential_record
+			# just return the potential record gained from the method, gedmatch identificator is unique
+
 		return None
 
 	def get_record_from_id(self, record_id):
 		"""Returns a record of given id."""
 		# todo call super().get_record_from_id(), create the method
 		# in subclasses, only specify the main id
-		# rename id to person id, so that it is clear
 
 		if self.records_by_id == {}:
 			self.__create_records_by_id_dict()
@@ -268,10 +279,10 @@ class CSVSegmentDatabase(SegmentDatabase):
 
 	def load(self):
 		self._largest_ID, self._database = CSVInputOutput.load_csv_database(
-				self.__file_name,
-				self.format,
-				self.format.segment_id
-			)
+			self.__file_name,
+			self.format,
+			self.format.segment_id
+		)
 
 	def save(self):
 		CSVInputOutput.save_csv(self._database, self.format, filename=self.__file_name)
