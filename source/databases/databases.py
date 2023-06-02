@@ -250,13 +250,13 @@ class CSVSegmentDatabase(SegmentDatabase):
 		self.__file_name = ConfigReader.get_segment_database_location()
 
 	def load(self):
-		self.largest_ID, self.database = CSVInputOutput.load_csv_database \
-				(
-				self.__file_name, SegmentFormatEnum,
-				SegmentFormatEnum.segment_id
+		self._largest_ID, self._database = CSVInputOutput.load_csv_database(
+				self.__file_name,
+				self.format,
+				self.format.segment_id
 			)
 
 	def save(self):
-		CSVInputOutput.save_csv(self.database, self.format, filename=self.__file_name)
+		CSVInputOutput.save_csv(self._database, self.format, filename=self.__file_name)
 
 # endregion
