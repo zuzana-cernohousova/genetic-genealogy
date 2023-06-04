@@ -19,7 +19,7 @@ class CSVInputOutput:
 		try:
 			with open(filename, 'r', encoding="utf-8-sig") as input_file:
 				reader = csv.DictReader(input_file)
-				CSVInputOutput.__replace_fieldnames(reader, database_format)
+				reader.fieldnames = CSVInputOutput.__get_new_fieldnames(reader.fieldnames, database_format)
 
 				for record in reader:
 					record_id = int(record[searched_id])
@@ -35,31 +35,31 @@ class CSVInputOutput:
 		return biggest_id, result
 
 	@staticmethod
-	def load_csv(filename, input_format_enum):
+	def load_csv(filename, input_format_enum) -> list:
 		"""Simply loads a csv file, returns it as a list of dictionaries,
 		where keys are replaced with input_format_enum values."""
 		result = []
 		with open(filename, 'r', encoding="utf-8-sig") as input_file:
 			reader = csv.DictReader(input_file)
-			CSVInputOutput.__replace_fieldnames(reader, input_format_enum)
+			reader.fieldnames = CSVInputOutput.__get_new_fieldnames(reader, input_format_enum)
 
 			for record in reader:
 				result.append(record)
 		return result
 
 	@staticmethod
-	def __replace_fieldnames(dict_reader, input_format_enum):
+	def __get_new_fieldnames(fieldnames, input_format_enum):
 		new_fieldnames = []
 
 		# replace fieldnames with enum values
-		if dict_reader.fieldnames is not None:
-			for index in dict_reader.fieldnames:
+		if fieldnames is not None:
+			for index in fieldnames:
 				for value in input_format_enum:
 					if value.name == index:
 						new_fieldnames.append(value)
 						break
 
-		dict_reader.fieldnames = new_fieldnames
+		return new_fieldnames
 
 	@staticmethod
 	def save_csv(database, database_format, filename=None):
