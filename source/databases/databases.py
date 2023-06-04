@@ -211,7 +211,7 @@ class MatchDatabase(Database, ABC):
 
 		return None
 
-	def get_id(self, parsed_record, source, searched_id_type=MatchFormatEnum.person_id):
+	def get_id(self, parsed_record, source, searched_id_type=MatchFormatEnum.person_id) -> int | None:
 		"""Gets id of just parsed record using built dictionaries."""
 		potential_record = None
 
@@ -219,25 +219,25 @@ class MatchDatabase(Database, ABC):
 		if source == SourceEnum.FamilyTreeDNA:
 			potential_record = self.get_record_from_match_name(parsed_record[self.format.person_name])
 
-			if potential_record is not None:
-				# name from FamilyTreeDNA does not have to be unique, compare other columns
-				for key in self.format.comparison_key(source=source):
-					if key == searched_id_type:
-						continue
-					if potential_record[key] != parsed_record[key]:
-						return None
+		elif source == SourceEnum.GEDmatch:
+			potential_record = self.get_record_from_gedmatch_id(parsed_record[self.format.gedmatch_kit_id])
 
-				return potential_record[searched_id_type]
+		if potential_record is not None:
+			# compare other key values, all must be the same as in found record
+			for key in self.format.comparison_key(source=source):
+				if key == searched_id_type:
+					continue
+				if potential_record[key] != parsed_record[key]:
+					return None
 
-		if source == SourceEnum.GEDmatch:
-			return self.get_record_from_gedmatch_id(parsed_record[self.format.gedmatch_kit_id])[self.format.person_id]
-			# just return the potential record gained from the method, gedmatch identificator is unique
+			# only return the id if all columns match
+			return int(potential_record[searched_id_type])
 
 		return None
 
 	def get_record_from_id(self, record_id):
 		"""Returns a record of given id."""
-		# todo call super().get_record_from_id(), create the method
+		# todo super().get_record_from_id(), create the method
 		# in subclasses, only specify the main id
 
 		if self.records_by_id == {}:
