@@ -46,6 +46,8 @@ class MatchFormatEnum(FormatEnum):
 
 		return [cls.person_id]
 
+	# todo rework the column set
+
 	person_id = 0
 	person_name = 1
 	source = 2
@@ -128,31 +130,6 @@ class ClusterFormatEnum(FormatEnum):
 	person_name = 2
 
 
-# todo all columns?
-# source = 3
-# total_cm = 4
-# largest_segment_cm = 5
-# mt_haplogroup = 6
-# y_haplogroup = 7
-# x_total_cm = 8
-# kit_age = 9
-# generations = 10
-# match_number = 11
-# kit_id = 12
-# e_mail = 13
-# ged_wiki_tree = 14
-# sex = 15
-# x_largest_segment_cm = 16
-# ged_match_source = 17
-# snps_overlap = 18
-# match_date = 19
-# relationship_range = 20
-# linked_relationship = 21
-# ancestral_surnames = 22
-# notes = 23
-# matching_bucket = 24
-
-
 # endregion
 
 
@@ -171,7 +148,8 @@ class InputFormat(StrEnum):
 		"""Represents the mapping between the source format and the corresponding
 		final, app defined format."""
 		raise NotImplementedError()
-		# should not use the abstractmethod decorator, when metaclass is not ABCMeta --> must be overriden or will be error
+
+	# should not use the abstractmethod decorator, when metaclass is not ABCMeta --> must be overriden or will be error
 
 	@classmethod
 	def format_name(cls) -> str:
@@ -184,22 +162,22 @@ class InputFormat(StrEnum):
 	def validate_format(cls, other_header):
 		"""Check if header contains all columns, if not or contains a wrong column, return False.
 		If order is different, create a mapping with the right order."""
-		# todo implement in child classes and check only if necessary columns are there
 
-		lowercase_nowhitespace_header = ["".join(item.split()).lower() for item in cls]
+		# for all necessary columns - lowercase them and get rid of all whitespaces
+		lowercase_nowhitespace_minimal_column_set = {"".join(item.split()).lower() for item in
+													 cls.get_minimal_column_set()}
 
-		if len(other_header) != len(cls):
-			return False
+		# the same for the other header
+		lowercase_nowhitespace_other_header_set = {"".join(item.split()).lower() for item in
+											   other_header}
 
-		for item in other_header:
-			item = "".join(item.split()).lower()
+		# if the minimal column set is a subset of the other header set, it is OK
+		if lowercase_nowhitespace_minimal_column_set.issubset(lowercase_nowhitespace_other_header_set):
+			# additional columns are not detected and given the implementation
+			# of the methods using the formats, it should not be a problem
+			return True
 
-			# todo store wrong column name
-
-			if item not in lowercase_nowhitespace_header:
-				return False
-
-		return True
+		return False
 
 	@classmethod
 	def get_mapped_column_name(cls, source_column_name):
@@ -212,7 +190,10 @@ class InputFormat(StrEnum):
 	@classmethod
 	def get_source_id(cls) -> SourceEnum:
 		raise NotImplementedError()
-		# same as get_header()
+
+	@classmethod
+	def get_minimal_column_set(cls) -> set:
+		raise NotImplementedError()
 
 
 # region Match formats
@@ -256,6 +237,13 @@ class FTDNAMatchFormat(InputFormat):
 	matching_bucket = 'Matching Bucket'
 	x_match = 'X-Match'
 
+	@classmethod
+	def get_minimal_column_set(cls) -> set:
+		return {
+			cls.first_name, cls.middle_name, cls.last_name,
+			cls.shared_DNA, cls.longest_block, cls.x_match
+		}
+
 
 class GEDmatchMatchFormat(InputFormat):
 	"""Describes the format of matches downloaded from GEDmatch."""
@@ -295,6 +283,12 @@ class GEDmatchMatchFormat(InputFormat):
 	created_date = "CreatedDate"
 	test_company = "TestCompany"
 
+	@classmethod
+	def get_minimal_column_set(cls) -> set:
+		return {
+			cls.matched_kit, cls.largest_segment, cls.total_cm, cls.x_largest_segment_cm, cls.total_x_cm, cls.test_company
+		}
+
 
 # endregion
 
@@ -325,6 +319,12 @@ class FTDNASegmentFormat(InputFormat):
 	matching_snps = 'Matching SNPs'
 
 	person_identifier = match_name
+
+	@classmethod
+	def get_minimal_column_set(cls) -> set:
+		return {
+			cls.match_name, cls.chromosome, cls.start_location, cls.end_location, cls.centimorgans, cls.matching_snps
+		}
 
 
 class ListCSV_GEDmatchSegmentFormat(InputFormat):
@@ -365,6 +365,12 @@ class ListCSV_GEDmatchSegmentFormat(InputFormat):
 
 	person_identifier = matched_kit
 
+	@classmethod
+	def get_minimal_column_set(cls) -> set:
+		return {
+			cls.matched_kit, cls.chromosome, cls.start_location, cls.end_location, cls.centimorgans, cls.matching_snps
+		}
+
 
 class SegmentSearch_GEDmatchSegmentFormat(InputFormat):
 	"""Describes the format of segments downloaded from GEDmatch using segemnt search feature."""
@@ -396,6 +402,12 @@ class SegmentSearch_GEDmatchSegmentFormat(InputFormat):
 	matched_email = "MatchedEmail"
 
 	person_identifier = matched_kit
+
+	@classmethod
+	def get_minimal_column_set(cls) -> set:
+		return {
+			cls.matched_kit, cls.chromosome, cls.start_location, cls.end_location, cls.centimorgans, cls.matching_snps
+		}
 
 # endregion
 # endregion
