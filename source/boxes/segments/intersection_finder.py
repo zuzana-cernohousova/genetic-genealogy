@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from source.config_reader import ConfigReader
-from source.databases.databases import CSVInputOutput
+from source.databases.match_database import CSVInputOutput
 from source.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatEnum
 
 

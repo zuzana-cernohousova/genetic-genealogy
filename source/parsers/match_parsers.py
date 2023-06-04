@@ -2,7 +2,7 @@ import csv
 import re
 from abc import ABC, abstractmethod
 
-from source.databases.databases import CSVMatchDatabase, CSVInputOutput
+from source.databases.match_database import CSVMatchDatabase, CSVInputOutput
 from source.parsers.formats import FTDNAMatchFormatEnum, MatchFormatEnum, GEDmatchMatchFormatEnum
 
 
