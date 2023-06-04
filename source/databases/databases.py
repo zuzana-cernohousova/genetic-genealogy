@@ -120,7 +120,7 @@ class Database(ABC):
 				if index == searched_id_type:
 					continue
 
-				if old_record[index] != parsed_record[index]:
+				if str(old_record[index]) != str(parsed_record[index]):
 					match = False
 					break
 
@@ -161,7 +161,7 @@ class MatchDatabase(Database, ABC):
 		"""Creates a dictionary of person IDs. The keys are person IDs."""
 		result = {}
 		for row in self._database:
-			result[row[self.format.person_id]] = row
+			result[int(row[self.format.person_id])] = row
 
 		self.records_by_id = result
 
@@ -231,7 +231,7 @@ class MatchDatabase(Database, ABC):
 		# in subclasses, only specify the main id
 		# used in shared matches parsing
 
-		if self.records_by_id == {}:
+		if self.records_by_id is None:
 			self.__create_records_by_id_dict()
 
 		if record_id in self.records_by_id.keys():

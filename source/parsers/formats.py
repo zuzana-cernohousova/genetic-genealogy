@@ -300,7 +300,6 @@ class GEDmatchMatchFormat(InputFormat):
 
 # region Segment formats
 
-
 class FTDNASegmentFormat(InputFormat):
 	"""Describes the format of segments downloaded from FamilyTreeDNA."""
 
@@ -324,6 +323,8 @@ class FTDNASegmentFormat(InputFormat):
 	end_location = 'End Location'
 	centimorgans = 'Centimorgans'
 	matching_snps = 'Matching SNPs'
+
+	person_identifier = match_name
 
 
 class ListCSV_GEDmatchSegmentFormat(InputFormat):
@@ -357,9 +358,12 @@ class ListCSV_GEDmatchSegmentFormat(InputFormat):
 	matched_sex = "Matched Sex"
 	matched_email = "MatchedEmail"
 	total_cm = "Total CM"
+	created_date = "CreatedDate"
 	y_haplogroup = "Y - Haplogroup"
 	mt_haplogroup = "MT - Haplogroup"
 	test_company = "TestCompany"
+
+	person_identifier = matched_kit
 
 
 class SegmentSearch_GEDmatchSegmentFormat(InputFormat):
@@ -372,6 +376,7 @@ class SegmentSearch_GEDmatchSegmentFormat(InputFormat):
 	@classmethod
 	def mapping(cls):
 		return {
+			# person name is not matched to matched name, name will be extracted from database
 			cls.chromosome: SegmentFormatEnum.chromosome_id,
 			cls.start_location: SegmentFormatEnum.start,
 			cls.end_location: SegmentFormatEnum.end,
@@ -384,11 +389,13 @@ class SegmentSearch_GEDmatchSegmentFormat(InputFormat):
 	chromosome = "chr"
 	start_location = "Start"
 	end_location = "End"
-	centimorgans = "segment CM"
+	centimorgans = "segment cM"
 	matching_snps = "SNPs"
 	matched_name = "MatchedName"
 	matched_sex = "Matched Sex"
 	matched_email = "MatchedEmail"
+
+	person_identifier = matched_kit
 
 # endregion
 # endregion
