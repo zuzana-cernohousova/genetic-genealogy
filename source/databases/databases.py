@@ -227,9 +227,6 @@ class MatchDatabase(Database, ABC):
 
 	def get_record_from_id(self, record_id) -> dict | None:
 		"""Returns a record of given id."""
-		# todo super().get_record_from_id(), create the method
-		# in subclasses, only specify the main id
-		# used in shared matches parsing
 
 		if self.records_by_id is None:
 			self.__create_records_by_id_dict()

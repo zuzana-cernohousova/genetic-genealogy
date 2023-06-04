@@ -93,7 +93,8 @@ class MatchParser(Parser, ABC):
 		# if new records were found during parsing, save the database
 		if new_records_found:
 			existing_records.save()
-			# todo save updates
+			# todo save updates?
+			# only updates in non primary columns?
 
 	@classmethod
 	def __get_enum_fieldnames(cls, fieldnames) -> list:

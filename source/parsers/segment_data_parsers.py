@@ -148,8 +148,7 @@ class FTDNASegmentParser(SegmentParser):
 		else:
 			print("These names could not be identified:")
 			for name in self._unidentified_identifiers:
-				print(name)
-		# todo print also name if from GEDmatch
+				print("name= " + name)
 
 
 class GEDmatchSegmentParser(SegmentParser, ABC):
@@ -174,7 +173,7 @@ class GEDmatchSegmentParser(SegmentParser, ABC):
 		else:
 			print("These kit numbers could not be identified:")
 			for kit_number in self._unidentified_identifiers:
-				print(kit_number.strip())
+				print("kit_id= "+kit_number.strip())
 
 
 class ListCSV_GEDmatchSegmentParser(GEDmatchSegmentParser):
