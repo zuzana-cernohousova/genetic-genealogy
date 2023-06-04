@@ -2,7 +2,7 @@ import csv
 from abc import ABC, abstractmethod
 
 from source.parsers.match_parsers import CSVMatchDatabase, FTDNAMatchParser, Parser
-from source.parsers.formats import SharedMatchesFormatEnum, FTDNAMatchFormat, MatchFormatEnum
+from source.parsers.formats import SharedMatchesFormatEnum, FTDNAMatchFormatEnum, MatchFormatEnum
 
 
 class SharedMatchesParser(Parser, ABC):
@@ -35,7 +35,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 
 	@classmethod
 	def _input_format(cls):
-		return FTDNAMatchFormat
+		return FTDNAMatchFormatEnum
 
 	def __init__(self):
 		super().__init__()

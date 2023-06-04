@@ -135,7 +135,7 @@ class ClusterFormatEnum(FormatEnum):
 
 # region Source formats
 
-class InputFormat(StrEnum):
+class InputFormatEnum(StrEnum):
 	"""Child classes of this class define formats of input data of this application."""
 
 	@classmethod
@@ -198,7 +198,7 @@ class InputFormat(StrEnum):
 
 # region Match formats
 
-class FTDNAMatchFormat(InputFormat):
+class FTDNAMatchFormatEnum(InputFormatEnum):
 	"""Describes the format of matches downloaded from FamilyTreeDNA."""
 
 	@classmethod
@@ -245,7 +245,7 @@ class FTDNAMatchFormat(InputFormat):
 		}
 
 
-class GEDmatchMatchFormat(InputFormat):
+class GEDmatchMatchFormatEnum(InputFormatEnum):
 	"""Describes the format of matches downloaded from GEDmatch."""
 
 	@classmethod
@@ -294,7 +294,7 @@ class GEDmatchMatchFormat(InputFormat):
 
 # region Segment formats
 
-class FTDNASegmentFormat(InputFormat):
+class FTDNASegmentFormatEnum(InputFormatEnum):
 	"""Describes the format of segments downloaded from FamilyTreeDNA."""
 
 	@classmethod
@@ -327,7 +327,7 @@ class FTDNASegmentFormat(InputFormat):
 		}
 
 
-class ListCSV_GEDmatchSegmentFormat(InputFormat):
+class ListCSV_GEDmatchSegmentFormatEnum(InputFormatEnum):
 	"""Describes the format of segments downloaded from GEDmatch using List/CSV feature."""
 
 	@classmethod
@@ -372,7 +372,7 @@ class ListCSV_GEDmatchSegmentFormat(InputFormat):
 		}
 
 
-class SegmentSearch_GEDmatchSegmentFormat(InputFormat):
+class SegmentSearch_GEDmatchSegmentFormatEnum(InputFormatEnum):
 	"""Describes the format of segments downloaded from GEDmatch using segemnt search feature."""
 
 	@classmethod

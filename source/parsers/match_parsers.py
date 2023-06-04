@@ -3,7 +3,7 @@ import re
 from abc import ABC, abstractmethod
 
 from source.databases.databases import CSVMatchDatabase, CSVInputOutput
-from source.parsers.formats import FTDNAMatchFormat, MatchFormatEnum, GEDmatchMatchFormat
+from source.parsers.formats import FTDNAMatchFormatEnum, MatchFormatEnum, GEDmatchMatchFormatEnum
 
 
 class Parser(ABC):
@@ -120,7 +120,7 @@ class FTDNAMatchParser(MatchParser):
 
 	@classmethod
 	def _input_format(cls):
-		return FTDNAMatchFormat
+		return FTDNAMatchFormatEnum
 
 	@classmethod
 	def __create_name(cls, row: dict) -> str:
@@ -166,7 +166,7 @@ class FTDNAMatchParser(MatchParser):
 class GEDmatchMatchParser(MatchParser):
 	@classmethod
 	def _input_format(cls):
-		return GEDmatchMatchFormat
+		return GEDmatchMatchFormatEnum
 
 	@classmethod
 	def parse_non_id_columns(cls, record) -> dict:

@@ -3,7 +3,7 @@ import re
 from abc import ABC, abstractmethod
 
 from source.databases.databases import CSVMatchDatabase, CSVSegmentDatabase
-from source.parsers.formats import FTDNASegmentFormat, ListCSV_GEDmatchSegmentFormat, SegmentSearch_GEDmatchSegmentFormat, SegmentFormatEnum
+from source.parsers.formats import FTDNASegmentFormatEnum, ListCSV_GEDmatchSegmentFormatEnum, SegmentSearch_GEDmatchSegmentFormatEnum, SegmentFormatEnum
 from source.parsers.match_parsers import Parser
 
 
@@ -134,7 +134,7 @@ class FTDNASegmentParser(SegmentParser):
 
 	@classmethod
 	def _input_format(cls):
-		return FTDNASegmentFormat
+		return FTDNASegmentFormatEnum
 
 	@classmethod
 	def _find_person_id(cls, match_database: CSVMatchDatabase, record: dict) -> int | None:
@@ -164,10 +164,10 @@ class GEDmatchSegmentParser(SegmentParser, ABC):
 class ListCSV_GEDmatchSegmentParser(GEDmatchSegmentParser):
 	@classmethod
 	def _input_format(cls):
-		return ListCSV_GEDmatchSegmentFormat
+		return ListCSV_GEDmatchSegmentFormatEnum
 
 
 class SegmentSearch_GEDmatchSegmentParser(GEDmatchSegmentParser):
 	@classmethod
 	def _input_format(cls):
-		return SegmentSearch_GEDmatchSegmentFormat
+		return SegmentSearch_GEDmatchSegmentFormatEnum
