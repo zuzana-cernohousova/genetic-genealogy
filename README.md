@@ -97,7 +97,12 @@ Program načte data ze vstupního souboru (první argument) a uloží je do
 souboru výstupního za argumentem _-of/--output_file_ ve správném formátu.
 V případě, že výstupní soubor není specifikován, data jsou vypsána na standardní výstup.
 
-Jedním z argumentů *--ftdna* nebo *--gedmatch* specifikujte zdrojovou databázi.
+Argumentem _--ftdna_ specifikujete, že data pochází z databáze společnosti FamilyTreeDNA.
+Argumetny _-gl/--gedmatch_list_csv_ nebo _-gss/--gedmatch_segment_search_ specifikujete,
+že data pochází z databáze GEDmatch a konkrétnění argument _-gl_ znamená,
+že data pochází z Tier 1 nástroje Matched Segment List pod záložkou
+Visualization Options/List/CSV, a _-gss_, že data pochází z Tier 1 nástroje Segment Search
+pod záložkami Visualization Options/Chromosomes & Segments.
 
 Pokud je zdrojem FamilyTreeDNA, je jméno každé osoby, se kterou POI sdílí segment, vyhledáno 
 v "databázi" za cestou definovanou v konfiguračním souboru [settings.ini](settings.ini)
@@ -119,7 +124,9 @@ Použití:
 
     parse_segments.py input_file_from_FTDNA -of output_file --ftdna -v
 
-    parse_segments.py input_file_from_GEDmatch --gedmatch
+    parse_segments.py input_file_from_GEDmatch_segment_searched -gss
+
+    parse_segments.py input_file_from_GEDmatch_listcsv -gl
 
 ## Hledání průniků segmentů
 Skript *[find_segment_intersections.py](source/usage/find_segment_intersections.py)* umožňuje najít průniky segmentů.
