@@ -21,8 +21,6 @@ class Parser(ABC):
 		"""Defines the format of the parsed data."""
 		pass
 
-	# todo change to class attribute
-
 	def save_to_file(self, output_filename) -> None:
 		"""Saves the result of parsing to the given file."""
 		CSVInputOutput.save_csv(self._result, self._output_format(), filename=output_filename)
