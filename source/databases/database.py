@@ -23,8 +23,9 @@ class Database(ABC):
 		pass
 
 	def get_id(self, parsed_record, source, searched_id_type) -> int | None:
-		""" If the parsed_record already exists,
-		finds it and returns the record ID (type of id specified by the searched_id_type
+		"""If the parsed_record already exists,
+		finds it by linearly going through the database and returns
+		the record ID (type of id specified by the searched_id_type
 		parameter), else returns None."""
 		match_record_id = None
 
