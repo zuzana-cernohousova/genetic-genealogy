@@ -325,5 +325,70 @@ class FTDNASegmentFormat(InputFormat):
 	centimorgans = 'Centimorgans'
 	matching_snps = 'Matching SNPs'
 
+
+class ListCSV_GEDmatchSegmentFormat(InputFormat):
+	"""Describes the format of segments downloaded from GEDmatch using List/CSV feature."""
+
+	@classmethod
+	def get_source_id(cls):
+		return SourceEnum.GEDmatch
+
+	@classmethod
+	def mapping(cls):
+		return {
+			cls.chromosome: SegmentFormatEnum.chromosome_id,
+			cls.start_location: SegmentFormatEnum.start,
+			cls.end_location: SegmentFormatEnum.end,
+			cls.centimorgans: SegmentFormatEnum.length_cm,
+			cls.matching_snps: SegmentFormatEnum.snps
+		}
+
+	primary_kit = "PrimaryKit"
+	primary_name = "PrimaryName"
+	primary_sex = "Primary Sex"
+	primary_email = "PrimaryEmail"
+	matched_kit = "MatchedKit"
+	chromosome = "chr"
+	start_location = "B37Start"
+	end_location = "B37End"
+	centimorgans = "segment CM"
+	matching_snps = "SNPs"
+	matched_name = "MatchedName"
+	matched_sex = "Matched Sex"
+	matched_email = "MatchedEmail"
+	total_cm = "Total CM"
+	y_haplogroup = "Y - Haplogroup"
+	mt_haplogroup = "MT - Haplogroup"
+	test_company = "TestCompany"
+
+
+class SegmentSearch_GEDmatchSegmentFormat(InputFormat):
+	"""Describes the format of segments downloaded from GEDmatch using segemnt search feature."""
+
+	@classmethod
+	def get_source_id(cls):
+		return SourceEnum.GEDmatch
+
+	@classmethod
+	def mapping(cls):
+		return {
+			cls.chromosome: SegmentFormatEnum.chromosome_id,
+			cls.start_location: SegmentFormatEnum.start,
+			cls.end_location: SegmentFormatEnum.end,
+			cls.centimorgans: SegmentFormatEnum.length_cm,
+			cls.matching_snps: SegmentFormatEnum.snps
+		}
+
+	primary_kit = "PrimaryKit"
+	matched_kit = "MatchedKit"
+	chromosome = "chr"
+	start_location = "Start"
+	end_location = "End"
+	centimorgans = "segment CM"
+	matching_snps = "SNPs"
+	matched_name = "MatchedName"
+	matched_sex = "Matched Sex"
+	matched_email = "MatchedEmail"
+
 # endregion
 # endregion
