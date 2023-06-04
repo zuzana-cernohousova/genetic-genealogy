@@ -23,9 +23,7 @@ class FTDNASegmentParser(SegmentParser):
 		self.__unidentified_names = []
 		self.__new_segments_found = False
 
-	__input_format = FTDNASegmentFormat
-
-	def parse(self, filename: str):
+	def parse(self, filename: str) -> None:
 		# create and load databases
 		existing_matches = CSVMatchDatabase()
 		existing_matches.load()
@@ -40,7 +38,7 @@ class FTDNASegmentParser(SegmentParser):
 			reader = csv.DictReader(input_file)
 
 			# check if the file is in the correct format
-			if not self.__input_format.validate_format(reader.fieldnames):
+			if not self._input_format().validate_format(reader.fieldnames):
 				raise ValueError("Wrong input format.")
 
 			reader.fieldnames = self._get_enum_fieldnames(reader.fieldnames)
@@ -69,7 +67,7 @@ class FTDNASegmentParser(SegmentParser):
 					output_segment[index] = ""
 
 				# add SOURCE name
-				output_segment[self._output_format.source] = self.__input_format.format_name()
+				output_segment[self._output_format.source] = self._input_format().format_name()
 
 				# add NAME, ID to result
 				output_segment[self._output_format.person_name] = name
@@ -79,7 +77,7 @@ class FTDNASegmentParser(SegmentParser):
 				for input_column_name in reader.fieldnames:
 					item = record[input_column_name]
 
-					output_column = self.__input_format.get_mapped_column_name(input_column_name)
+					output_column = self._input_format().get_mapped_column_name(input_column_name)
 					# output_column is of SegmentFormatEnum type -> is int if is not none
 
 					if output_column is not None:
@@ -88,7 +86,7 @@ class FTDNASegmentParser(SegmentParser):
 				# get and add SEGMENT ID
 				segment_id = existing_segments.get_id(
 					output_segment,
-					self.__input_format.get_source_id(),
+					self._input_format().get_source_id(),
 					self._output_format.segment_id
 				)
 
@@ -110,7 +108,11 @@ class FTDNASegmentParser(SegmentParser):
 			self.__new_segments_found = True
 			existing_segments.save()
 
-	def print_message(self):
+	@classmethod
+	def _input_format(cls):
+		return FTDNASegmentFormat
+
+	def print_message(self) -> None:
 		"""Prints information if new segments were added to the database.
 		Prints names of all the people who were not identified based on their names, if any were not."""
 
@@ -129,14 +131,14 @@ class FTDNASegmentParser(SegmentParser):
 				print(name)
 
 	@classmethod
-	def __create_name(cls, record: dict):
-		return re.sub(' +', ' ', record[cls.__input_format.match_name])
+	def __create_name(cls, record: dict) -> str:
+		return re.sub(' +', ' ', record[cls._input_format().match_name])
 
 	@classmethod
-	def _get_enum_fieldnames(cls, fieldnames):
+	def _get_enum_fieldnames(cls, fieldnames) -> list:
 		result = []
 		for name in fieldnames:
-			for enum_name in cls.__input_format:
+			for enum_name in cls._input_format():
 				if "".join(name.split()).lower() == "".join(enum_name.split()).lower():
 					result.append(enum_name)
 

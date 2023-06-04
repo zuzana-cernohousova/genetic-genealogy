@@ -33,14 +33,16 @@ class SharedMatchesParser(Parser, ABC):
 class FTDNASharedMatchesParser(SharedMatchesParser):
 	"""Parses shared matches data from the FamilyTreeDNA database."""
 
+	@classmethod
+	def _input_format(cls):
+		return FTDNAMatchFormat
+
 	def __init__(self):
 		super().__init__()
 
 		self.__primary_matches_not_found = []
 		self.__secondary_matches_not_found = []
 		self.__already_found_pairs = []
-
-	__input_format = FTDNAMatchFormat
 
 	def load_primary_matches(self, csv_config_filename):
 		with open(csv_config_filename, 'r', encoding="utf-8-sig") as input_file:
@@ -60,7 +62,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 
 				self._primary_matches[(ID, name)] = row["file"]
 
-	def parse(self, filename):
+	def parse(self, filename) -> None:
 
 		self.load_primary_matches(filename)
 
@@ -98,7 +100,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 			with open(self._primary_matches[key], 'r', encoding="utf-8-sig") as file:
 				reader = csv.DictReader(file)
 
-				if not self.__input_format.validate_format(reader.fieldnames):
+				if not self._input_format().validate_format(reader.fieldnames):
 					raise ValueError("Wrong input format.")
 
 				for row in reader:
@@ -108,7 +110,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 					# find secondary match id in all matches
 					secondary_match_id = existing_matches.get_id(
 						secondary_match,
-						self.__input_format.get_source_id(),
+						self._input_format().get_source_id(),
 						MatchFormatEnum.person_id
 					)
 
@@ -137,7 +139,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 
 					self._result.append(output_row)
 
-	def print_message(self):
+	def print_message(self) -> None:
 		"""Prints which matches were not identified in matches database if any were not."""
 
 		if len(self.__primary_matches_not_found) == 0 and len(self.__secondary_matches_not_found) == 0:

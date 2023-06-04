@@ -23,7 +23,7 @@ class Parser(ABC):
 
 	# todo change to class attribute
 
-	def save_to_file(self, output_filename):
+	def save_to_file(self, output_filename) -> None:
 		"""Saves the result of parsing to the given file."""
 		CSVInputOutput.save_csv(self._result, self._output_format(), filename=output_filename)
 
@@ -40,12 +40,12 @@ class MatchParser(Parser, ABC):
 
 	@classmethod
 	@abstractmethod
-	def parse_non_id_columns(cls, record):
+	def parse_non_id_columns(cls, record) -> dict:
 		"""Parses all columns that are not defined by this application (all except for id)
 		and therefore does not require database access."""
 		pass
 
-	def parse(self, filename: str):
+	def parse(self, filename: str) -> None:
 		"""Reads the file under filename and parses the records into
 		the format specified by MatchFormatEnum."""
 
@@ -97,7 +97,7 @@ class MatchParser(Parser, ABC):
 			existing_records.save()
 
 	@classmethod
-	def __get_enum_fieldnames(cls, fieldnames):
+	def __get_enum_fieldnames(cls, fieldnames) -> list:
 		result = []
 		for name in fieldnames:
 			for enum_name in cls._input_format():
@@ -106,7 +106,7 @@ class MatchParser(Parser, ABC):
 
 		return result
 
-	def print_message(self):
+	def print_message(self) -> None:
 		if len(self.__new_matches) == 0:
 			print("No new matches found.")
 		else:
@@ -124,7 +124,7 @@ class FTDNAMatchParser(MatchParser):
 		return FTDNAMatchFormat
 
 	@classmethod
-	def __create_name(cls, row: dict):
+	def __create_name(cls, row: dict) -> str:
 		"""Create unified name from name columns."""
 
 		# these values will be used for creating name
@@ -170,7 +170,7 @@ class GEDmatchMatchParser(MatchParser):
 		return GEDmatchMatchFormat
 
 	@classmethod
-	def parse_non_id_columns(cls, record):
+	def parse_non_id_columns(cls, record) -> dict:
 		i_f = cls._input_format()
 
 		output_record = {}

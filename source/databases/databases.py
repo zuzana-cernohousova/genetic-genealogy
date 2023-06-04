@@ -48,7 +48,7 @@ class CSVInputOutput:
 		return result
 
 	@staticmethod
-	def __get_new_fieldnames(fieldnames, input_format_enum):
+	def __get_new_fieldnames(fieldnames, input_format_enum) -> list:
 		new_fieldnames = []
 
 		# replace fieldnames with enum values
@@ -62,7 +62,7 @@ class CSVInputOutput:
 		return new_fieldnames
 
 	@staticmethod
-	def save_csv(database, database_format, filename=None):
+	def save_csv(database, database_format, filename=None) -> None:
 		"""Saves the database to the given csv file or to standard output if no file is given."""
 
 		# no filename given --> write to stdout
@@ -75,7 +75,7 @@ class CSVInputOutput:
 				CSVInputOutput.__write_to_writer(database, database_format, csv.writer(output_file))
 
 	@staticmethod
-	def __write_to_writer(database, database_format, writer):
+	def __write_to_writer(database, database_format, writer) -> None:
 		writer.writerow(database_format.get_header())
 
 		for row in database:
@@ -96,17 +96,17 @@ class Database(ABC):
 		pass
 
 	@abstractmethod
-	def save(self):
+	def save(self) -> None:
 		"""Saves the database."""
 		pass
 
 	@property
 	@abstractmethod
-	def format(self):
+	def format(self) -> SegmentFormatEnum | MatchFormatEnum :
 		"""Represents the format of the database."""
 		pass
 
-	def get_id(self, parsed_record, source, searched_id_type):
+	def get_id(self, parsed_record, source, searched_id_type) -> int | None:
 		""" If the parsed_record already exists,
 		finds it and returns the record ID (type of id specified by the searched_id_type
 		parameter), else returns None."""
@@ -130,24 +130,14 @@ class Database(ABC):
 
 		return match_record_id
 
-	def get_new_id(self):
+	def get_new_id(self) -> int:
 		"""Creates a new maximum ID and returns it."""
 		self._largest_ID += 1
 		return self._largest_ID
 
-	def add_record(self, complete_parsed_record):
+	def add_record(self, complete_parsed_record: dict) -> None:
 		"""Adds a complete parsed record to the database list."""
 		self._database.append(complete_parsed_record)
-
-	def get_record_from_column(self, value, column):
-		"""Returns a record with the given value in the given column."""
-		# todo remove, unused
-
-		for record in self._database:
-			if record[column] == value:
-				return record
-
-		return None
 
 
 # region match databases
@@ -159,7 +149,7 @@ class MatchDatabase(Database, ABC):
 		self.records_by_id = None
 		self.records_by_gedmatch_id = None
 
-	def __create_records_by_name_dict(self):
+	def __create_records_by_name_dict(self) -> None:
 		"""Creates a dictionary of person IDs. The keys are person names."""
 		result = {}
 		for row in self._database:
@@ -167,7 +157,7 @@ class MatchDatabase(Database, ABC):
 
 		self.records_by_name = result
 
-	def __create_records_by_id_dict(self):
+	def __create_records_by_id_dict(self) -> None:
 		"""Creates a dictionary of person IDs. The keys are person IDs."""
 		result = {}
 		for row in self._database:
@@ -175,7 +165,7 @@ class MatchDatabase(Database, ABC):
 
 		self.records_by_id = result
 
-	def __create_records_by_gedmatch_id_dict(self):
+	def __create_records_by_gedmatch_id_dict(self) -> None:
 		"""Creates a dictionary of person IDs. The keys are the GEDmatch identificators."""
 		result = {}
 		for row in self._database:
@@ -187,7 +177,7 @@ class MatchDatabase(Database, ABC):
 	def format(self):
 		return MatchFormatEnum
 
-	def get_record_from_match_name(self, match_name):
+	def get_record_from_match_name(self, match_name) -> dict | None:
 		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
 
 		if self.records_by_name is None:
@@ -200,7 +190,7 @@ class MatchDatabase(Database, ABC):
 
 		return None
 
-	def get_record_from_gedmatch_id(self, match_gedmatch_id):
+	def get_record_from_gedmatch_id(self, match_gedmatch_id) -> dict | None:
 		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
 
 		if self.records_by_gedmatch_id is None:
@@ -235,10 +225,11 @@ class MatchDatabase(Database, ABC):
 
 		return None
 
-	def get_record_from_id(self, record_id):
+	def get_record_from_id(self, record_id) -> dict | None:
 		"""Returns a record of given id."""
 		# todo super().get_record_from_id(), create the method
 		# in subclasses, only specify the main id
+		# used in shared matches parsing
 
 		if self.records_by_id == {}:
 			self.__create_records_by_id_dict()

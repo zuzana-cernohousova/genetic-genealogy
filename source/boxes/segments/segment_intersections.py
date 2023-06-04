@@ -7,11 +7,11 @@ from source.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatE
 
 class IntersectionFinder(ABC):
 	@abstractmethod
-	def load_segments(self, source):
+	def load_segments(self, source) -> None:
 		pass
 
 	@abstractmethod
-	def save_intersections(self, result, output_destination):
+	def save_intersections(self, result, output_destination) -> None:
 		pass
 
 	def __init__(self):
@@ -23,12 +23,12 @@ class IntersectionFinder(ABC):
 	__segment_format = SegmentFormatEnum
 	__output_format = SegmentIntersectionFormatEnum
 
-	def _create_segments_by_id(self):
+	def _create_segments_by_id(self)  -> None:
 		for segment in self._segments:
 			# create a dict where ids are keys
 			self._segments_by_id[segment[self.__segment_format.segment_id]] = segment
 
-	def _create_segments_by_chromosome(self):
+	def _create_segments_by_chromosome(self) -> None:
 		# create a dict where chromosome ids are keys and values are lists of segments
 		# will be used for faster computation
 		for segment in self._segments:
@@ -38,7 +38,7 @@ class IntersectionFinder(ABC):
 			else:
 				self._segments_by_chromosome[chrom_id] = [segment]
 
-	def find_intersections_of_segment(self, segment_id):
+	def find_intersections_of_segment(self, segment_id) -> list | None:
 		"""Finds all segments that intersect specified segment,
 		finds the intersection endpoints."""
 		result = []
@@ -61,7 +61,7 @@ class IntersectionFinder(ABC):
 			intersection = self.__check_and_get_intersection(s, segment)
 
 			if intersection is not None:
-				output_row = self.__fill_output_row(s, segment, intersection)
+				output_row = self.__create_and_fill_output_row(s, segment, intersection)
 				result.append(output_row)
 
 		return result
@@ -74,7 +74,7 @@ class IntersectionFinder(ABC):
 
 		return result
 
-	def __get_segments_of_person(self, person_id):
+	def __get_segments_of_person(self, person_id) -> list:
 		result = []
 
 		for segment in self._segments:
@@ -111,7 +111,7 @@ class IntersectionFinder(ABC):
 					if intersection is None:
 						print("meow")
 
-					output_row = self.__fill_output_row(segment, o, intersection)
+					output_row = self.__create_and_fill_output_row(segment, o, intersection)
 					result.append(output_row)
 
 				# open_segments current segment
@@ -150,7 +150,7 @@ class IntersectionFinder(ABC):
 
 		return None
 
-	def __fill_output_row(self, s1, s2, intersection):
+	def __create_and_fill_output_row(self, s1, s2, intersection) -> list:
 		sf = self.__segment_format
 		of = self.__output_format
 
