@@ -32,7 +32,7 @@ class MatchParser(Parser, ABC):
 
 	def __init__(self):
 		super().__init__()
-		self.__new_matches = []
+		self._new_matches = []
 
 	@classmethod
 	def _output_format(cls):
@@ -83,7 +83,7 @@ class MatchParser(Parser, ABC):
 					new_records_found = True
 					existing_records.add_record(output_record)
 
-					self.__new_matches.append(output_record)
+					self._new_matches.append(output_record)
 
 				# id was found, match does exist
 				else:
@@ -95,6 +95,7 @@ class MatchParser(Parser, ABC):
 		# if new records were found during parsing, save the database
 		if new_records_found:
 			existing_records.save()
+			# todo save updates
 
 	@classmethod
 	def __get_enum_fieldnames(cls, fieldnames) -> list:
@@ -107,11 +108,11 @@ class MatchParser(Parser, ABC):
 		return result
 
 	def print_message(self) -> None:
-		if len(self.__new_matches) == 0:
+		if len(self._new_matches) == 0:
 			print("No new matches found.")
 		else:
 			print("These new matches were found:")
-			for new_match in self.__new_matches:
+			for new_match in self._new_matches:
 				print("id= " + str(new_match[self._output_format().person_id]) + ", name= " + new_match[
 					self._output_format().person_name])
 
@@ -188,6 +189,16 @@ class GEDmatchMatchParser(MatchParser):
 			# output_column is of MatchFormatEnum type -> is int if is not none
 
 			if output_column is not None:
-				output_record[output_column] = "".join(item.split())
+				output_record[output_column] = " ".join(item.split())
 
 		return output_record
+
+	def print_message(self) -> None:
+		if len(self._new_matches) == 0:
+			print("No new matches found.")
+		else:
+			print("These new matches were found:")
+			for new_match in self._new_matches:
+				print("id= " + str(new_match[self._output_format().person_id]) + ", name= " + new_match[
+					self._output_format().person_name] + ", gedmatch_id= "
+					+ new_match[self._output_format().gedmatch_kit_id])
