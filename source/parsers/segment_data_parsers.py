@@ -109,24 +109,9 @@ class SegmentParser(Parser, ABC):
 	def _find_person_id(cls, match_database: CSVMatchDatabase, record: dict):
 		pass
 
+	@ abstractmethod
 	def print_message(self) -> None:
-		"""Prints information if new segments were added to the database.
-		Prints names of all the people who were not identified based on their names, if any were not."""
-
-		if self._new_segments_found:
-			print("New segments were added to the database.")
-		else:
-			print("No new segments were added to the database.")
-
-		print()
-
-		if len(self._unidentified_identifiers) == 0:
-			print("All persons were identified.")
-		else:
-			print("These persons could not be identified:")
-			for identifier in self._unidentified_identifiers:
-				print(identifier)
-				# todo print also name if from GEDmatch
+		pass
 
 
 class FTDNASegmentParser(SegmentParser):
@@ -150,6 +135,22 @@ class FTDNASegmentParser(SegmentParser):
 	def __create_name(cls, record: dict) -> str:
 		return re.sub(' +', ' ', record[cls._input_format().match_name])
 
+	def print_message(self) -> None:
+		"""Prints information if new segments were added to the database.
+		Prints names of all the people who were not identified based on their names, if any were not."""
+		if self._new_segments_found:
+			print("New segments were added to the database.")
+		else:
+			print("No new segments were added to the database.")
+
+		if len(self._unidentified_identifiers) == 0:
+			print("All people were identified in the match database.")
+		else:
+			print("These names could not be identified:")
+			for name in self._unidentified_identifiers:
+				print(name)
+		# todo print also name if from GEDmatch
+
 
 class GEDmatchSegmentParser(SegmentParser, ABC):
 	@classmethod
@@ -159,6 +160,21 @@ class GEDmatchSegmentParser(SegmentParser, ABC):
 			return int(person[match_database.format.person_id])
 
 		return None
+
+	def print_message(self) -> None:
+		"""Prints information if new segments were added to the database.
+		Prints gedmatch identifiers of all the people who were not identified based on their names, if any were not."""
+		if self._new_segments_found:
+			print("New segments were added to the database.")
+		else:
+			print("No new segments were added to the database.")
+
+		if len(self._unidentified_identifiers) == 0:
+			print("All people were identified in the match database.")
+		else:
+			print("These kit numbers could not be identified:")
+			for kit_number in self._unidentified_identifiers:
+				print(kit_number.strip())
 
 
 class ListCSV_GEDmatchSegmentParser(GEDmatchSegmentParser):
