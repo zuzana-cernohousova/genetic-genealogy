@@ -14,8 +14,8 @@ class SharedMatchesParser(Parser, ABC):
 		# create a dict where paths to the files will be stored under the name of the primary match
 		self._primary_matches = {}
 
-	@property
-	def _output_format(self):
+	@classmethod
+	def _output_format(cls):
 		return SharedMatchesFormatEnum
 
 	@abstractmethod
