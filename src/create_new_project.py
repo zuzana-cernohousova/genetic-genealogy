@@ -48,18 +48,20 @@ def __try_to_add_new_project(name, path):
 	if not os.path.exists(config_dir):
 		os.makedirs(config_dir)
 
-	projects_path = os.path.join(config_dir, "projects.ini")
-	if os.path.exists(projects_path):
+	config_file_path = os.path.join(config_dir, "projects.ini")
+
+	project_path = os.path.join(path, name)
+	if os.path.exists(project_path):
 		raise ValueError("A directory already exists on this path.")
 
-	if os.path.exists(projects_path):
+	if os.path.exists(config_file_path):
 		cp = configparser.ConfigParser()
-		cp.read(projects_path)
+		cp.read(config_file_path)
 
 		if name in cp["PROJECTS"]:
 			raise ValueError("Project of this name already exists.")
 
-		cp["PROJECTS"][name] = os.path.join(path, name)
+		cp["PROJECTS"][name] = project_path
 
 		with open(os.path.join(config_dir, "projects.ini"), "w", encoding="utf-8") as projects:
 			cp.write(projects)
@@ -69,7 +71,7 @@ def __try_to_add_new_project(name, path):
 			cp = configparser.ConfigParser()
 
 			cp["CURRENT_PROJECT"] = {"current_project": name}
-			cp["PROJECTS"] = {name: os.path.join(path, name)}
+			cp["PROJECTS"] = {name: project_path}
 
 			cp.write(projects)
 
