@@ -31,7 +31,7 @@ def __create_settings_file(name, path):
 	cp = configparser.ConfigParser()
 	cp["PROJECT_INFO"] = {}
 	cp["PROJECT_INFO"]["main_path"] = os.path.join(path, name)
-	cp["PROJECT_INFO"]["name"] = name
+	cp["PROJECT_INFO"]["name"] = name.lower()
 
 	cp["CSV_LOCATIONS"] = {}
 	cp["CSV_LOCATIONS"]["match_database"] = os.path.join("work_files", "all_matches.csv")
@@ -69,7 +69,7 @@ def __try_to_add_new_project(name, path):
 		with open(os.path.join(config_dir, "projects.ini"), "w", encoding="utf-8") as projects:
 			cp = configparser.ConfigParser()
 
-			cp["CURRENT_PROJECT"] = {"current_project": name}
+			cp["CURRENT_PROJECT"] = {"current_project": name.lower()}
 			cp["PROJECTS"] = {name: project_path}
 
 			cp.write(projects)
