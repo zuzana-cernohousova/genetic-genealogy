@@ -36,10 +36,11 @@ class CSVInputOutput:
 		result = []
 		with open(filename, 'r', encoding="utf-8-sig") as input_file:
 			reader = csv.DictReader(input_file)
-			reader.fieldnames = CSVInputOutput.__get_new_fieldnames(reader, input_format_enum)
+			reader.fieldnames = CSVInputOutput.__get_new_fieldnames(reader.fieldnames, input_format_enum)
 
 			for record in reader:
 				result.append(record)
+
 		return result
 
 	@staticmethod
