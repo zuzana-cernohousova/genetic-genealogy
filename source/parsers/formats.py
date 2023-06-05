@@ -169,7 +169,7 @@ class InputFormatEnum(StrEnum):
 
 		# the same for the other header
 		lowercase_nowhitespace_other_header_set = {"".join(item.split()).lower() for item in
-											   other_header}
+												   other_header}
 
 		# if the minimal column set is a subset of the other header set, it is OK
 		if lowercase_nowhitespace_minimal_column_set.issubset(lowercase_nowhitespace_other_header_set):
@@ -193,7 +193,7 @@ class InputFormatEnum(StrEnum):
 
 	@classmethod
 	def get_minimal_column_set(cls) -> set:
-		raise NotImplementedError()
+		return {item for item in cls}
 
 
 # region Match formats
@@ -286,7 +286,8 @@ class GEDmatchMatchFormatEnum(InputFormatEnum):
 	@classmethod
 	def get_minimal_column_set(cls) -> set:
 		return {
-			cls.matched_kit, cls.largest_segment, cls.total_cm, cls.x_largest_segment_cm, cls.total_x_cm, cls.test_company
+			cls.matched_kit, cls.largest_segment, cls.total_cm, cls.x_largest_segment_cm, cls.total_x_cm,
+			cls.test_company
 		}
 
 
@@ -409,5 +410,14 @@ class SegmentSearch_GEDmatchSegmentFormatEnum(InputFormatEnum):
 			cls.matched_kit, cls.chromosome, cls.start_location, cls.end_location, cls.centimorgans, cls.matching_snps
 		}
 
+
 # endregion
+# endregion
+
+# region Shared matches primary matches file
+class PrimaryMatchesEnum(StrEnum):
+	person_name = "person_name"
+	person_id = "person_id"
+	path = "path"
+
 # endregion
