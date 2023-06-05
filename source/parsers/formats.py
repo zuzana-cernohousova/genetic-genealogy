@@ -264,7 +264,7 @@ class GEDmatchMatchFormatEnum(InputFormatEnum):
 			cls.largest_segment: MatchFormatEnum.largest_segment_cm,
 			cls.total_cm: MatchFormatEnum.total_cm,
 			cls.generations: MatchFormatEnum.generations,
-			cls.x_largest_segment_cm: MatchFormatEnum.x_largest_segment_cm,
+			cls.largest_x_segment: MatchFormatEnum.x_largest_segment_cm,
 			cls.total_x_cm: MatchFormatEnum.x_total_cm,
 			cls.overlap: MatchFormatEnum.snps_overlap,
 			cls.created_date: MatchFormatEnum.match_date,
@@ -280,7 +280,7 @@ class GEDmatchMatchFormatEnum(InputFormatEnum):
 	largest_segment = "LargestSeg"
 	total_cm = "TotalCM"
 	generations = "Gen"
-	x_largest_segment_cm = "LargestXSeg"
+	largest_x_segment = "LargestXSeg"
 	total_x_cm = "TotalXCM"
 	overlap = "Overlap"
 	created_date = "CreatedDate"
@@ -289,7 +289,7 @@ class GEDmatchMatchFormatEnum(InputFormatEnum):
 	@classmethod
 	def get_minimal_column_set(cls) -> set:
 		return {
-			cls.matched_kit, cls.largest_segment, cls.total_cm, cls.x_largest_segment_cm, cls.total_x_cm,
+			cls.matched_kit, cls.largest_segment, cls.total_cm, cls.largest_x_segment, cls.total_x_cm,
 			cls.test_company
 		}
 
