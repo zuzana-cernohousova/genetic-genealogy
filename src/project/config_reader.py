@@ -13,7 +13,7 @@ class ConfigReader:
 		project_config = configparser.ConfigParser()
 		project_config.read(os.path.join(current_proj_path, "settings.ini"))
 
-		return project_config['CSV_LOCATIONS']['match_database']
+		return os.path.join(current_proj_path, project_config['CSV_LOCATIONS']['match_database'])
 
 	@staticmethod
 	def get_segment_database_location():
@@ -22,7 +22,7 @@ class ConfigReader:
 		project_config = configparser.ConfigParser()
 		project_config.read(os.path.join(current_proj_path, "settings.ini"))
 
-		return project_config['CSV_LOCATIONS']['segment_database']
+		return os.path.join(current_proj_path, project_config['CSV_LOCATIONS']['segment_database'])
 
 	@staticmethod
 	def get_current_project_path() -> str:
