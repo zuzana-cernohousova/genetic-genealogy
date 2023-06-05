@@ -1,5 +1,7 @@
 import os
 import argparse
+import appdirs
+import configparser
 
 
 def __create_project_directory_structure(name, path):
@@ -40,11 +42,44 @@ def __create_settings_file(name, path):
 		settings.writelines(line_list)
 
 
+def __try_to_add_new_project(name, path):
+	config_dir = appdirs.user_config_dir("genetic-genealogy")
+
+	if not os.path.exists(config_dir):
+		os.makedirs(config_dir)
+
+	projects_path = os.path.join(config_dir, "projects.ini")
+	if os.path.exists(projects_path):
+		raise ValueError("A directory already exists on this path.")
+
+	if os.path.exists(projects_path):
+		cp = configparser.ConfigParser()
+		cp.read(projects_path)
+
+		if name in cp["PROJECTS"]:
+			raise ValueError("Project of this name already exists.")
+
+		cp["PROJECTS"][name] = os.path.join(path, name)
+
+		with open(os.path.join(config_dir, "projects.ini"), "w", encoding="utf-8") as projects:
+			cp.write(projects)
+
+	else:
+		with open(os.path.join(config_dir, "projects.ini"), "w", encoding="utf-8") as projects:
+			cp = configparser.ConfigParser()
+
+			cp["CURRENT_PROJECT"] = {"current_project": name}
+			cp["PROJECTS"] = {name: os.path.join(path, name)}
+
+			cp.write(projects)
+
+
 if __name__ == "__main__":
 	args_parser = argparse.ArgumentParser()
 	args_parser.add_argument("name")
 	args_parser.add_argument("path")
 	args = args_parser.parse_args()
 
+	__try_to_add_new_project(args.name, args.path)
 	__create_project_directory_structure(args.name, args.path)
 	__create_settings_file(args.name, args.path)
