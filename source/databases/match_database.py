@@ -90,7 +90,7 @@ class MatchDatabase(Database, ABC):
 
 		return None
 
-	def get_record_from_id(self, record_id) -> dict | None:
+	def get_record_from_id(self, record_id: int) -> dict | None:
 		"""Returns a record of given id."""
 
 		if self.records_by_id is None:
