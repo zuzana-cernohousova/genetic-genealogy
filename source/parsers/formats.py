@@ -108,6 +108,9 @@ class SharedMatchesFormatEnum(FormatEnum):
 	id_2 = 2
 	name_2 = 3
 	total_cm = 4
+	largest_segment = 5
+	total_x_cm = 6
+	largest_x_segment = 7
 
 
 class SegmentIntersectionFormatEnum(FormatEnum):
