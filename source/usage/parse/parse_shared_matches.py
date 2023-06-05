@@ -1,4 +1,4 @@
-from source.parsers.shared_matches_parser import FTDNASharedMatchesParser
+from source.parsers.shared_matches_parser import FTDNASharedMatchesParser, GEDmatchSharedMatchesParser
 import argparse
 
 args_parser = argparse.ArgumentParser()
@@ -19,7 +19,7 @@ if args.ftdna:
 	parser = FTDNASharedMatchesParser()
 
 elif args.gedmatch:
-	raise NotImplementedError("Cannot parse GEDMatch data yet.")
+	parser = GEDmatchSharedMatchesParser()
 
 # parse files behind config_file
 parser.parse(args.config_file)

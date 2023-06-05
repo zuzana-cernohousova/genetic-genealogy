@@ -271,6 +271,15 @@ class GEDmatchMatchFormatEnum(InputFormatEnum):
 			cls.test_company: MatchFormatEnum.ged_match_source
 		}
 
+	@classmethod
+	def shared_matches_mapping(cls):
+		return {
+			cls.total_cm: SharedMatchesFormatEnum.total_cm,
+			cls.largest_x_segment: SharedMatchesFormatEnum.largest_x_segment,
+			cls.total_x_cm: SharedMatchesFormatEnum.total_x_cm,
+			cls.largest_segment: SharedMatchesFormatEnum.largest_segment
+		}
+
 	primary_kit = "PrimaryKit"
 	primary_name = "PrimaryName"
 	primary_email = "PrimaryEmail"
@@ -285,6 +294,8 @@ class GEDmatchMatchFormatEnum(InputFormatEnum):
 	overlap = "Overlap"
 	created_date = "CreatedDate"
 	test_company = "TestCompany"
+
+	person_identifier = matched_kit
 
 	@classmethod
 	def get_minimal_column_set(cls) -> set:
