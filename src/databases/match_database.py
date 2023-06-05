@@ -1,10 +1,10 @@
 import re
-from abc import ABC, abstractmethod
+from abc import ABC
 
 from src.csv_io import CSVInputOutput
 from src.databases.database import Database
-from src.parsers.formats import MatchFormatEnum, SegmentFormatEnum, SourceEnum
-from src.config_reader import ConfigReader
+from src.parsers.formats import MatchFormatEnum, SourceEnum
+from src.project.config_reader import ConfigReader
 
 
 class MatchDatabase(Database, ABC):

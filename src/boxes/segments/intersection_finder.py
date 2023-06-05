@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.config_reader import ConfigReader
+from src.project.config_reader import ConfigReader
 from src.databases.match_database import CSVInputOutput
 from src.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatEnum
 
