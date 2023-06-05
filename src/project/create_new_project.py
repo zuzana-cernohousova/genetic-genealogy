@@ -28,18 +28,17 @@ def __create_project_directory_structure(name, path):
 
 
 def __create_settings_file(name, path):
-	line_list = [line + "\n" for line in [
-		"[PROJECT_INFO]",
-		"main_path = " + os.path.join(path, name),
-		"name = " + name,
-		"",
-		"[CSV_LOCATIONS]",
-		"match_database = " + os.path.join("work_files", "all_matches.csv"),
-		"segment_database = " + os.path.join("work_files", "all_segments.csv")
-	]]
+	cp = configparser.ConfigParser()
+	cp["PROJECT_INFO"] = {}
+	cp["PROJECT_INFO"]["main_path"] = os.path.join(path, name)
+	cp["PROJECT_INFO"]["name"] = name
+
+	cp["CSV_LOCATIONS"] = {}
+	cp["CSV_LOCATIONS"]["match_database"] = os.path.join("work_files", "all_matches.csv")
+	cp["CSV_LOCATIONS"]["segment_database"] = os.path.join("work_files", "all_segments.csv")
 
 	with open(os.path.join(path, name, "settings.ini"), "w", encoding="utf-8") as settings:
-		settings.writelines(line_list)
+		cp.write(settings)
 
 
 def __try_to_add_new_project(name, path):
