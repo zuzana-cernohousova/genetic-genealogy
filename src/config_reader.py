@@ -8,7 +8,7 @@ class ConfigReader:
 	def get_match_database_location():
 		config = configparser.ConfigParser()
 		config.read("settings.ini")
-			# todo somehow somewhere store the root of the project, than append the filenames to the path
+		# todo somehow somewhere store the root of the project, than append the filenames to the path
 		return config['CSV_LOCATIONS']['match_database']
 
 	@staticmethod

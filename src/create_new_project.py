@@ -19,7 +19,10 @@ def __create_project_directory_structure(name, path):
 	os.makedirs(os.path.join(final_path, "input_files", "shared_matches", "FTDNA"))
 	os.makedirs(os.path.join(final_path, "input_files", "shared_matches", "GEDmatch"))
 
-	os.mkdir(os.path.join(final_path, "work_files"))
+	os.makedirs(os.path.join(final_path, "work_files", "matches"))
+	os.makedirs(os.path.join(final_path, "work_files", "segments"))
+	os.makedirs(os.path.join(final_path, "work_files", "intersections"))
+	os.makedirs(os.path.join(final_path, "work_files", "shared_matches"))
 
 
 def __create_settings_file(name, path):
