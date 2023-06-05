@@ -82,6 +82,9 @@ if __name__ == "__main__":
 	args_parser.add_argument("path")
 	args = args_parser.parse_args()
 
-	__try_to_add_new_project(args.name, args.path)
-	__create_project_directory_structure(args.name, args.path)
-	__create_settings_file(args.name, args.path)
+	path = os.path.abspath(args.path)
+	name = args.name
+
+	__try_to_add_new_project(name, path)
+	__create_project_directory_structure(name, path)
+	__create_settings_file(name, path)
