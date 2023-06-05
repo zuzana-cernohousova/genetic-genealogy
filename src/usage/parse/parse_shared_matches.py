@@ -1,4 +1,4 @@
-from source.parsers.shared_matches_parser import FTDNASharedMatchesParser, GEDmatchSharedMatchesParser
+from src.parsers.shared_matches_parser import FTDNASharedMatchesParser, GEDmatchSharedMatchesParser
 import argparse
 
 args_parser = argparse.ArgumentParser()

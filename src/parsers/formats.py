@@ -35,7 +35,7 @@ class MatchFormatEnum(FormatEnum):
 
 	@classmethod
 	def comparison_key(cls, source: SourceEnum = None):
-		"""If source is stated, returns source specific identification
+		"""If src is stated, returns src specific identification
 		(gedmatch_kit_id if GEDmatch or person_name if FTDNA)
 		else returns id."""
 
@@ -148,7 +148,7 @@ class InputFormatEnum(StrEnum):
 
 	@classmethod
 	def mapping(cls) -> dict:
-		"""Represents the mapping between the source format and the corresponding
+		"""Represents the mapping between the src format and the corresponding
 		final, app defined format."""
 		raise NotImplementedError()
 
@@ -156,8 +156,8 @@ class InputFormatEnum(StrEnum):
 
 	@classmethod
 	def format_name(cls) -> str:
-		"""Returns the name of the source database.
-		Is used as a text representation of source identification"""
+		"""Returns the name of the src database.
+		Is used as a text representation of src identification"""
 
 		return cls.get_source_id().name
 

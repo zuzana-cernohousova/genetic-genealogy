@@ -1,9 +1,9 @@
 from abc import ABC
 
-from source.config_reader import ConfigReader
-from source.csv_io import CSVInputOutput
-from source.databases.database import Database
-from source.parsers.formats import SegmentFormatEnum, SourceEnum
+from src.config_reader import ConfigReader
+from src.csv_io import CSVInputOutput
+from src.databases.database import Database
+from src.parsers.formats import SegmentFormatEnum, SourceEnum
 
 
 # region segment databases

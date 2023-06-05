@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
-from source.config_reader import ConfigReader
-from source.databases.match_database import CSVInputOutput
-from source.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatEnum
+from src.config_reader import ConfigReader
+from src.databases.match_database import CSVInputOutput
+from src.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatEnum
 
 
 class IntersectionFinder(ABC):
