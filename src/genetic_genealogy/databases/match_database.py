@@ -1,10 +1,10 @@
 import re
 from abc import ABC
 
-from src.databases.csv_io import CSVInputOutput
-from src.databases.database import Database
-from src.parsers.formats import MatchFormatEnum, SourceEnum
-from src.project.config_reader import ConfigReader
+from genetic_genealogy.databases.csv_io import CSVInputOutput
+from genetic_genealogy.databases.database import Database
+from genetic_genealogy.parsers.formats import MatchFormatEnum, SourceEnum
+from genetic_genealogy.project.config_reader import ConfigReader
 
 
 class MatchDatabase(Database, ABC):

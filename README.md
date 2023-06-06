@@ -31,7 +31,7 @@ Každá z těchto tříd definuje, jak bude vypadat hlavička příslušného dr
 Je-li to potřeba, třída definuje mapování mezi sloupci vstupního a výstupního souboru.
 
 ## Parsování shod
-Script [parse_matches.py](src/parse/parse_matches.py) je nástrojem pro unifikaci formátu seznamu shod.
+Script [parse_matches.py](src/genetic_genealogy/parse/parse_matches.py) je nástrojem pro unifikaci formátu seznamu shod.
 Program načte data ze vstupního souboru (první argument) a uloží je do
 souboru výstupního za argumentem _-of/--output_file_ ve správném formátu.
 V případě, že výstupní soubor není specifikován, data jsou vypsána na standardní výstup.
@@ -56,7 +56,7 @@ Použití:
     parse_matches.py input_file_from_GEDmatch_path --gedmatch
 
 ## Parsování sdílených shod
-*[parse_shared_matches.py](src/usage/parse/parse_shared_matches.py)* provádí propojení
+*[parse_shared_matches.py](src/genetic_genealogy/usage/parse/parse_shared_matches.py)* provádí propojení
 a unifikaci souborů obsahujících sdílené shody POI a shod POI.
 
 Vstupním souborem této funkcionality je csv soubor obsahující identifikaci osoby (primary match)
@@ -76,7 +76,7 @@ Alespoň jedna z hodnot _id_ a _name_ musí být v každém záznamu vyplněna.
 
 Zdroj dat je opět specifikován pomocí argumentu 
 > Kvůli vyhledávání IDs v databázi je tedy potřeba **před parsováním
-> shod shod zpracovat samotné shody POI pomocí *[parse_matches.py](src/usage/parse/parse_matches.py)***.
+> shod shod zpracovat samotné shody POI pomocí *[parse_matches.py](src/genetic_genealogy/usage/parse/parse_matches.py)***.
 >
 > Pokud není primární shoda na základě jména identifikována v databázi, není její soubor zpracován.
 
@@ -90,7 +90,7 @@ Použití:
     parse_shared_matches.py identifications_and_paths.csv --gedmatch
 
 ## Parsování dat o segmentech
-*[parse_segments.py](src/usage/parse/parse_segments.py)* zajišťuje transformaci dat
+*[parse_segments.py](src/genetic_genealogy/usage/parse/parse_segments.py)* zajišťuje transformaci dat
 o segmentech do unifikovaného formátu.
 
 Program načte data ze vstupního souboru (první argument) a uloží je do
@@ -129,7 +129,7 @@ Použití:
     parse_segments.py input_file_from_GEDmatch_listcsv -gl
 
 ## Hledání průniků segmentů
-Skript *[find_segment_intersections.py](src/usage/find_segment_intersections.py)* umožňuje najít průniky segmentů.
+Skript *[find_segment_intersections.py](src/genetic_genealogy/usage/find_segment_intersections.py)* umožňuje najít průniky segmentů.
 Parametrem *--source_file* je možné specifikovat vstupní soubor obsahující data o segmentech v unifikovaném formátu.
 Pokud parametr není zadán, je použita databáze segmentů.
 Parametrem *--output_file* je možné zadat výstupní soubor, pokud tak není učiněno,

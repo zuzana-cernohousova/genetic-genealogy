@@ -2,10 +2,10 @@ import csv
 import re
 from abc import ABC, abstractmethod
 
-from src.databases.match_database import CSVMatchDatabase
-from src.databases.segment_database import CSVSegmentDatabase
-from src.parsers.formats import FTDNASegmentFormatEnum, ListCSV_GEDmatchSegmentFormatEnum, SegmentSearch_GEDmatchSegmentFormatEnum, SegmentFormatEnum
-from src.parsers.match_parsers import Parser
+from genetic_genealogy.databases.match_database import CSVMatchDatabase
+from genetic_genealogy.databases.segment_database import CSVSegmentDatabase
+from genetic_genealogy.parsers.formats import FTDNASegmentFormatEnum, ListCSV_GEDmatchSegmentFormatEnum, SegmentSearch_GEDmatchSegmentFormatEnum, SegmentFormatEnum
+from genetic_genealogy.parsers.match_parsers import Parser
 
 
 class SegmentParser(Parser, ABC):

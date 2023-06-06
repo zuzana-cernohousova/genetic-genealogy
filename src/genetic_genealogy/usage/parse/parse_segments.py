@@ -1,4 +1,4 @@
-from src.parsers.segment_data_parsers import FTDNASegmentParser, ListCSV_GEDmatchSegmentParser, \
+from genetic_genealogy.parsers.segment_data_parsers import FTDNASegmentParser, ListCSV_GEDmatchSegmentParser, \
 	SegmentSearch_GEDmatchSegmentParser
 import argparse
 

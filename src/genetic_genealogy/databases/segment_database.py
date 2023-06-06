@@ -1,9 +1,9 @@
 from abc import ABC
 
-from src.project.config_reader import ConfigReader
-from src.databases.csv_io import CSVInputOutput
-from src.databases.database import Database
-from src.parsers.formats import SegmentFormatEnum, SourceEnum
+from genetic_genealogy.project.config_reader import ConfigReader
+from genetic_genealogy.databases.csv_io import CSVInputOutput
+from genetic_genealogy.databases.database import Database
+from genetic_genealogy.parsers.formats import SegmentFormatEnum, SourceEnum
 
 
 # region segment databases

@@ -1,4 +1,4 @@
-from src.boxes.segments.intersection_finder import CSVIntersectionFinder
+from genetic_genealogy.boxes.segments.intersection_finder import CSVIntersectionFinder
 import argparse
 
 

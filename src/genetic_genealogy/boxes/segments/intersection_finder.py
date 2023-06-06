@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
-from src.project.config_reader import ConfigReader
-from src.databases.match_database import CSVInputOutput
-from src.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatEnum
+from genetic_genealogy.project.config_reader import ConfigReader
+from genetic_genealogy.databases.csv_io import CSVInputOutput
+from genetic_genealogy.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatEnum
 
 
 class IntersectionFinder(ABC):

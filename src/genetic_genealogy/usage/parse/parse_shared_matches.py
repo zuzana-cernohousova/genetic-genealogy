@@ -1,4 +1,4 @@
-from src.parsers.shared_matches_parser import FTDNASharedMatchesParser, GEDmatchSharedMatchesParser
+from genetic_genealogy.parsers.shared_matches_parser import FTDNASharedMatchesParser, GEDmatchSharedMatchesParser
 import argparse
 
 

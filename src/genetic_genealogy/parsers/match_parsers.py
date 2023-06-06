@@ -2,8 +2,8 @@ import csv
 import re
 from abc import ABC, abstractmethod
 
-from src.databases.match_database import CSVMatchDatabase, CSVInputOutput
-from src.parsers.formats import FTDNAMatchFormatEnum, MatchFormatEnum, GEDmatchMatchFormatEnum
+from genetic_genealogy.databases.match_database import CSVMatchDatabase, CSVInputOutput
+from genetic_genealogy.parsers.formats import FTDNAMatchFormatEnum, MatchFormatEnum, GEDmatchMatchFormatEnum
 
 
 class Parser(ABC):
@@ -145,7 +145,7 @@ class FTDNAMatchParser(MatchParser):
 		for index in cls._output_format():
 			output_record[index] = ""
 
-		# add src name
+		# add genetic_genealogy name
 		output_record[cls._output_format().source] = i_f.format_name()
 
 		# create name and add it into result row
@@ -177,7 +177,7 @@ class GEDmatchMatchParser(MatchParser):
 		for index in MatchFormatEnum:
 			output_record[index] = ""
 
-		# add src name
+		# add genetic_genealogy name
 		output_record[MatchFormatEnum.source] = i_f.format_name()
 
 		# copy all relevant existing items from record to output record

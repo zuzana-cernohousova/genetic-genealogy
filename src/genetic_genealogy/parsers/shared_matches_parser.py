@@ -1,8 +1,8 @@
 import csv
 from abc import ABC, abstractmethod
 
-from src.parsers.match_parsers import CSVMatchDatabase, FTDNAMatchParser, Parser
-from src.parsers.formats import SharedMatchesFormatEnum, FTDNAMatchFormatEnum, MatchFormatEnum, PrimaryMatchesEnum, \
+from genetic_genealogy.parsers.match_parsers import CSVMatchDatabase, FTDNAMatchParser, Parser
+from genetic_genealogy.parsers.formats import SharedMatchesFormatEnum, FTDNAMatchFormatEnum, MatchFormatEnum, PrimaryMatchesEnum, \
 	GEDmatchMatchFormatEnum
 
 
@@ -89,7 +89,7 @@ class SharedMatchesParser(Parser, ABC):
 					raise ValueError("Wrong input format.")
 
 				for row in reader:
-					# parse secondary match record - only part that is src dependant
+					# parse secondary match record - only part that is genetic_genealogy dependant
 					secondary_match_id, secondary_match_name = self._get_secondary_match_id_and_name(existing_matches,
 																									 row)
 
@@ -116,7 +116,7 @@ class SharedMatchesParser(Parser, ABC):
 					output_row[self._output_format().id_2] = secondary_match_id
 					output_row[self._output_format().name_2] = secondary_match_name
 
-					# src specific - we do not have match statistics from FTDNA
+					# genetic_genealogy specific - we do not have match statistics from FTDNA
 					self._fill_in_match_statistics(row, output_row)
 
 					self._result.append(output_row)

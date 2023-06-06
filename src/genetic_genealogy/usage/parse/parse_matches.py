@@ -1,4 +1,4 @@
-from src.parsers.match_parsers import FTDNAMatchParser, GEDmatchMatchParser
+from genetic_genealogy.parsers.match_parsers import FTDNAMatchParser, GEDmatchMatchParser
 
 import argparse
 
