@@ -1,7 +1,7 @@
 from abc import ABC
 
 from src.project.config_reader import ConfigReader
-from src.csv_io import CSVInputOutput
+from src.databases.csv_io import CSVInputOutput
 from src.databases.database import Database
 from src.parsers.formats import SegmentFormatEnum, SourceEnum
 
