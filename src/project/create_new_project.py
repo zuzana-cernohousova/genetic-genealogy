@@ -75,7 +75,7 @@ def __try_to_add_new_project(name, path):
 			cp.write(projects)
 
 
-if __name__ == "__main__":
+def create_new_project():
 	args_parser = argparse.ArgumentParser()
 	args_parser.add_argument("name")
 	args_parser.add_argument("path")
@@ -87,3 +87,7 @@ if __name__ == "__main__":
 	__try_to_add_new_project(n, p)
 	__create_project_directory_structure(n, p)
 	__create_settings_file(n, p)
+
+
+if __name__ == "__main__":
+	create_new_project()
