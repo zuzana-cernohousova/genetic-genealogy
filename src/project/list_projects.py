@@ -3,7 +3,7 @@ import configparser
 import appdirs
 import os
 
-if __name__ == "__main__":
+def list_projects():
 	args_parser = argparse.ArgumentParser()
 	args_parser.add_argument("-p", "--paths", action="store_true")
 
@@ -19,3 +19,6 @@ if __name__ == "__main__":
 	else:
 		for name in cp["PROJECTS"]:
 			print("name= " + name)
+
+if __name__ == "__main__":
+	list_projects()

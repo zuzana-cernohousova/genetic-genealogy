@@ -41,7 +41,7 @@ def __try_to_delete_project(name):
 	print("Project does not exist, it was not deleted.")
 
 
-if __name__ == "__main__":
+def delete_project():
 	args_parser = argparse.ArgumentParser()
 	args_parser.add_argument("name")
 
@@ -50,3 +50,7 @@ if __name__ == "__main__":
 	n = args.name
 
 	__try_to_delete_project(n)
+
+
+if __name__ == "__main__":
+	delete_project()

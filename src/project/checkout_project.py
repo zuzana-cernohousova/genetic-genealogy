@@ -24,7 +24,7 @@ def __try_to_checkout_project(name):
 		+ " project.")
 
 
-if __name__ == "__main__":
+def checkout_project():
 	args_parser = argparse.ArgumentParser()
 	args_parser.add_argument("name")
 
@@ -33,3 +33,7 @@ if __name__ == "__main__":
 	n = args.name
 
 	__try_to_checkout_project(n)
+
+
+if __name__ == "__main__":
+	checkout_project()
