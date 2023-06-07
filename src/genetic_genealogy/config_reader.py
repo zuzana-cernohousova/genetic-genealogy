@@ -31,5 +31,10 @@ class ConfigReader:
 		cp = configparser.ConfigParser()
 		cp.read(projects_path)
 
-		current_project = cp["CURRENT_PROJECT"]["current_project"]
-		return cp["PROJECTS"][current_project]
+		if "current_project" in cp["CURRENT_PROJECT"].keys():
+			current_project = cp["CURRENT_PROJECT"]["current_project"]
+			return cp["PROJECTS"][current_project]
+		else:
+			print("Current project was not set, please use the gengen checkout command to choose current project.")
+			exit(1)
+			# todo exit code
