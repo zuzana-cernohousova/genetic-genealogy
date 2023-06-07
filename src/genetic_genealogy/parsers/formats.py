@@ -434,3 +434,6 @@ class PrimaryMatchesEnum(StrEnum):
 	path = "path"
 
 # endregion
+
+# todo for every parsing option, put names of colums into readme
+# for both input and output formats
