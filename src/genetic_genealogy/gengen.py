@@ -1,7 +1,8 @@
 import argparse
 from genetic_genealogy.usage.parse import parse_matches, parse_segments, parse_shared_matches
 from genetic_genealogy.usage import find_segment_intersections
-from genetic_genealogy.project import checkout_project, create_new_project, delete_project, list_projects, current_project
+from genetic_genealogy.project import checkout_project, create_new_project, delete_project, list_projects, \
+	current_project
 
 
 def main():
@@ -48,7 +49,7 @@ def main():
 	p_matches_args = subparsers.add_parser("parse-matches")
 	p_matches_args.set_defaults(func=parse_matches.parse_matches)
 
-	p_matches_args.add_argument("-sf","--source_file")
+	p_matches_args.add_argument("-sf", "--source_file")
 	p_matches_args.add_argument("-of", "--output_file")
 	p_matches_args.add_argument("-v", "--verbose", action="store_true")
 
@@ -61,7 +62,7 @@ def main():
 	p_segments_args = subparsers.add_parser("parse-segments")
 	p_segments_args.set_defaults(func=parse_segments.parse_segments)
 
-	p_segments_args.add_argument("source_file")
+	p_segments_args.add_argument("-sf", "--source_file")
 	p_segments_args.add_argument("-of", "--output_file")
 	p_segments_args.add_argument("-v", "--verbose", action="store_true")
 

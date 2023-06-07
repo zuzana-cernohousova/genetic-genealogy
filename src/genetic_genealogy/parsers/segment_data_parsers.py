@@ -1,5 +1,6 @@
 import csv
 import re
+import sys
 from abc import ABC, abstractmethod
 
 from genetic_genealogy.csv_io import CSVHelper
@@ -30,71 +31,23 @@ class SegmentParser(Parser, ABC):
 		existing_segments = CSVSegmentDatabase()
 		existing_segments.load()
 
-		new_segment = False
+		self._new_segments_found = False
 
-		with open(filename, "r", encoding="utf-8-sig") as input_file:
-			# read this file with csv reader, read as dictionaries
-			reader = csv.DictReader(input_file)
+		try:
+			if filename is None:
+				input_file = sys.stdin.read().splitlines()
+				self._parse_from_dict_reader(csv.DictReader(input_file), existing_matches, existing_segments)
 
-			# check if the file is in the correct format
-			if not self._input_format().validate_format(reader.fieldnames):
-				raise ValueError("Wrong input format.")
+			else:
+				with open(filename, 'r', encoding="utf-8-sig") as input_file:
+					self._parse_from_dict_reader(csv.DictReader(input_file), existing_matches, existing_segments)
 
-			reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
+		except IOError:
+			print("File could not be parsed.")
+			exit(1)
+		# todo exit code
 
-			for record in reader:
-				person_id = self._find_person_id(existing_matches, record)
-				if person_id is None:
-					if record[self._input_format().person_identifier] not in self._unidentified_identifiers:
-						self._unidentified_identifiers.append(record[self._input_format().person_identifier])
-					continue
-
-				# person exists, create the WHOLE OUTPUT RECORD
-				output_segment = {}
-				for index in self._output_format():
-					output_segment[index] = ""
-
-				# add SOURCE name
-				output_segment[self._output_format().source] = self._input_format().format_name()
-
-				# add NAME, ID to result
-				output_segment[self._output_format().person_name] = existing_matches.get_record_from_id(person_id)[
-					existing_matches.format.person_name]
-				output_segment[self._output_format().person_id] = person_id
-
-				# copy all REMAINING existing information = MAPPED FIELDS
-				for input_column_name in reader.fieldnames:
-					item = record[input_column_name]
-
-					output_column = self._input_format().get_mapped_column_name(input_column_name)
-					# output_column is of SegmentFormatEnum type -> is int if is not none
-
-					if output_column is not None:
-						output_segment[output_column] = " ".join(item.split())
-
-				# get and add SEGMENT ID
-				segment_id = existing_segments.get_id(
-					output_segment,
-					self._input_format().get_source_id(),
-					self._output_format().segment_id
-				)
-
-				if segment_id is None:
-					# no match found - create new id and add to database
-					segment_id = existing_segments.get_new_id()
-					output_segment[self._output_format().segment_id] = segment_id
-
-					# take note of newly found segment
-					new_segment = True
-					existing_segments.add_record(output_segment)
-
-				else:
-					output_segment[self._output_format().segment_id] = segment_id
-
-				self._result.append(output_segment)
-
-		if new_segment:
-			self._new_segments_found = True
+		if self._new_segments_found:
 			existing_segments.save()
 
 	@classmethod
@@ -105,6 +58,65 @@ class SegmentParser(Parser, ABC):
 	@abstractmethod
 	def print_message(self) -> None:
 		pass
+
+	def _parse_from_dict_reader(self, reader, existing_matches, existing_segments):
+
+		# check if the file is in the correct format
+		if not self._input_format().validate_format(reader.fieldnames):
+			raise ValueError("Wrong input format.")
+
+		reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
+
+		for record in reader:
+			person_id = self._find_person_id(existing_matches, record)
+			if person_id is None:
+				if record[self._input_format().person_identifier] not in self._unidentified_identifiers:
+					self._unidentified_identifiers.append(record[self._input_format().person_identifier])
+				continue
+
+			# person exists, create the OUTPUT RECORD
+			output_segment = {}
+			for index in self._output_format():
+				output_segment[index] = ""
+
+			# add SOURCE name
+			output_segment[self._output_format().source] = self._input_format().format_name()
+
+			# add NAME, ID to result
+			output_segment[self._output_format().person_name] = existing_matches.get_record_from_id(person_id)[
+				existing_matches.format.person_name]
+			output_segment[self._output_format().person_id] = person_id
+
+			# copy all REMAINING existing information = MAPPED FIELDS
+			for input_column_name in reader.fieldnames:
+				item = record[input_column_name]
+
+				output_column = self._input_format().get_mapped_column_name(input_column_name)
+				# output_column is of SegmentFormatEnum type -> is int if is not none
+
+				if output_column is not None:
+					output_segment[output_column] = " ".join(item.split())
+
+			# get and add SEGMENT ID
+			segment_id = existing_segments.get_id(
+				output_segment,
+				self._input_format().get_source_id(),
+				self._output_format().segment_id
+			)
+
+			if segment_id is None:
+				# no match found - create new id and add to database
+				segment_id = existing_segments.get_new_id()
+				output_segment[self._output_format().segment_id] = segment_id
+
+				# take note of newly found segment
+				self._new_segments_found = True
+				existing_segments.add_record(output_segment)
+
+			else:
+				output_segment[self._output_format().segment_id] = segment_id
+
+			self._result.append(output_segment)
 
 
 class FTDNASegmentParser(SegmentParser):
