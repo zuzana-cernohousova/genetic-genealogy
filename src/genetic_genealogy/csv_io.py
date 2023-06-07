@@ -45,6 +45,8 @@ class CSVHelper:
 
 		return result
 
+		# todo create stdin support
+
 	@staticmethod
 	def __get_new_fieldnames(fieldnames, input_format_enum) -> list:
 		new_fieldnames = []
