@@ -22,8 +22,9 @@ a jak spolu budou dané nástroje komunikovat.
 
 https://drive.google.com/file/d/1zltsMH-SDBmn84_Kg38oEF7a6StJ5UmY/view?usp=sharing
 
-### _High level schéma_
-![high level scheme](img/high_level_scheme.png) 
+### _High level diagram_
+![high level diagram](img/high_level_diagram.png)
+
 
 ## Formáty souborů
 Formáty jednotlivých druhů vstupních i výstupních souborů jsou specifikovány
