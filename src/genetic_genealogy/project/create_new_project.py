@@ -75,12 +75,7 @@ def __try_to_add_new_project(name, path):
 			cp.write(projects)
 
 
-def create_new_project():
-	args_parser = argparse.ArgumentParser()
-	args_parser.add_argument("name")
-	args_parser.add_argument("path")
-	args = args_parser.parse_args()
-
+def create_new_project(args):
 	p = os.path.abspath(args.path)
 	n = args.name
 
@@ -90,4 +85,9 @@ def create_new_project():
 
 
 if __name__ == "__main__":
-	create_new_project()
+	args_parser = argparse.ArgumentParser()
+	args_parser.add_argument("name")
+	args_parser.add_argument("path")
+	arguments = args_parser.parse_args()
+
+	create_new_project(arguments)

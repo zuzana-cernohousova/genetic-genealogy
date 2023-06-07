@@ -2,20 +2,7 @@ from genetic_genealogy.boxes.segments.intersection_finder import CSVIntersection
 import argparse
 
 
-def find_segment_intersections():
-	args_parser = argparse.ArgumentParser()
-
-	# add arguments
-	args_parser.add_argument("-sf", "--source_file")
-	args_parser.add_argument("-of", "--output_file")
-
-	group = args_parser.add_mutually_exclusive_group()
-	group.add_argument("-sid", "--segment_id", type=int)
-	group.add_argument("-id", "--person_id", type=int)
-
-	# parse arguments
-	args = args_parser.parse_args()
-
+def find_segment_intersections(args):
 	finder = CSVIntersectionFinder()
 	finder.load_segments(args.source_file)
 
@@ -33,4 +20,17 @@ def find_segment_intersections():
 
 
 if __name__ == "__main__":
-	find_segment_intersections()
+	args_parser = argparse.ArgumentParser()
+
+	# add arguments
+	args_parser.add_argument("-sf", "--source_file")
+	args_parser.add_argument("-of", "--output_file")
+
+	group = args_parser.add_mutually_exclusive_group()
+	group.add_argument("-sid", "--segment_id", type=int)
+	group.add_argument("-id", "--person_id", type=int)
+
+	# parse arguments
+	arguments = args_parser.parse_args()
+
+	find_segment_intersections(arguments)

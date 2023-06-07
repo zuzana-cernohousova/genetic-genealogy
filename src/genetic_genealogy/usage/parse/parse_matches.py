@@ -3,20 +3,7 @@ from genetic_genealogy.parsers.match_parsers import FTDNAMatchParser, GEDmatchMa
 import argparse
 
 
-def parse_matches():
-	args_parser = argparse.ArgumentParser()
-	# add arguments
-	args_parser.add_argument("source_file")
-	args_parser.add_argument("-of", "--output_file")
-	args_parser.add_argument("-v", "--verbose", action="store_true")
-
-	me_group = args_parser.add_mutually_exclusive_group(required=True)
-	me_group.add_argument("--ftdna", action="store_true")
-	me_group.add_argument("--gedmatch", action="store_true")
-
-	# parse arguments
-	args = args_parser.parse_args()
-
+def parse_matches(args):
 	if args.ftdna:
 		parser = FTDNAMatchParser()
 
@@ -34,4 +21,18 @@ def parse_matches():
 
 
 if __name__ == "__main__":
-	parse_matches()
+
+	args_parser = argparse.ArgumentParser()
+
+	# add arguments
+	args_parser.add_argument("source_file")
+	args_parser.add_argument("-of", "--output_file")
+	args_parser.add_argument("-v", "--verbose", action="store_true")
+
+	me_group = args_parser.add_mutually_exclusive_group(required=True)
+	me_group.add_argument("--ftdna", action="store_true")
+	me_group.add_argument("--gedmatch", action="store_true")
+
+	# parse arguments
+	arguments = args_parser.parse_args()
+	parse_matches(arguments)

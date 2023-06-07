@@ -24,16 +24,17 @@ def __try_to_checkout_project(name):
 		+ " project.")
 
 
-def checkout_project():
-	args_parser = argparse.ArgumentParser()
-	args_parser.add_argument("name")
-
-	args = args_parser.parse_args()
-
+def checkout_project(args):
 	n = args.name
-
 	__try_to_checkout_project(n)
 
 
 if __name__ == "__main__":
-	checkout_project()
+	args_parser = argparse.ArgumentParser()
+	args_parser.add_argument("name")
+
+	arguments = args_parser.parse_args()
+
+	checkout_project(arguments)
+
+# todo add current project command

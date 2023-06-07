@@ -3,11 +3,8 @@ import configparser
 import appdirs
 import os
 
-def list_projects():
-	args_parser = argparse.ArgumentParser()
-	args_parser.add_argument("-p", "--paths", action="store_true")
 
-	args = args_parser.parse_args()
+def list_projects(args):
 
 	projects_config_path = os.path.join(appdirs.user_config_dir("genetic-genealogy"), "projects.ini")
 	cp = configparser.ConfigParser()
@@ -20,5 +17,11 @@ def list_projects():
 		for name in cp["PROJECTS"]:
 			print("name= " + name)
 
+
 if __name__ == "__main__":
-	list_projects()
+	args_parser = argparse.ArgumentParser()
+	args_parser.add_argument("-p", "--paths", action="store_true")
+
+	arguments = args_parser.parse_args()
+
+	list_projects(arguments)
