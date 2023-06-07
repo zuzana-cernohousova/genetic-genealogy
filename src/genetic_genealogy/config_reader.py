@@ -37,4 +37,4 @@ class ConfigReader:
 		else:
 			print("Current project was not set, please use the gengen checkout command to choose current project.")
 			exit(1)
-			# todo exit code
+			# todo exit code enum
