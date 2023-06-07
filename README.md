@@ -6,7 +6,7 @@ To install this application, use:
     pip install git+https://github.com/zuzana-cernohousova/genetic-genealogy.git
 
 ### Functionality
-After installing the application *gengen* command and the following subcommands will be available:
+After installing the application _gengen_ command and the following subcommands will be available:
 
 - new-project
 - delete-project
@@ -62,7 +62,8 @@ Usage:
      gengen delete-project example_name
 
 ### gengen list-projects
-Use this command to display all projects available on the system. It also displays the name of the current project.
+Use this command to display all projects available on the system.
+It also displays the name of the current project.
 Use the _-l/--long_ option to display paths to the projects.
 
 Usage:
@@ -88,16 +89,17 @@ Usage:
 
 ### gengen parse-matches
 Subcommand _parse-matches_ je nástrojem pro unifikaci formátu seznamu shod.
-Program načte data ze vstupního souboru (první argument) a uloží je do
+Program načte data ze vstupního souboru specifikovaného argumentem _-sf/-source_file_ a uloží je do
 souboru výstupního za argumentem _-of/--output_file_ ve správném formátu.
-V případě, že výstupní soubor není specifikován, data jsou vypsána na standardní výstup.
+V případě, že vsupní soubor není zadán, vstupní data jsou čtena ze standardního vstupu,
+pokud není zadán výstupní soubor, data jsou vypsána na standardní výstup.
 
 Je potřeba specifikovat počáteční formát zadáním informace
 o zdrojové databázi vybráním jednoho ze dvou vzájemně se vylučujících argumentů
-*--ftdna* a *--gedmatch*.
+_--ftdna_ a _--gedmatch_.
 
 Každý záznam ze vstupního souboru je porovnán s "databází" uloženou v souboru
-za cestou definovanou v konfiguračním souboru aktuálního projektu [settings.ini](settings.ini)
+za cestou definovanou v konfiguračním souboru aktuálního projektu (settings.ini)
 pod klíčem _CSV_LOCATIONS.match_database_. Zde je záznam o všech dosud přidaných osobách.
 Pokud je nalezena shoda, je záznamu o osobě přiděleno stejné ID.
 V opačném případě je vygenerováno nové, unikátní ID a záznam je přidán do databáze.
@@ -107,9 +109,9 @@ o tom, zda byly identifikovány nějaké nové shody a případně které (vyps�
 
 Použití:
 
-    gengen parse-matches input_file_from_FTDNA_path -of output_file_path --ftdna
+    gengen parse-matches -sf input_file_from_FTDNA_path -of output_file_path --ftdna
 
-    gengen parse-matches input_file_from_GEDmatch_path --gedmatch
+    gengen parse-matches --gedmatch
 
 ### gengen parse-shared-segments
 Subcommand _parse-shared-matches_ provádí propojení
@@ -117,9 +119,12 @@ a unifikaci souborů obsahujících shody sdílené mezi POI a shodami POI.
 
 Vstupním souborem tohoto programu je csv soubor obsahující identifikaci osoby (primary match)
 a cestu k souboru obsahujícímu záznamy o shodách (secondary match),
-které jsou společné mezi POI a danou osobou. Všechny soubory
-na které tento soubor odkazuje musí pocházet ze stejného zdroje,
-ten je specifikován přepínačem *--ftdna* nebo *--gedmatch*. 
+které jsou společné mezi POI a danou osobou.
+
+Soubor je buď specifikován pomocí argumentu _-cf/--config_file_, nebo jsou data načtena ze standardního vstupu.
+
+Všechny soubory na které tento soubor odkazuje musí pocházet ze stejného zdroje,
+ten je specifikován přepínačem _--ftdna_ nebo _--gedmatch_. 
 Hlavička tohoto vstupního souboru má podobu:
 
     id,name,path
@@ -140,16 +145,17 @@ o tom, zda byly identifikovány všechny primární i sekundární shody a pří
 
 Použití:
 
-    gengen parse-shared-matches ids_and_paths.csv -of output_file --ftdna --verbose
+    gengen parse-shared-matches -of output_file --ftdna --verbose
 
-    gengen parse-shared-matches ids%and_paths.csv --gedmatch
+    gengen parse-shared-matches -sf ids_and_paths.csv --gedmatch
 
 ### gengen parse-segments
 Subcommand _parse-segments_ zajišťuje transformaci dat o segmentech do unifikovaného formátu.
 
-Program načte data ze vstupního souboru (první argument) a uloží je do
+Program načte data ze vstupního souboru specifikovaného argumentem _-sf/-source_file_ a uloží je do
 souboru výstupního za argumentem _-of/--output_file_ ve správném formátu.
-V případě, že výstupní soubor není specifikován, data jsou vypsána na standardní výstup.
+V případě, že vsupní soubor není zadán, vstupní data jsou čtena ze standardního vstupu,
+pokud není zadán výstupní soubor, data jsou vypsána na standardní výstup.
 
 Argumentem _--ftdna_ specifikujete, že data pochází z databáze společnosti FamilyTreeDNA.
 Argumetny _-gl/--gedmatch_list_csv_ nebo _-gss/--gedmatch_segment_search_ specifikujete,
@@ -159,7 +165,7 @@ Visualization Options/List/CSV, a _-gss_, že data pochází z Tier 1 nástroje 
 pod záložkami Visualization Options/Chromosomes & Segments.
 
 Pokud je zdrojem FamilyTreeDNA, je jméno každé osoby, se kterou POI sdílí segment, vyhledáno 
-v "databázi" za cestou definovanou v konfiguračním souboru aktuálního projektu [settings.ini](settings.ini)
+v "databázi" za cestou definovanou v konfiguračním souboru aktuálního projektu (settings.ini)
 pod klíčem _CSV_LOCATIONS.match_database_ .
 Pokud podle jména není nalezena žádná osoba, záznam o segmentu je přeskočen.
 V opačném případě je do výsledného záznamu přidáno ID dané osoby pro snadnější následnou práci.
@@ -169,46 +175,50 @@ Pokud není nějaké jméno specifikující identitu shody identifikováno v dat
 je v této hlášce vypsáno.
 
 Každý záznam ze vstupního souboru je porovnán s "databází" uloženou v souboru
-za cestou definovanou v konfiguračním souboru aktuálního projektu [settings.ini](settings.ini)
+za cestou definovanou v konfiguračním souboru aktuálního projektu (settings.ini)
 pod klíčem _CSV_LOCATIONS.segment_database_. Zde je záznam o všech dosud přidaných segmentech.
 Pokud je nalezena shoda, je záznamu o segmentu přiděleno stejné ID.
 V opačném případě je vygenerováno nové, unikátní ID a záznam je přidán do databáze.
 
 Použití:
 
-    gengen parse-segments input_file_from_FTDNA -of output_file --ftdna -v
+    gengen parse-segments -sf input_file_from_FTDNA -of output_file --ftdna -v
 
-    gengen parse-segments input_file_from_GEDmatch_segment_searched -gss
+    gengen parse-segments -sf input_file_from_GEDmatch_segment_searched -gss
 
-    gengen parse-segments input_file_from_GEDmatch_listcsv -gl
+    gengen parse-segments -gl -v
 
 ### gengen find-intersections
 Subcommand _find-intersections_ umožňuje najít průniky segmentů.
-Parametrem *--source_file* je možné specifikovat vstupní soubor obsahující data o segmentech v unifikovaném formátu.
-Pokud parametr není zadán, je použita databáze segmentů.
-Parametrem *--output_file* je možné zadat výstupní soubor, pokud tak není učiněno,
+Argumentem _-sf/--source_file_ je možné specifikovat vstupní soubor obsahující data o segmentech v unifikovaném formátu.
+Pokud vstupní není zadán, data jsou čtena ze standardního vstupu.
+Argumentem _-of/--output_file_ je možné zadat výstupní soubor, pokud tak není učiněno,
 výsledek je vypsán na standardní výstup.
 
-Jedním z následujících 2 parametrů je definována funkcionalita programu,
+Místo argumentu _-sf/--source_file_ lze také zadat argument _-fd/--from_database_.
+Data pak jsou čtena z databáze dosud zpracovaných segemntů.
+Argumenty _-sf_ a _-fd_ se vzájemně vylučují.
+
+Jedním z následujících 2 argumentů je definována funkcionalita programu,
 je možné zadat jen jeden.
-Při použítí parametru *-sid/--segment_id* a zadání hodnoty id požadovaného
+Při použítí argumentu _-sid/--segment_id_ a zadání hodnoty id požadovaného
 segmentu jsou nalezeny všechny průniky s daným zadaným segmentem.
-Při použitá parametru *-id/--person_id* a zadání hodnoty id osoby jsou nalezeny všechny
+Při použitá argumentu _-id/--person_id_ a zadání hodnoty id osoby jsou nalezeny všechny
 průniky se všemi segmenty, která POI sdílí se zadanou osobou.
-Pokud není zadán ani jeden z předchozích parametrů, jsou identifikovány všechny
+Pokud není zadán ani jeden z předchozích argumentů, jsou identifikovány všechny
 průniky mezi segmenty nacházejícími se ve vstupním souboru.
 
 Použití:
 
     gengen find-intersections --source_file parsed_segments_file --output_file all_intersections 
 
-    gengen find-intersections --output_file intersections_of_person_123 -id 123
+    gengen find-intersections -of intersections_of_person_123 -id 123
 
-    gengen find-intersections --output_file intersections_of_segment_2431 -sid 2431
+    gengen find-intersections -fd --output_file intersections_of_segment_2431 -sid 2431
 
 ## Formáty souborů
 Formáty jednotlivých druhů vstupních i výstupních souborů jsou specifikovány
-pomocí tříd obsažených v souboru *headers.py*.
+pomocí tříd obsažených v souboru _headers.py_.
 Výstupní soubory jsou popsány jako enum možných sloupců.
 
 Každá z těchto tříd definuje, jak bude vypadat hlavička příslušného druhu souboru.
