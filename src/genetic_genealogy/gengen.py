@@ -10,7 +10,7 @@ def main():
 	subparsers = args_parser.add_subparsers(
 		title='subcommands',
 		description='valid subcommands',
-		help='additional help')
+		required=True)
 
 	# region new-project
 	new_project_args = subparsers.add_parser("new-project")
@@ -33,7 +33,7 @@ def main():
 
 	# region list-projects
 	list_args = subparsers.add_parser("list-projects")
-	list_args.add_argument("-p", "--path", action="store_true")
+	list_args.add_argument("-l", "--long", action="store_true")
 	list_args.set_defaults(func=list_projects.list_projects)
 	# endregion
 
