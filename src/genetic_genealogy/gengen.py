@@ -16,6 +16,7 @@ def main():
 	new_project_args = subparsers.add_parser("new-project")
 	new_project_args.add_argument("name")
 	new_project_args.add_argument("path")
+	new_project_args.add_argument("-e", "--existing", action="store_true")
 	new_project_args.set_defaults(func=create_new_project.create_new_project)
 	# endregion
 

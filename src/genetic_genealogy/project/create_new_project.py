@@ -4,90 +4,144 @@ import appdirs
 import configparser
 
 
-def __create_project_directory_structure(name, path):
-	final_path = os.path.join(path, name)
+def __create_project_directory_structure(abs_path):
+	if not os.path.exists(abs_path):
+		os.mkdir(abs_path)
 
-	try:
-		os.mkdir(final_path)
-
-	except FileExistsError:
-		print("Project of this path and name already exists.")
-		exit(1)
-
-	os.makedirs(os.path.join(final_path, "input_files", "matches", "FTDNA"))
-	os.makedirs(os.path.join(final_path, "input_files", "matches", "GEDmatch"))
-	os.makedirs(os.path.join(final_path, "input_files", "segments", "FTDNA"))
-	os.makedirs(os.path.join(final_path, "input_files", "segments", "GEDmatch"))
-	os.makedirs(os.path.join(final_path, "input_files", "shared_matches", "FTDNA"))
-	os.makedirs(os.path.join(final_path, "input_files", "shared_matches", "GEDmatch"))
-
-	os.makedirs(os.path.join(final_path, "work_files", "matches"))
-	os.makedirs(os.path.join(final_path, "work_files", "segments"))
-	os.makedirs(os.path.join(final_path, "work_files", "intersections"))
-	os.makedirs(os.path.join(final_path, "work_files", "shared_matches"))
+	for d in ["input_files", "working_files"]:
+		if not os.path.exists(os.path.join(abs_path, d)):
+			os.makedirs(os.path.join(abs_path, d))
 
 
-def __create_settings_file(name, path):
+def __create_settings_file(name, abs_path):
+	if os.path.exists(os.path.join(abs_path, "settings.ini")):
+		# check that everything is present
+		cp = configparser.ConfigParser()
+		cp.read(os.path.join(abs_path, "settings.ini"))
+
+		if cp["PROJECT_INFO"] is not None and cp["CSV_LOCATIONS"] is not None:
+			ok = True
+			for key in ["main_path", "name"]:
+				if key not in cp["PROJECT_INFO"]:
+					ok = False
+			for key in ["match_database", "segment_database"]:
+				if key not in cp["CSV_LOCATIONS"]:
+					ok = False
+			# todo rewrite this validation
+
+			if ok:
+				return
+
 	cp = configparser.ConfigParser()
 	cp["PROJECT_INFO"] = {}
-	cp["PROJECT_INFO"]["main_path"] = os.path.join(path, name)
+	cp["PROJECT_INFO"]["main_path"] = abs_path
 	cp["PROJECT_INFO"]["name"] = name.lower()
 
 	cp["CSV_LOCATIONS"] = {}
 	cp["CSV_LOCATIONS"]["match_database"] = os.path.join("work_files", "all_matches.csv")
 	cp["CSV_LOCATIONS"]["segment_database"] = os.path.join("work_files", "all_segments.csv")
 
-	with open(os.path.join(path, name, "settings.ini"), "w", encoding="utf-8") as settings:
+	with open(os.path.join(abs_path, "settings.ini"), "w", encoding="utf-8") as settings:
 		cp.write(settings)
 
 
-def __try_to_add_new_project(name, path):
-	config_dir = appdirs.user_config_dir("genetic-genealogy")
+def __create_projects_ini_if_not_exists():
+	global_config_dir = appdirs.user_config_dir("genetic-genealogy")
 
-	if not os.path.exists(config_dir):
-		os.makedirs(config_dir)
+	if not os.path.exists(global_config_dir):
+		# if it does not exist, create app specific user_config_dir as gotten form appdirs
+		os.makedirs(global_config_dir)
 
-	config_file_path = os.path.join(config_dir, "projects.ini")
+	# get projects.ini file path
+	projects_ini_path = os.path.join(global_config_dir, "projects.ini")
 
-	project_path = os.path.join(path, name)
-	if os.path.exists(project_path):
-		raise ValueError("A directory already exists on this path.")
-
-	if os.path.exists(config_file_path):
+	if os.path.exists(projects_ini_path):
+		# if the file exists, check its contents
 		cp = configparser.ConfigParser()
-		cp.read(config_file_path)
+		cp.read(projects_ini_path)
 
-		if name in cp["PROJECTS"]:
-			raise ValueError("Project of this name already exists.")
+		if cp["PROJECTS"] is None:
+			cp["PROJECTS"] = {}
+		if cp["CURRENT_PROJECT"] is None:
+			cp["CURRENT_PROJECT"] = {}
 
-		cp["PROJECTS"][name] = project_path
-
-		with open(os.path.join(config_dir, "projects.ini"), "w", encoding="utf-8") as projects:
-			cp.write(projects)
+		with open(projects_ini_path, 'w') as f:
+			cp.write(f)
 
 	else:
-		with open(os.path.join(config_dir, "projects.ini"), "w", encoding="utf-8") as projects:
+		# else create the file and write into it what is necessary
+		with open(os.path.join(global_config_dir, "projects.ini"), "w", encoding="utf-8") as projects:
 			cp = configparser.ConfigParser()
 
-			cp["CURRENT_PROJECT"] = {"current_project": name.lower()}
-			cp["PROJECTS"] = {name: project_path}
+			cp["CURRENT_PROJECT"] = {}
+			cp["PROJECTS"] = {}
 
 			cp.write(projects)
+
+
+def __exists_name(name) -> bool:
+	cp = configparser.ConfigParser()
+	cp.read(os.path.join(appdirs.user_config_dir("genetic-genealogy"), "projects.ini"))
+
+	if name in cp["PROJECTS"]:
+		return True
+	return False
+
+
+def __exists_path(path) -> bool:
+	cp = configparser.ConfigParser()
+	cp.read(os.path.join(appdirs.user_config_dir("genetic-genealogy"), "projects.ini"))
+
+	if path in cp["PROJECTS"].values():
+		return True
+	return False
+
+
+def __add_project(name, path):
+	projects_ini_path = os.path.join(appdirs.user_config_dir("genetic-genealogy"), "projects.ini")
+	cp = configparser.ConfigParser()
+	cp.read(projects_ini_path)
+
+	cp["PROJECTS"][name] = path
+	with open(projects_ini_path, "w") as f:
+		cp.write(f)
+
+
+def __try_to_add_new_project_to_projects(name, path, existing=False):
+	if not existing and os.path.exists(path):
+		print("Choose the -e/--existing option if you want to create a project from existing directory.")
+		exit(1)
+		# todo make exit codes enum
+
+	__create_projects_ini_if_not_exists()
+
+	if __exists_name(name):
+		print("Choose unique name. This name already exists.")
+		exit(1)
+	# todo exit code
+
+	if __exists_path(path):
+		print("Choose unique path. Two projects cannot share path.")
+		exit(1)
+	# todo exit code
+
+	__add_project(name, path)
 
 
 def create_new_project(args):
-	p = os.path.abspath(args.path)
+	a_p = os.path.abspath(args.path)
 	n = args.name
 
-	__try_to_add_new_project(n, p)
-	__create_project_directory_structure(n, p)
-	__create_settings_file(n, p)
+	__try_to_add_new_project_to_projects(n, a_p, args.existing)
+	__create_project_directory_structure(a_p)
+	__create_settings_file(n, a_p)
 
 
 if __name__ == "__main__":
 	args_parser = argparse.ArgumentParser()
 	args_parser.add_argument("name")
 	args_parser.add_argument("path")
+	args_parser.add_argument("-e", "--existing")
 	arguments = args_parser.parse_args()
 
 	create_new_project(arguments)
