@@ -25,7 +25,7 @@ if __name__ == "__main__":
 	args_parser = argparse.ArgumentParser()
 
 	# add arguments
-	args_parser.add_argument("source_file")
+	args_parser.add_argument("-sf","--source_file")
 	args_parser.add_argument("-of", "--output_file")
 	args_parser.add_argument("-v", "--verbose", action="store_true")
 

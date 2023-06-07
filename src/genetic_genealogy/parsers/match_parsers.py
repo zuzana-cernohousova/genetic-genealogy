@@ -1,4 +1,5 @@
 import csv
+import sys
 from abc import ABC, abstractmethod
 
 from genetic_genealogy.databases.match_database import CSVMatchDatabase, CSVHelper
@@ -50,56 +51,62 @@ class MatchParser(Parser, ABC):
 		and therefore does not require database access."""
 		pass
 
-	def parse(self, filename: str) -> None:
+	def parse(self, filename: str | None = None) -> None:
 		# create and load database
 		existing_records = CSVMatchDatabase()
 		existing_records.load()
 
-		new_records_found = False
+		self._new_matches = []
 
-		# read file
-		with open(filename, 'r', encoding="utf-8-sig") as input_file:
-			# create csv DictReader
-			reader = csv.DictReader(input_file)
+		# read file or standard input
+		try:
+			if filename is None:
+				input_file = sys.stdin.read().splitlines()
+				self._parse_from_dict_reader(csv.DictReader(input_file), existing_records)
 
-			# check if the file is in the correct format
-			if not self._input_format().validate_format(reader.fieldnames):
-				raise ValueError("Wrong input format.")
+			else:
+				with open(filename, 'r', encoding="utf-8-sig") as input_file:
+					self._parse_from_dict_reader(csv.DictReader(input_file), existing_records)
 
-			reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
-
-			# for every record in the reader, parse it into the correct format and store it in the self.__result list
-			for record in reader:
-				# create a new dict for the record and fill it with non-id columns
-				output_record = self.parse_non_id_columns(record)
-
-				# get ID or create a new one
-				record_id = existing_records.get_id(output_record, self._input_format().get_source_id())
-
-				# id was not found, match does not yet exist in our database
-				if record_id is None:
-					record_id = existing_records.get_new_id()
-					output_record[MatchFormatEnum.person_id] = record_id
-
-					# add new record to the existing ones
-					new_records_found = True
-					existing_records.add_record(output_record)
-
-					self._new_matches.append(output_record)
-
-				# id was found, match does exist
-				else:
-					output_record[MatchFormatEnum.person_id] = record_id
-
-				# add the record to the result list
-				self._result.append(output_record)
+		except IOError:
+			print("File could not be parsed.")
+			exit(1)
+			# todo exit code
 
 		# if new records were found during parsing, save the database
-		if new_records_found:
+		if len(self._new_matches) > 0:
 			existing_records.save()
 
-	# todo save updates?
-	# only updates in non primary columns?
+	def _parse_from_dict_reader(self, reader, existing_records):
+		# check if the file is in the correct format
+		if not self._input_format().validate_format(reader.fieldnames):
+			raise ValueError("Wrong input format.")
+
+		reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
+
+		# for every record in the reader, parse it into the correct format and store it in the self.__result list
+		for record in reader:
+			# create a new dict for the record and fill it with non-id columns
+			output_record = self.parse_non_id_columns(record)
+
+			# get ID or create a new one
+			record_id = existing_records.get_id(output_record, self._input_format().get_source_id())
+
+			# id was not found, match does not yet exist in our database
+			if record_id is None:
+				record_id = existing_records.get_new_id()
+				output_record[MatchFormatEnum.person_id] = record_id
+
+				# add new record to the existing ones
+				existing_records.add_record(output_record)
+				self._new_matches.append(output_record)
+
+			# id was found, match does exist
+			else:
+				output_record[MatchFormatEnum.person_id] = record_id
+
+			# add the record to the result list
+			self._result.append(output_record)
 
 	def print_message(self) -> None:
 		if len(self._new_matches) == 0:
