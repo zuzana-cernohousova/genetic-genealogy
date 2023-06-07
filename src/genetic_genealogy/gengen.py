@@ -76,7 +76,7 @@ def main():
 	parse_shared_matches_args = subparsers.add_parser("parse-shared")
 	parse_shared_matches_args.set_defaults(func=parse_shared_matches.parse_shared_matches)
 
-	parse_shared_matches_args.add_argument("config_file")
+	parse_shared_matches_args.add_argument("-cf", "--config_file")
 	parse_shared_matches_args.add_argument("-of", "--output_file")
 	parse_shared_matches_args.add_argument("-v", "--verbose", action="store_true")
 

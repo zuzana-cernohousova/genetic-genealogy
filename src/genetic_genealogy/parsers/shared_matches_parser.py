@@ -1,4 +1,5 @@
 import csv
+import sys
 from abc import ABC, abstractmethod
 
 from genetic_genealogy.csv_io import CSVHelper
@@ -29,19 +30,34 @@ class SharedMatchesParser(Parser, ABC):
 
 	_primary_match_format = PrimaryMatchesEnum
 
-	def load_primary_matches(self, csv_config_filename):
-		with open(csv_config_filename, 'r', encoding="utf-8-sig") as input_file:
-			reader = csv.DictReader(input_file)
+	def _load_primary_matches(self, csv_config_filename=None):
+		"""This method will load primary matches ids and corresponding filepaths from configuration file.
+		If the csv_config_filename is None, data will be read from standard input."""
 
-			for row in reader:
-				ID = row[self._primary_match_format.person_id]
-				if ID is None:
-					raise ValueError("Primary match must be identified by person_id.")
-				# todo print message and exit code
+		try:
+			if csv_config_filename is None:
+				input_file = sys.stdin.read().splitlines()
+				self._load_pm_from_dict_reader(csv.DictReader(input_file))
 
-				self._primary_matches[ID] = row[self._primary_match_format.path]
+			else:
+				with open(csv_config_filename, 'r', encoding="utf-8-sig") as input_file:
+					self._load_pm_from_dict_reader(csv.DictReader(input_file))
 
-	def parse(self, configuration_file):
+		except IOError:
+			print("File could not be parsed.")
+			exit(1)
+		# todo exit code
+
+	def _load_pm_from_dict_reader(self, reader):
+		for row in reader:
+			ID = row[self._primary_match_format.person_id]
+			if ID is None:
+				raise ValueError("Primary match must be identified by person_id.")
+			# todo print message and exit code
+
+			self._primary_matches[ID] = row[self._primary_match_format.path]
+
+	def parse(self, configuration_file=None):
 		"""Parses input data from files - paths to these files are specified by the configuration file given as
 		a parameter to this method.
 		The configuration file, which is a csv file, determines the ids of primary matches and the paths to the
@@ -51,7 +67,7 @@ class SharedMatchesParser(Parser, ABC):
 
 		The header of the configuration csv file should be 'person_id,path'."""
 
-		self.load_primary_matches(configuration_file)
+		self._load_primary_matches(configuration_file)
 
 		existing_matches = CSVMatchDatabase()
 		existing_matches.load()
