@@ -1,6 +1,5 @@
 import argparse
 from genetic_genealogy.usage.parse import parse_matches, parse_segments, parse_shared_matches
-from genetic_genealogy.boxes.segments import intersection_finder
 from genetic_genealogy.project import checkout_project, create_new_project, delete_project, list_projects, current_project
 
 
@@ -38,7 +37,8 @@ def main():
 	# endregion
 
 	# region current
-	current_args = subparsers.add_parser("current")
+	current_args = subparsers.add_parser("current-project")
+	current_args.add_argument("-l", "--long")
 	current_args.set_defaults(func=current_project.current_project)
 	# endregion
 
