@@ -72,7 +72,7 @@ def main():
 	parse_shared_matches_args.add_argument("-of", "--output_file")
 	parse_shared_matches_args.add_argument("-v", "--verbose", action="store_true")
 
-	sm_me_group = p_segments_args.add_mutually_exclusive_group(required=True)
+	sm_me_group = parse_shared_matches_args.add_mutually_exclusive_group(required=True)
 	sm_me_group.add_argument("--ftdna", action="store_true")
 	sm_me_group.add_argument("--gedmatch", action="store_true")
 	# endregion
