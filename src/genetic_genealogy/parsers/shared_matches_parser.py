@@ -1,6 +1,7 @@
 import csv
 from abc import ABC, abstractmethod
 
+from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.parsers.match_parsers import CSVMatchDatabase, FTDNAMatchParser, Parser
 from genetic_genealogy.parsers.formats import SharedMatchesFormatEnum, FTDNAMatchFormatEnum, MatchFormatEnum, PrimaryMatchesEnum, \
 	GEDmatchMatchFormatEnum
@@ -83,7 +84,7 @@ class SharedMatchesParser(Parser, ABC):
 			with open(self._primary_matches[key], 'r', encoding="utf-8-sig") as file:
 				reader = csv.DictReader(file)
 
-				reader.fieldnames = self._get_enum_fieldnames(reader.fieldnames)
+				reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
 
 				if not self._input_format().validate_format(reader.fieldnames):
 					raise ValueError("Wrong input format.")
@@ -145,16 +146,6 @@ class SharedMatchesParser(Parser, ABC):
 			print("These names of secondary matches were not identified")
 			for name in self._secondary_matches_not_found:
 				print(name)
-
-	@classmethod
-	def _get_enum_fieldnames(cls, fieldnames) -> list:
-		result = []
-		for name in fieldnames:
-			for enum_name in cls._input_format():
-				if "".join(name.split()).lower() == "".join(enum_name.split()).lower():
-					result.append(enum_name)
-
-		return result
 
 
 class FTDNASharedMatchesParser(SharedMatchesParser):

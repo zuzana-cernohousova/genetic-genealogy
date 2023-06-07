@@ -1,7 +1,7 @@
 from abc import ABC
 
 from genetic_genealogy.config_reader import ConfigReader
-from genetic_genealogy.csv_io import CSVInputOutput
+from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.databases.database import Database
 from genetic_genealogy.helper import lower_no_whitespace
 from genetic_genealogy.parsers.formats import SegmentFormatEnum, SourceEnum
@@ -92,11 +92,11 @@ class CSVSegmentDatabase(SegmentDatabase):
 		self.__file_name = ConfigReader.get_segment_database_location()
 
 	def load(self):
-		self._largest_ID, self._database = CSVInputOutput.load_csv_database(
+		self._largest_ID, self._database = CSVHelper.load_csv_database(
 			self.__file_name,
 			self.format,
 			self.format.segment_id
 		)
 
 	def save(self):
-		CSVInputOutput.save_csv(self._database, self.format, filename=self.__file_name)
+		CSVHelper.save_csv(self._database, self.format, filename=self.__file_name)

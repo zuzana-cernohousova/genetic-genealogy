@@ -1,10 +1,9 @@
 import csv
-import re
 from abc import ABC, abstractmethod
 
-from genetic_genealogy.databases.match_database import CSVMatchDatabase, CSVInputOutput
+from genetic_genealogy.databases.match_database import CSVMatchDatabase, CSVHelper
 from genetic_genealogy.parsers.formats import FTDNAMatchFormatEnum, MatchFormatEnum, GEDmatchMatchFormatEnum
-from genetic_genealogy.helper import lower_no_whitespace, one_space
+from genetic_genealogy.helper import one_space
 
 
 class Parser(ABC):
@@ -24,7 +23,7 @@ class Parser(ABC):
 
 	def save_to_file(self, output_filename) -> None:
 		"""Saves the result of parsing to the given file."""
-		CSVInputOutput.save_csv(self._result, self._output_format(), filename=output_filename)
+		CSVHelper.save_csv(self._result, self._output_format(), filename=output_filename)
 
 
 class MatchParser(Parser, ABC):
@@ -63,7 +62,7 @@ class MatchParser(Parser, ABC):
 			if not self._input_format().validate_format(reader.fieldnames):
 				raise ValueError("Wrong input format.")
 
-			reader.fieldnames = self.__get_enum_fieldnames(reader.fieldnames)
+			reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
 
 			# for every record in the reader, parse it into the correct format and store it in the self.__result list
 			for record in reader:
@@ -94,18 +93,9 @@ class MatchParser(Parser, ABC):
 		# if new records were found during parsing, save the database
 		if new_records_found:
 			existing_records.save()
-			# todo save updates?
-			# only updates in non primary columns?
 
-	@classmethod
-	def __get_enum_fieldnames(cls, fieldnames) -> list:
-		result = []
-		for name in fieldnames:
-			for enum_name in cls._input_format():
-				if "".join(name.split()).lower() == "".join(enum_name.split()).lower():
-					result.append(enum_name)
-
-		return result
+	# todo save updates?
+	# only updates in non primary columns?
 
 	def print_message(self) -> None:
 		if len(self._new_matches) == 0:
@@ -201,4 +191,4 @@ class GEDmatchMatchParser(MatchParser):
 			for new_match in self._new_matches:
 				print("id= " + str(new_match[self._output_format().person_id]) + ", name= " + new_match[
 					self._output_format().person_name] + ", gedmatch_id= "
-					+ new_match[self._output_format().gedmatch_kit_id])
+					  + new_match[self._output_format().gedmatch_kit_id])

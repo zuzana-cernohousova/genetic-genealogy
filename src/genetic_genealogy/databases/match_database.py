@@ -1,7 +1,7 @@
 import re
 from abc import ABC
 
-from genetic_genealogy.csv_io import CSVInputOutput
+from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.databases.database import Database
 from genetic_genealogy.helper import lower_one_space
 from genetic_genealogy.parsers.formats import MatchFormatEnum, SourceEnum
@@ -121,7 +121,7 @@ class CSVMatchDatabase(MatchDatabase):
 		else:
 			self.__file_name = ConfigReader.get_match_database_location()
 
-		self._largest_ID, self._database = CSVInputOutput.load_csv_database(
+		self._largest_ID, self._database = CSVHelper.load_csv_database(
 			self.__file_name,
 			self.format,
 			self.format.person_id
@@ -131,7 +131,7 @@ class CSVMatchDatabase(MatchDatabase):
 		"""Saves the database to the given csv file."""
 		# file will be opened or created
 
-		CSVInputOutput.save_csv(self._database, self.format, filename=self.__file_name)
+		CSVHelper.save_csv(self._database, self.format, filename=self.__file_name)
 
 
 # endregion

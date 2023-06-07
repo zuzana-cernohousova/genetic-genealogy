@@ -1,8 +1,10 @@
 import csv
 import sys
 
+from genetic_genealogy.helper import lower_no_whitespace
 
-class CSVInputOutput:
+
+class CSVHelper:
 	@staticmethod
 	def load_csv_database(filename, database_format, searched_id) -> (int, list):
 		"""Reads the given csv file, finds the largest id,
@@ -14,7 +16,7 @@ class CSVInputOutput:
 		try:
 			with open(filename, 'r', encoding="utf-8-sig") as input_file:
 				reader = csv.DictReader(input_file)
-				reader.fieldnames = CSVInputOutput.__get_new_fieldnames(reader.fieldnames, database_format)
+				reader.fieldnames = CSVHelper.__get_new_fieldnames(reader.fieldnames, database_format)
 
 				for record in reader:
 					record_id = int(record[searched_id])
@@ -36,7 +38,7 @@ class CSVInputOutput:
 		result = []
 		with open(filename, 'r', encoding="utf-8-sig") as input_file:
 			reader = csv.DictReader(input_file)
-			reader.fieldnames = CSVInputOutput.__get_new_fieldnames(reader.fieldnames, input_format_enum)
+			reader.fieldnames = CSVHelper.__get_new_fieldnames(reader.fieldnames, input_format_enum)
 
 			for record in reader:
 				result.append(record)
@@ -63,12 +65,12 @@ class CSVInputOutput:
 
 		# no filename given --> write to stdout
 		if filename is None:
-			CSVInputOutput.__write_to_writer(database, database_format, csv.writer(sys.stdout))
+			CSVHelper.__write_to_writer(database, database_format, csv.writer(sys.stdout))
 
 		else:
 			# file will be opened or created
 			with open(filename, "w", newline='', encoding="utf-8-sig") as output_file:
-				CSVInputOutput.__write_to_writer(database, database_format, csv.writer(output_file))
+				CSVHelper.__write_to_writer(database, database_format, csv.writer(output_file))
 
 	@staticmethod
 	def __write_to_writer(database, database_format, writer) -> None:
@@ -79,3 +81,13 @@ class CSVInputOutput:
 				writer.writerow(row.values())
 			else:  # list
 				writer.writerow(row)
+
+	@staticmethod
+	def get_enum_fieldnames(input_format, fieldnames) -> list:
+		result = []
+		for name in fieldnames:
+			for enum_name in input_format:
+				if lower_no_whitespace(name) == lower_no_whitespace(enum_name):
+					result.append(enum_name)
+
+		return result

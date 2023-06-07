@@ -2,9 +2,11 @@ import csv
 import re
 from abc import ABC, abstractmethod
 
+from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.databases.match_database import CSVMatchDatabase
 from genetic_genealogy.databases.segment_database import CSVSegmentDatabase
-from genetic_genealogy.parsers.formats import FTDNASegmentFormatEnum, ListCSV_GEDmatchSegmentFormatEnum, SegmentSearch_GEDmatchSegmentFormatEnum, SegmentFormatEnum
+from genetic_genealogy.parsers.formats import FTDNASegmentFormatEnum, ListCSV_GEDmatchSegmentFormatEnum, \
+	SegmentSearch_GEDmatchSegmentFormatEnum, SegmentFormatEnum
 from genetic_genealogy.parsers.match_parsers import Parser
 
 
@@ -38,7 +40,7 @@ class SegmentParser(Parser, ABC):
 			if not self._input_format().validate_format(reader.fieldnames):
 				raise ValueError("Wrong input format.")
 
-			reader.fieldnames = self._get_enum_fieldnames(reader.fieldnames)
+			reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
 
 			for record in reader:
 				person_id = self._find_person_id(existing_matches, record)
@@ -96,21 +98,11 @@ class SegmentParser(Parser, ABC):
 			existing_segments.save()
 
 	@classmethod
-	def _get_enum_fieldnames(cls, fieldnames) -> list:
-		result = []
-		for name in fieldnames:
-			for enum_name in cls._input_format():
-				if "".join(name.split()).lower() == "".join(enum_name.split()).lower():
-					result.append(enum_name)
-
-		return result
-
-	@classmethod
 	@abstractmethod
 	def _find_person_id(cls, match_database: CSVMatchDatabase, record: dict):
 		pass
 
-	@ abstractmethod
+	@abstractmethod
 	def print_message(self) -> None:
 		pass
 
@@ -174,7 +166,7 @@ class GEDmatchSegmentParser(SegmentParser, ABC):
 		else:
 			print("These kit numbers could not be identified:")
 			for kit_number in self._unidentified_identifiers:
-				print("kit_id= "+kit_number.strip())
+				print("kit_id= " + kit_number.strip())
 
 
 class ListCSV_GEDmatchSegmentParser(GEDmatchSegmentParser):

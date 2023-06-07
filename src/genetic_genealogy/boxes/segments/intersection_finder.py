@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from genetic_genealogy.config_reader import ConfigReader
-from genetic_genealogy.csv_io import CSVInputOutput
+from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatEnum
 
 
@@ -182,9 +182,9 @@ class CSVIntersectionFinder(IntersectionFinder):
 		if segments_filename is None:
 			segments_filename = ConfigReader.get_segment_database_location()
 
-		self._segments = CSVInputOutput.load_csv(segments_filename, self.__segment_format)
+		self._segments = CSVHelper.load_csv(segments_filename, self.__segment_format)
 		self._create_segments_by_id()
 		self._create_segments_by_chromosome()
 
 	def save_intersections(self, result, output_filename=None):
-		CSVInputOutput.save_csv(result, SegmentIntersectionFormatEnum, output_filename)
+		CSVHelper.save_csv(result, SegmentIntersectionFormatEnum, output_filename)
