@@ -89,8 +89,11 @@ def main():
 	intersection_args = subparsers.add_parser("find-intersections")
 	intersection_args.set_defaults(func=find_segment_intersections.find_segment_intersections)
 
-	intersection_args.add_argument("-sf", "--source_file")
 	intersection_args.add_argument("-of", "--output_file")
+
+	i_group_input = intersection_args.add_mutually_exclusive_group()
+	i_group_input.add_argument("-sf", "--source_file")
+	i_group_input.add_argument("-fd", "--from_database", action="store_true")
 
 	i_group = intersection_args.add_mutually_exclusive_group()
 	i_group.add_argument("-sid", "--segment_id", type=int)

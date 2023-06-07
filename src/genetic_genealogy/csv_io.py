@@ -16,7 +16,7 @@ class CSVHelper:
 		try:
 			with open(filename, 'r', encoding="utf-8-sig") as input_file:
 				reader = csv.DictReader(input_file)
-				reader.fieldnames = CSVHelper.__get_new_fieldnames(reader.fieldnames, database_format)
+				reader.fieldnames = CSVHelper.__get_intenum_fieldnames(reader.fieldnames, database_format)
 
 				for record in reader:
 					record_id = int(record[searched_id])
@@ -35,20 +35,31 @@ class CSVHelper:
 	def load_csv(filename, input_format_enum) -> list:
 		"""Simply loads a csv file, returns it as a list of dictionaries,
 		where keys are replaced with input_format_enum values."""
-		result = []
-		with open(filename, 'r', encoding="utf-8-sig") as input_file:
-			reader = csv.DictReader(input_file)
-			reader.fieldnames = CSVHelper.__get_new_fieldnames(reader.fieldnames, input_format_enum)
 
-			for record in reader:
-				result.append(record)
+		try:
+			if filename is None:
+				input_file = sys.stdin.read().splitlines()
+				return CSVHelper.__load_from_reader(csv.DictReader(input_file), input_format_enum)
+
+			with open(filename, 'r', encoding="utf-8-sig") as input_file:
+				reader = csv.DictReader(input_file)
+				return CSVHelper.__load_from_reader(reader, input_format_enum)
+
+		except IOError:
+			print("Segments could not be loaded")
+			exit(1)
+		# todo exit code
+
+	@staticmethod
+	def __get_list_from_reader(reader: csv.DictReader) -> list:
+		result = []
+		for row in reader:
+			result.append(row)
 
 		return result
 
-		# todo create stdin support
-
 	@staticmethod
-	def __get_new_fieldnames(fieldnames, input_format_enum) -> list:
+	def __get_intenum_fieldnames(fieldnames, input_format_enum) -> list:
 		new_fieldnames = []
 
 		# replace fieldnames with enum values
@@ -60,6 +71,11 @@ class CSVHelper:
 						break
 
 		return new_fieldnames
+
+	@staticmethod
+	def __load_from_reader(reader, input_format_intenum) -> list:
+		reader.fieldnames = CSVHelper.__get_intenum_fieldnames(reader.fieldnames, input_format_intenum)
+		return CSVHelper.__get_list_from_reader(reader)
 
 	@staticmethod
 	def save_csv(database, database_format, filename=None) -> None:
@@ -85,7 +101,7 @@ class CSVHelper:
 				writer.writerow(row)
 
 	@staticmethod
-	def get_enum_fieldnames(input_format, fieldnames) -> list:
+	def get_strenum_fieldnames(input_format, fieldnames) -> list:
 		result = []
 		for name in fieldnames:
 			for enum_name in input_format:

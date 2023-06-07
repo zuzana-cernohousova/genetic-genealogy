@@ -65,7 +65,7 @@ class SegmentParser(Parser, ABC):
 		if not self._input_format().validate_format(reader.fieldnames):
 			raise ValueError("Wrong input format.")
 
-		reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
+		reader.fieldnames = CSVHelper.get_strenum_fieldnames(self._input_format(), reader.fieldnames)
 
 		for record in reader:
 			person_id = self._find_person_id(existing_matches, record)

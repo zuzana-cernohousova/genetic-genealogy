@@ -7,7 +7,7 @@ from genetic_genealogy.parsers.formats import SegmentIntersectionFormatEnum, Seg
 
 class IntersectionFinder(ABC):
 	@abstractmethod
-	def load_segments(self, source) -> None:
+	def load_segments(self, source, from_database= False) -> None:
 		pass
 
 	@abstractmethod
@@ -175,11 +175,12 @@ class CSVIntersectionFinder(IntersectionFinder):
 
 	__segment_format = SegmentFormatEnum
 
-	def load_segments(self, segments_filename=None):
+	def load_segments(self, segments_filename=None, from_database= False):
 		"""Loads segments from CSV file. If filename is not specified, segment database specified in
 		project configuration is used.
 		Build a dictionary of segments over ids and over chromosomes."""
-		if segments_filename is None:
+
+		if from_database:
 			segments_filename = ConfigReader.get_segment_database_location()
 
 		self._segments = CSVHelper.load_csv(segments_filename, self.__segment_format)

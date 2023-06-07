@@ -82,7 +82,7 @@ class MatchParser(Parser, ABC):
 		if not self._input_format().validate_format(reader.fieldnames):
 			raise ValueError("Wrong input format.")
 
-		reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
+		reader.fieldnames = CSVHelper.get_strenum_fieldnames(self._input_format(), reader.fieldnames)
 
 		# for every record in the reader, parse it into the correct format and store it in the self.__result list
 		for record in reader:

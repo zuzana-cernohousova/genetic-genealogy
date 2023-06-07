@@ -4,7 +4,12 @@ import argparse
 
 def find_segment_intersections(args):
 	finder = CSVIntersectionFinder()
-	finder.load_segments(args.source_file)
+
+	if args.from_database:
+		finder.load_segments(from_database=True)
+
+	else:
+		finder.load_segments(args.source_file)
 
 	intersections = []
 
@@ -23,8 +28,11 @@ if __name__ == "__main__":
 	args_parser = argparse.ArgumentParser()
 
 	# add arguments
-	args_parser.add_argument("-sf", "--source_file")
 	args_parser.add_argument("-of", "--output_file")
+
+	i_group_input = args_parser.add_mutually_exclusive_group()
+	i_group_input.add_argument("-sf", "--source_file")
+	i_group_input.add_argument("-fd", "--from_database", action="store_true")
 
 	group = args_parser.add_mutually_exclusive_group()
 	group.add_argument("-sid", "--segment_id", type=int)

@@ -86,7 +86,7 @@ class SharedMatchesParser(Parser, ABC):
 				with open(self._primary_matches[primary_match_id], 'r', encoding="utf-8-sig") as file:
 					reader = csv.DictReader(file)
 
-					reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
+					reader.fieldnames = CSVHelper.get_strenum_fieldnames(self._input_format(), reader.fieldnames)
 
 					if not self._input_format().validate_format(reader.fieldnames):
 						raise ValueError("Wrong input format.")
