@@ -3,6 +3,7 @@ from abc import ABC
 from genetic_genealogy.config_reader import ConfigReader
 from genetic_genealogy.csv_io import CSVInputOutput
 from genetic_genealogy.databases.database import Database
+from genetic_genealogy.helper import lower_no_whitespace
 from genetic_genealogy.parsers.formats import SegmentFormatEnum, SourceEnum
 
 
@@ -37,7 +38,7 @@ class SegmentDatabase(Database, ABC):
 
 		for segment in self._database:
 			if segment[self.format.source] == SourceEnum.FamilyTreeDNA.name:
-				name = "".join(segment[self.format.person_name].split()).lower()
+				name = lower_no_whitespace(segment[self.format.person_name])
 
 				if name in self._segments_by_person_name.keys():
 					self._segments_by_person_name[name].append(segment)
@@ -52,7 +53,7 @@ class SegmentDatabase(Database, ABC):
 
 		# data from ftdna -> search by person name
 		if source == SourceEnum.FamilyTreeDNA:
-			name = "".join(parsed_record[self.format.person_name].split()).lower()
+			name = lower_no_whitespace(parsed_record[self.format.person_name])
 
 			if name in self._segments_by_person_name.keys():
 				for segment in self._segments_by_person_name[name]:

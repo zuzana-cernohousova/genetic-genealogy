@@ -1,5 +1,7 @@
 from enum import Enum, IntEnum, StrEnum
 
+from genetic_genealogy.helper import lower_no_whitespace
+
 
 class SourceEnum(Enum):
 	GEDmatch = 0
@@ -166,15 +168,15 @@ class InputFormatEnum(StrEnum):
 		If order is different, create a mapping with the right order."""
 
 		# for all necessary columns - lowercase them and get rid of all whitespaces
-		lowercase_nowhitespace_minimal_column_set = {"".join(item.split()).lower() for item in
+		lowercase_no_whitespace_minimal_column_set = {lower_no_whitespace(item) for item in
 													 cls.get_minimal_column_set()}
 
 		# the same for the other header
-		lowercase_nowhitespace_other_header_set = {"".join(item.split()).lower() for item in
+		lowercase_no_whitespace_other_header_set = {lower_no_whitespace(item) for item in
 												   other_header}
 
 		# if the minimal column set is a subset of the other header set, it is OK
-		if lowercase_nowhitespace_minimal_column_set.issubset(lowercase_nowhitespace_other_header_set):
+		if lowercase_no_whitespace_minimal_column_set.issubset(lowercase_no_whitespace_other_header_set):
 			# additional columns are not detected and given the implementation
 			# of the methods using the formats, it should not be a problem
 			return True

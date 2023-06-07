@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 
 from genetic_genealogy.databases.match_database import CSVMatchDatabase, CSVInputOutput
 from genetic_genealogy.parsers.formats import FTDNAMatchFormatEnum, MatchFormatEnum, GEDmatchMatchFormatEnum
+from genetic_genealogy.helper import lower_no_whitespace, one_space
 
 
 class Parser(ABC):
@@ -135,7 +136,7 @@ class FTDNAMatchParser(MatchParser):
 		]
 
 		# delete additional spaces and return
-		return re.sub(' +', ' ', " ".join(name))
+		return one_space(" ".join(name))
 
 	@classmethod
 	def parse_non_id_columns(cls, record: dict) -> dict:

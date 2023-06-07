@@ -3,6 +3,7 @@ from abc import ABC
 
 from genetic_genealogy.csv_io import CSVInputOutput
 from genetic_genealogy.databases.database import Database
+from genetic_genealogy.helper import lower_one_space
 from genetic_genealogy.parsers.formats import MatchFormatEnum, SourceEnum
 from genetic_genealogy.config_reader import ConfigReader
 
@@ -48,7 +49,7 @@ class MatchDatabase(Database, ABC):
 		if self.records_by_name is None:
 			self.__create_records_by_name_dict()
 
-		match_name = re.sub(' +', ' ', match_name).lower()
+		match_name = lower_one_space(match_name)
 
 		if match_name in self.records_by_name.keys():
 			return self.records_by_name[match_name]
