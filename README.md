@@ -5,6 +5,7 @@ To install this application, use:
 
     pip install git+https://github.com/zuzana-cernohousova/genetic-genealogy.git
 
+### Functionality
 After installing the application *gengen* command and the following subcommands will be available:
 
 - new-project
@@ -17,7 +18,7 @@ After installing the application *gengen* command and the following subcommands 
 - parse-shared-matches
 - find-intersections 
 
-These subcommands are more closely described below.
+These subcommands are more closely described [below](#commands).
 
 ## Diagrams
 
