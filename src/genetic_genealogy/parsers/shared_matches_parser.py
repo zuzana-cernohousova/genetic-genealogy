@@ -2,6 +2,7 @@ import csv
 from abc import ABC, abstractmethod
 
 from genetic_genealogy.csv_io import CSVHelper
+from genetic_genealogy.helper import one_space
 from genetic_genealogy.parsers.match_parsers import CSVMatchDatabase, FTDNAMatchParser, Parser
 from genetic_genealogy.parsers.formats import SharedMatchesFormatEnum, FTDNAMatchFormatEnum, MatchFormatEnum, PrimaryMatchesEnum, \
 	GEDmatchMatchFormatEnum
@@ -185,8 +186,8 @@ class GEDmatchSharedMatchesParser(SharedMatchesParser):
 		return GEDmatchMatchFormatEnum
 
 	def _get_secondary_match_id_and_name(self, existing_matches, input_row) -> (int | None, str):
-		kit_id = self.__strip(input_row[self._input_format().matched_kit])
-		name = self.__strip(input_row[self._input_format().matched_name])
+		kit_id = one_space(input_row[self._input_format().matched_kit])
+		name = one_space(input_row[self._input_format().matched_name])
 
 		match = existing_matches.get_record_from_gedmatch_id(kit_id)
 		if match is not None:
@@ -198,8 +199,4 @@ class GEDmatchSharedMatchesParser(SharedMatchesParser):
 		mapping = self._input_format().shared_matches_mapping()
 		for index in self._input_format():
 			if index in mapping:
-				output_row[mapping[index]] = self.__strip(input_row[index])
-
-	@classmethod
-	def __strip(cls, item):
-		return " ".join(item.split())
+				output_row[mapping[index]] = one_space(input_row[index])
