@@ -1,5 +1,6 @@
 import argparse
 from genetic_genealogy.usage.parse import parse_matches, parse_segments, parse_shared_matches
+from genetic_genealogy.usage import find_segment_intersections
 from genetic_genealogy.project import checkout_project, create_new_project, delete_project, list_projects, current_project
 
 
@@ -80,6 +81,19 @@ def main():
 	sm_me_group = parse_shared_matches_args.add_mutually_exclusive_group(required=True)
 	sm_me_group.add_argument("--ftdna", action="store_true")
 	sm_me_group.add_argument("--gedmatch", action="store_true")
+	# endregion
+
+	# region intersections
+	intersection_args = subparsers.add_parser("find-intersections")
+	intersection_args.set_defaults(func=find_segment_intersections.find_segment_intersections)
+
+	intersection_args.add_argument("-sf", "--source_file")
+	intersection_args.add_argument("-of", "--output_file")
+
+	i_group = intersection_args.add_mutually_exclusive_group()
+	i_group.add_argument("-sid", "--segment_id", type=int)
+	i_group.add_argument("-id", "--person_id", type=int)
+
 	# endregion
 
 	args = args_parser.parse_args()
