@@ -18,6 +18,7 @@ class SharedMatchesParser(Parser, ABC):
 		self._primary_matches = {}
 
 		self._primary_matches_not_found = []
+		self._files_not_parsed = []
 		self._secondary_matches_not_found = []
 		self._already_found_pairs = []
 
@@ -107,9 +108,7 @@ class SharedMatchesParser(Parser, ABC):
 						self._result.append(output_row)
 
 			except IOError:
-				print("The file for person with ID= " + primary_match_id + " cloud not be parsed.")
-				exit(1)
-				# todo exit codes enum
+				self._files_not_parsed.append(primary_match_id)
 
 	@abstractmethod
 	def _get_secondary_match_id_and_name(self, existing_matches, input_row) -> (int, str):
@@ -131,8 +130,13 @@ class SharedMatchesParser(Parser, ABC):
 
 		if len(self._primary_matches_not_found) > 0:
 			print("These names of primary matches were not identified")
-			for name in self._primary_matches_not_found:
-				print(name)
+			for person_id in self._primary_matches_not_found:
+				print(person_id)
+
+		if len(self._files_not_parsed)>0:
+			print("These names of primary matches were not identified")
+			for person_id in self._files_not_parsed:
+				print(person_id)
 
 		if len(self._secondary_matches_not_found) > 0:
 			print("These names of secondary matches were not identified")
