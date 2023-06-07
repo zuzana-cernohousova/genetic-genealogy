@@ -110,17 +110,11 @@ class CSVMatchDatabase(MatchDatabase):
 
 	def __init__(self):
 		super().__init__()
-		self.__file_name = ""
+		self.__file_name = ConfigReader.get_match_database_location()
 
-	def load(self, filename=None):
+	def load(self):
 		"""Reads the given csv file and stores it in the database.
 		If filename is specified, the file is used, else path is read from project configuration."""
-
-		if filename:
-			self.__file_name = filename
-		else:
-			self.__file_name = ConfigReader.get_match_database_location()
-
 		self._largest_ID, self._database = CSVHelper.load_csv_database(
 			self.__file_name,
 			self.format,
@@ -129,10 +123,6 @@ class CSVMatchDatabase(MatchDatabase):
 
 	def save(self):
 		"""Saves the database to the given csv file."""
-		# file will be opened or created
-
 		CSVHelper.save_csv(self._database, self.format, filename=self.__file_name)
 
-
 # endregion
-
