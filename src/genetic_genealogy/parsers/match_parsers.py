@@ -13,17 +13,24 @@ class Parser(ABC):
 	@classmethod
 	@abstractmethod
 	def _input_format(cls):
+		"""Defines the format of the input data."""
 		pass
 
 	@classmethod
 	@abstractmethod
 	def _output_format(cls):
-		"""Defines the format of the parsed data."""
+		"""Defines the final format of the parsed data."""
 		pass
 
 	def save_to_file(self, output_filename) -> None:
 		"""Saves the result of parsing to the given file."""
 		CSVHelper.save_csv(self._result, self._output_format(), filename=output_filename)
+
+	@abstractmethod
+	def parse(self, filename: str) -> None:
+		"""Reads the file under filename and parses the records into
+		the format specified by _output_format."""
+		pass
 
 
 class MatchParser(Parser, ABC):
@@ -44,9 +51,6 @@ class MatchParser(Parser, ABC):
 		pass
 
 	def parse(self, filename: str) -> None:
-		"""Reads the file under filename and parses the records into
-		the format specified by MatchFormatEnum."""
-
 		# create and load database
 		existing_records = CSVMatchDatabase()
 		existing_records.load()

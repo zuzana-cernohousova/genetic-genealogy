@@ -44,11 +44,17 @@ class SharedMatchesParser(Parser, ABC):
 
 				self._primary_matches[(ID, name)] = row[self._primary_match_format.path]
 
-	def parse(self, filename):
-		"""Parses files, names of these files are given by the configuration loaded
-		from configuration file by the load_primary_matches method"""
+	def parse(self, configuration_file):
+		"""Parses input data from files - paths to these files are specified by the configuration file given as
+		a parameter to this method.
+		The configuration file, which is a csv file, determines the ids of primary matches and the paths to the
+		files corresponding to them. In those files, there are regular match data in source specific format.
+		Matches from those files are referred to as secondary matches and
+		they are matches in common with the POI and the given primary match.
 
-		self.load_primary_matches(filename)
+		The header of the configuration csv file should be 'person_id,path'."""
+
+		self.load_primary_matches(configuration_file)
 
 		existing_matches = CSVMatchDatabase()
 		existing_matches.load()

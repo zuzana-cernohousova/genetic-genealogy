@@ -16,7 +16,7 @@ class MatchDatabase(Database, ABC):
 		self.records_by_gedmatch_id = None
 
 	def __create_records_by_name_dict(self) -> None:
-		"""Creates a dictionary of person IDs. The keys are person names."""
+		"""Creates a dictionary of records. The keys are person names."""
 		result = {}
 		for row in self._database:
 			result[row[self.format.person_name].lower()] = row
@@ -24,7 +24,7 @@ class MatchDatabase(Database, ABC):
 		self.records_by_name = result
 
 	def __create_records_by_id_dict(self) -> None:
-		"""Creates a dictionary of person IDs. The keys are person IDs."""
+		"""Creates a dictionary of records. The keys are person IDs."""
 		result = {}
 		for row in self._database:
 			result[int(row[self.format.person_id])] = row
@@ -32,7 +32,7 @@ class MatchDatabase(Database, ABC):
 		self.records_by_id = result
 
 	def __create_records_by_gedmatch_id_dict(self) -> None:
-		"""Creates a dictionary of person IDs. The keys are the GEDmatch identificators."""
+		"""Creates a dictionary of records. The keys are the GEDmatch identificators."""
 		result = {}
 		for row in self._database:
 			result[row[self.format.gedmatch_kit_id]] = row
@@ -44,7 +44,7 @@ class MatchDatabase(Database, ABC):
 		return MatchFormatEnum
 
 	def get_record_from_match_name(self, match_name) -> dict | None:
-		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
+		"""Finds a record based on name and returns it. If no record is found, returns None."""
 
 		if self.records_by_name is None:
 			self.__create_records_by_name_dict()
@@ -57,7 +57,7 @@ class MatchDatabase(Database, ABC):
 		return None
 
 	def get_record_from_gedmatch_id(self, match_gedmatch_id) -> dict | None:
-		"""Finds a record based on name and returns the ID. If no record is found, returns None."""
+		"""Finds a record based on gedmatch kit id and returns it. If no record is found, returns None."""
 
 		if self.records_by_gedmatch_id is None:
 			self.__create_records_by_gedmatch_id_dict()
@@ -68,7 +68,9 @@ class MatchDatabase(Database, ABC):
 		return None
 
 	def get_id(self, parsed_record, source, searched_id_type=MatchFormatEnum.person_id) -> int | None:
-		"""Gets id of just parsed record using built dictionaries."""
+		"""Returns id of just parsed record. Depending on source database,
+		different fields are used to speed up the process."""
+
 		potential_record = None
 
 		# if data is from FamilyTreeDNA, search for the id in records by name
@@ -79,7 +81,8 @@ class MatchDatabase(Database, ABC):
 			potential_record = self.get_record_from_gedmatch_id(parsed_record[self.format.gedmatch_kit_id])
 
 		if potential_record is not None:
-			# compare other key values, all must be the same as in found record
+			# compare other key values if there are more, all must be the same as in found record
+
 			for key in self.format.comparison_key(source=source):
 				if key == searched_id_type:
 					continue
@@ -105,7 +108,7 @@ class MatchDatabase(Database, ABC):
 
 class CSVMatchDatabase(MatchDatabase):
 	"""
-	Loads all match data from file and holds it.
+	Loads all match data from a CSV file and creates database API.
 	"""
 
 	def __init__(self):
@@ -113,8 +116,7 @@ class CSVMatchDatabase(MatchDatabase):
 		self.__file_name = ConfigReader.get_match_database_location()
 
 	def load(self):
-		"""Reads the given csv file and stores it in the database.
-		If filename is specified, the file is used, else path is read from project configuration."""
+		"""Reads the given csv file and stores it. CSV file location is read from project configuration."""
 		self._largest_ID, self._database = CSVHelper.load_csv_database(
 			self.__file_name,
 			self.format,
