@@ -7,7 +7,8 @@ from genetic_genealogy.parsers.formats import SegmentIntersectionFormatEnum, Seg
 
 class IntersectionFinder(ABC):
 	@abstractmethod
-	def load_segments(self, source, from_database= False) -> None:
+	def load_segments(self, source, from_database=False) -> None:
+		"""Loads segments. Intersections of these loaded segments will later be found."""
 		pass
 
 	@abstractmethod
@@ -23,7 +24,7 @@ class IntersectionFinder(ABC):
 	__segment_format = SegmentFormatEnum
 	__output_format = SegmentIntersectionFormatEnum
 
-	def _create_segments_by_id(self)  -> None:
+	def _create_segments_by_id(self) -> None:
 		for segment in self._segments:
 			# create a dict where ids are keys
 			self._segments_by_id[segment[self.__segment_format.segment_id]] = segment
@@ -175,8 +176,11 @@ class CSVIntersectionFinder(IntersectionFinder):
 
 	__segment_format = SegmentFormatEnum
 
-	def load_segments(self, segments_filename=None, from_database= False):
-		"""Loads segments from CSV file. If filename is not specified, segment database specified in
+	def load_segments(self, segments_filename=None, from_database=False):
+		"""
+		Loads segments. Intersections of these loaded segments will later be found.
+
+		Loads segments from CSV file. If filename is not specified, segment database specified in
 		project configuration is used.
 		Build a dictionary of segments over ids and over chromosomes."""
 
@@ -188,4 +192,6 @@ class CSVIntersectionFinder(IntersectionFinder):
 		self._create_segments_by_chromosome()
 
 	def save_intersections(self, result, output_filename=None):
+		"""Saves the found intersections to file or to standard output if output_filename is None."""
+
 		CSVHelper.save_csv(result, SegmentIntersectionFormatEnum, output_filename)

@@ -10,6 +10,8 @@ from genetic_genealogy.parsers.formats import SegmentFormatEnum, SourceEnum
 # region segment databases
 
 class SegmentDatabase(Database, ABC):
+	"""Represents database of all segments already parsed within the current gengen project."""
+
 	def __init__(self):
 		super().__init__()
 		self._segments_by_person_name = None
@@ -20,8 +22,9 @@ class SegmentDatabase(Database, ABC):
 		return SegmentFormatEnum
 
 	def _create_segments_by_chromosome(self) -> None:
-		# create a dict where chromosome ids are keys and values are lists of segments
-		# will be used for faster computation
+		"""Creates a dict where chromosome ids are keys and values are lists of segments.
+		Will be used for faster computation"""
+
 		self._segments_by_chromosome = {}
 
 		for segment in self._database:
@@ -87,6 +90,9 @@ class SegmentDatabase(Database, ABC):
 
 
 class CSVSegmentDatabase(SegmentDatabase):
+	"""Represents database of all the segments already parsed within the current project.
+	Within this implementation of the SegmentDatabase abstract class, the data is stored in a csv file."""
+
 	def __init__(self):
 		super().__init__()
 		self.__file_name = ConfigReader.get_segment_database_location()

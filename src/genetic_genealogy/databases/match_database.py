@@ -9,6 +9,8 @@ from genetic_genealogy.config_reader import ConfigReader
 
 
 class MatchDatabase(Database, ABC):
+	"""Represents database of all matches already parsed within the current gengen project."""
+
 	def __init__(self):
 		super().__init__()
 		self.records_by_name = None
@@ -107,9 +109,8 @@ class MatchDatabase(Database, ABC):
 
 
 class CSVMatchDatabase(MatchDatabase):
-	"""
-	Loads all match data from a CSV file and creates database API.
-	"""
+	"""Represents database of all the matches already parsed within the current project.
+	Within this implementation of the MatchDatabase abstract class, the data is stored in a csv file."""
 
 	def __init__(self):
 		super().__init__()

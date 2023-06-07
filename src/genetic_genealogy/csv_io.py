@@ -7,8 +7,8 @@ from genetic_genealogy.helper import lower_no_whitespace
 class CSVHelper:
 	@staticmethod
 	def load_csv_database(filename, database_format, searched_id) -> (int, list):
-		"""Reads the given csv file, finds the largest id,
-		returns the id and the file as a list of rows (dicts)"""
+		"""Reads the given csv file, finds the largest id (of given type specified by searched_id parameter),
+		returns the id and the file as a list of rows (dicts)."""
 
 		result = []
 		biggest_id = 0
@@ -33,7 +33,7 @@ class CSVHelper:
 
 	@staticmethod
 	def load_csv(filename, input_format_enum) -> list:
-		"""Simply loads a csv file, returns it as a list of dictionaries,
+		"""Simply loads a csv file using a DictReader, returns it as a list of dictionaries,
 		where keys are replaced with input_format_enum values."""
 
 		try:
@@ -48,7 +48,8 @@ class CSVHelper:
 		except IOError:
 			print("Segments could not be loaded")
 			exit(1)
-		# todo exit code
+
+	# todo exit code
 
 	@staticmethod
 	def __get_list_from_reader(reader: csv.DictReader) -> list:
@@ -78,8 +79,9 @@ class CSVHelper:
 		return CSVHelper.__get_list_from_reader(reader)
 
 	@staticmethod
-	def save_csv(database, database_format, filename=None) -> None:
-		"""Saves the database to the given csv file or to standard output if no file is given."""
+	def save_csv(database: list, database_format, filename=None) -> None:
+		"""Saves the list of dictionaries of a given format
+		to the given csv file. If no filename is None, standard output is used."""
 
 		# no filename given --> write to stdout
 		if filename is None:
@@ -102,6 +104,9 @@ class CSVHelper:
 
 	@staticmethod
 	def get_strenum_fieldnames(input_format, fieldnames) -> list:
+		"""Creates a list of values of given input_format (that is a strenum) in the same order as are the corresponding
+		strings in current fieldnames."""
+
 		result = []
 		for name in fieldnames:
 			for enum_name in input_format:

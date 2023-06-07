@@ -30,7 +30,7 @@ class Parser(ABC):
 	@abstractmethod
 	def parse(self, filename: str) -> None:
 		"""Reads the file under filename and parses the records into
-		the format specified by _output_format."""
+		the format specified by _output_format. If filename is not specified, data is read from standard input."""
 		pass
 
 
