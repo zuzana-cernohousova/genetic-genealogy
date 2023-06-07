@@ -33,17 +33,11 @@ class SharedMatchesParser(Parser, ABC):
 
 			for row in reader:
 				ID = row[self._primary_match_format.person_id]
-				if ID == "":
-					ID = None
-				name = row[self._primary_match_format.person_name]
-				if name == "":
-					name = None
+				if ID is None:
+					raise ValueError("Primary match must be identified by person_id.")
+					# todo print message and exit code
 
-				# at least one of the identifiers must be given
-				if ID is None and name is None:
-					raise ValueError("No identifier given for a person.")
-
-				self._primary_matches[(ID, name)] = row[self._primary_match_format.path]
+				self._primary_matches[ID] = row[self._primary_match_format.path]
 
 	def parse(self, configuration_file):
 		"""Parses input data from files - paths to these files are specified by the configuration file given as
@@ -61,80 +55,71 @@ class SharedMatchesParser(Parser, ABC):
 		existing_matches.load()
 
 		# for each person in primary matches, parse their file
-		for key in self._primary_matches:
-			primary_match_id = key[0]
-			primary_match_name = key[1]
+		for primary_match_id in self._primary_matches:
+			primary_match = existing_matches.get_record_from_id(primary_match_id)
 
-			if primary_match_id is None:
-				# if primary_match_id was not filled, try to find it
-				primary_match = existing_matches.get_record_from_match_name(primary_match_name)
+			if primary_match is None:
+				self._primary_matches_not_found.append(primary_match_id)
+				continue
 
-				# not found --> skip
-				if primary_match is None:
-					self._primary_matches_not_found.append(primary_match_name)
-					continue
+			primary_match_name = primary_match[MatchFormatEnum.person_name]
 
-				primary_match_id = primary_match[MatchFormatEnum.person_id]
+			try:
+				with open(self._primary_matches[primary_match_id], 'r', encoding="utf-8-sig") as file:
+					reader = csv.DictReader(file)
 
-			if primary_match_name is None:
-				# if primary_match_name was not filled, try to find it
-				primary_match = existing_matches.get_record_from_id(int(primary_match_id))
+					reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
 
-				# not found --> skip
-				if primary_match is None:
-					self._primary_matches_not_found.append("id = " + primary_match_id)
-					continue
+					if not self._input_format().validate_format(reader.fieldnames):
+						raise ValueError("Wrong input format.")
 
-				primary_match_name = primary_match[MatchFormatEnum.person_name]
+					for row in reader:
+						# parse secondary match record - only part that is genetic_genealogy dependant
+						secondary_match_id, secondary_match_name = self._get_secondary_match_id_and_name(existing_matches,
+																										 row)
 
-			# primary person identified --> find their shared matches
-			with open(self._primary_matches[key], 'r', encoding="utf-8-sig") as file:
-				reader = csv.DictReader(file)
+						# if the person was not found in POIs matches, skip it, but add it to not found names
+						if secondary_match_id is None:
+							self._secondary_matches_not_found.append(row[self._input_format().person_identifier])
+							continue
 
-				reader.fieldnames = CSVHelper.get_enum_fieldnames(self._input_format(), reader.fieldnames)
+						# if the two people are the same, skip the secondary one
+						if secondary_match_id == primary_match_id:
+							continue
 
-				if not self._input_format().validate_format(reader.fieldnames):
-					raise ValueError("Wrong input format.")
+						# if the pair was already identified
+						if {primary_match_id, secondary_match_id} in self._already_found_pairs:
+							continue
 
-				for row in reader:
-					# parse secondary match record - only part that is genetic_genealogy dependant
-					secondary_match_id, secondary_match_name = self._get_secondary_match_id_and_name(existing_matches,
-																									 row)
+						# add to already found pairs
+						self._already_found_pairs.append({primary_match_id, secondary_match_id})
 
-					# if the person was not found in POIs matches, skip it, but add it to not found names
-					if secondary_match_id is None:
-						self._secondary_matches_not_found.append(row[self._input_format().person_identifier])
-						continue
+						# create output record and add all columns gained from FamilyTreeDNA
+						output_row = [''] * len(SharedMatchesFormatEnum)
+						output_row[self._output_format().id_1] = primary_match_id
+						output_row[self._output_format().name_1] = primary_match_name
+						output_row[self._output_format().id_2] = secondary_match_id
+						output_row[self._output_format().name_2] = secondary_match_name
 
-					# if the two people are the same, skip the secondary one
-					if secondary_match_id == primary_match_id:
-						continue
+						# genetic_genealogy specific - we do not have match statistics from FTDNA
+						self._fill_in_match_statistics(row, output_row)
 
-					# if the pair was already identified
-					if {primary_match_id, secondary_match_id} in self._already_found_pairs:
-						continue
+						self._result.append(output_row)
 
-					# add to already found pairs
-					self._already_found_pairs.append({primary_match_id, secondary_match_id})
-
-					# create output record and add all columns gained from FamilyTreeDNA
-					output_row = [''] * len(SharedMatchesFormatEnum)
-					output_row[self._output_format().id_1] = primary_match_id
-					output_row[self._output_format().name_1] = primary_match_name
-					output_row[self._output_format().id_2] = secondary_match_id
-					output_row[self._output_format().name_2] = secondary_match_name
-
-					# genetic_genealogy specific - we do not have match statistics from FTDNA
-					self._fill_in_match_statistics(row, output_row)
-
-					self._result.append(output_row)
+			except IOError:
+				print("The file for person with ID= " + primary_match_id + " cloud not be parsed.")
+				exit(1)
+				# todo exit codes enum
 
 	@abstractmethod
 	def _get_secondary_match_id_and_name(self, existing_matches, input_row) -> (int, str):
+		"""Gets secondary match information from match database (existing_matches).
+		Is source database specific."""
 		pass
 
 	@abstractmethod
 	def _fill_in_match_statistics(self, input_row, output_row) -> None:
+		"""Gets match statistics from input row. Is source database specific."""
 		pass
 
 	def print_message(self) -> None:

@@ -431,7 +431,6 @@ class SegmentSearch_GEDmatchSegmentFormatEnum(InputFormatEnum):
 
 # region Shared matches primary matches file
 class PrimaryMatchesEnum(StrEnum):
-	person_name = "person_name"
 	person_id = "person_id"
 	path = "path"
 
