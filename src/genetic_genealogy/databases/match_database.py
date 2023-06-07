@@ -95,12 +95,12 @@ class MatchDatabase(Database, ABC):
 		return None
 
 	def get_record_from_id(self, record_id: int) -> dict | None:
-		"""Returns a record of given id."""
+		"""Returns a record of given id. record_id must be int."""
 
 		if self.records_by_id is None:
 			self.__create_records_by_id_dict()
 
-		if record_id in self.records_by_id.keys():
+		if int(record_id) in self.records_by_id.keys():
 			return self.records_by_id[record_id]
 
 		return None

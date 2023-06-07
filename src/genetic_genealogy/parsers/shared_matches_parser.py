@@ -4,7 +4,8 @@ from abc import ABC, abstractmethod
 from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.helper import one_space
 from genetic_genealogy.parsers.match_parsers import CSVMatchDatabase, FTDNAMatchParser, Parser
-from genetic_genealogy.parsers.formats import SharedMatchesFormatEnum, FTDNAMatchFormatEnum, MatchFormatEnum, PrimaryMatchesEnum, \
+from genetic_genealogy.parsers.formats import SharedMatchesFormatEnum, FTDNAMatchFormatEnum, MatchFormatEnum, \
+	PrimaryMatchesEnum, \
 	GEDmatchMatchFormatEnum
 
 
@@ -36,7 +37,7 @@ class SharedMatchesParser(Parser, ABC):
 				ID = row[self._primary_match_format.person_id]
 				if ID is None:
 					raise ValueError("Primary match must be identified by person_id.")
-					# todo print message and exit code
+				# todo print message and exit code
 
 				self._primary_matches[ID] = row[self._primary_match_format.path]
 
@@ -57,7 +58,7 @@ class SharedMatchesParser(Parser, ABC):
 
 		# for each person in primary matches, parse their file
 		for primary_match_id in self._primary_matches:
-			primary_match = existing_matches.get_record_from_id(primary_match_id)
+			primary_match = existing_matches.get_record_from_id(int(primary_match_id))
 
 			if primary_match is None:
 				self._primary_matches_not_found.append(primary_match_id)
@@ -76,8 +77,9 @@ class SharedMatchesParser(Parser, ABC):
 
 					for row in reader:
 						# parse secondary match record - only part that is genetic_genealogy dependant
-						secondary_match_id, secondary_match_name = self._get_secondary_match_id_and_name(existing_matches,
-																										 row)
+						secondary_match_id, secondary_match_name = self._get_secondary_match_id_and_name(
+							existing_matches,
+							row)
 
 						# if the person was not found in POIs matches, skip it, but add it to not found names
 						if secondary_match_id is None:
@@ -124,17 +126,18 @@ class SharedMatchesParser(Parser, ABC):
 	def print_message(self) -> None:
 		"""Prints which matches were not identified in matches database if any were not."""
 
-		if len(self._primary_matches_not_found) == 0 and len(self._secondary_matches_not_found) == 0:
+		if len(self._primary_matches_not_found) == 0 and len(self._secondary_matches_not_found) == 0 and len(
+				self._files_not_parsed) == 0:
 			print("All primary and secondary matches were identified")
 			return
 
 		if len(self._primary_matches_not_found) > 0:
-			print("These names of primary matches were not identified")
+			print("These ids of primary matches were not identified")
 			for person_id in self._primary_matches_not_found:
 				print(person_id)
 
-		if len(self._files_not_parsed)>0:
-			print("These names of primary matches were not identified")
+		if len(self._files_not_parsed) > 0:
+			print("These files were not parsed.")
 			for person_id in self._files_not_parsed:
 				print(person_id)
 
