@@ -4,9 +4,11 @@ import re
 import sys
 from abc import ABC, abstractmethod
 
+from genetic_genealogy import exit_codes
 from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.databases.match_database import CSVMatchDatabase
 from genetic_genealogy.databases.segment_database import CSVSegmentDatabase
+from genetic_genealogy.exit_codes import ExitCodes
 from genetic_genealogy.parsers.formats import FTDNASegmentFormatEnum, ListCSV_GEDmatchSegmentFormatEnum, \
 	SegmentSearch_GEDmatchSegmentFormatEnum, SegmentFormatEnum
 from genetic_genealogy.parsers.match_parsers import Parser
@@ -43,10 +45,12 @@ class SegmentParser(Parser, ABC):
 				with open(filename, 'r', encoding="utf-8-sig") as input_file:
 					self._parse_from_dict_reader(csv.DictReader(input_file), existing_matches, existing_segments)
 
+		except FileNotFoundError:
+			print("The source file was not found.")
+			exit(ExitCodes.no_such_file)
 		except IOError:
 			print("File could not be parsed.")
-			exit(1)
-		# todo exit code
+			exit(ExitCodes.io_error)
 
 		if self._new_segments_found:
 			existing_segments.save()
@@ -65,8 +69,7 @@ class SegmentParser(Parser, ABC):
 		# check if the file is in the correct format
 		if not self._input_format().validate_format(reader.fieldnames):
 			print("Wrong input format.")
-			exit(1)
-			# todo exit codes
+			exit(ExitCodes.wrong_input_format)
 
 		reader.fieldnames = CSVHelper.get_strenum_fieldnames(self._input_format(), reader.fieldnames)
 

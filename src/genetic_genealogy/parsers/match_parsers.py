@@ -4,6 +4,7 @@ import sys
 from abc import ABC, abstractmethod
 
 from genetic_genealogy.databases.match_database import CSVMatchDatabase, CSVHelper
+from genetic_genealogy.exit_codes import ExitCodes
 from genetic_genealogy.parsers.formats import FTDNAMatchFormatEnum, MatchFormatEnum, GEDmatchMatchFormatEnum
 from genetic_genealogy.helper import one_space
 
@@ -69,10 +70,12 @@ class MatchParser(Parser, ABC):
 				with open(filename, 'r', encoding="utf-8-sig") as input_file:
 					self._parse_from_dict_reader(csv.DictReader(input_file), existing_records)
 
+		except FileNotFoundError:
+			print("The source file was not found.")
+			exit(ExitCodes.no_such_file)
 		except IOError:
 			print("File could not be parsed.")
-			exit(1)
-			# todo exit code
+			exit(ExitCodes.io_error)
 
 		# if new records were found during parsing, save the database
 		if len(self._new_matches) > 0:
@@ -82,8 +85,7 @@ class MatchParser(Parser, ABC):
 		# check if the file is in the correct format
 		if not self._input_format().validate_format(reader.fieldnames):
 			print("Wrong input format.")
-			exit(1)
-			# todo exit codes
+			exit(ExitCodes.wrong_input_format)
 
 		reader.fieldnames = CSVHelper.get_strenum_fieldnames(self._input_format(), reader.fieldnames)
 

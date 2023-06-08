@@ -37,20 +37,13 @@ class CSVHelper:
 		"""Simply loads a csv file using a DictReader, returns it as a list of dictionaries,
 		where keys are replaced with input_format_enum values."""
 
-		try:
-			if filename is None:
-				input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8-sig')
-				return CSVHelper.__load_from_reader(csv.DictReader(input_stream), input_format_enum)
+		if filename is None:
+			input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8-sig')
+			return CSVHelper.__load_from_reader(csv.DictReader(input_stream), input_format_enum)
 
-			with open(filename, 'r', encoding="utf-8-sig") as input_file:
-				reader = csv.DictReader(input_file)
-				return CSVHelper.__load_from_reader(reader, input_format_enum)
-
-		except IOError:
-			print("Segments could not be loaded")
-			exit(1)
-
-	# todo exit code
+		with open(filename, 'r', encoding="utf-8-sig") as input_file:
+			reader = csv.DictReader(input_file)
+			return CSVHelper.__load_from_reader(reader, input_format_enum)
 
 	@staticmethod
 	def __get_list_from_reader(reader: csv.DictReader) -> list:

@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from genetic_genealogy.config_reader import ConfigReader
 from genetic_genealogy.csv_io import CSVHelper
+from genetic_genealogy.exit_codes import ExitCodes
 from genetic_genealogy.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatEnum
 
 
@@ -187,7 +188,16 @@ class CSVIntersectionFinder(IntersectionFinder):
 		if from_database:
 			segments_filename = ConfigReader.get_segment_database_location()
 
-		self._segments = CSVHelper.load_csv(segments_filename, self.__segment_format)
+		try:
+			self._segments = CSVHelper.load_csv(segments_filename, self.__segment_format)
+
+		except FileNotFoundError:
+			print("The source file was not found.")
+			exit(ExitCodes.no_such_file)
+		except IOError:
+			print("The source file could not be loaded.")
+			exit(ExitCodes.io_error)
+
 		self._create_segments_by_id()
 		self._create_segments_by_chromosome()
 

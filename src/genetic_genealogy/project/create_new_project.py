@@ -3,6 +3,8 @@ import argparse
 import appdirs
 import configparser
 
+from genetic_genealogy.exit_codes import ExitCodes
+
 
 def __create_project_directory_structure(abs_path):
 	if not os.path.exists(abs_path):
@@ -113,20 +115,17 @@ def __add_project(name, path):
 def __try_to_add_new_project_to_projects(name, path, existing=False):
 	if not existing and os.path.exists(path):
 		print("Choose the -e/--existing option if you want to create a project from existing directory.")
-		exit(1)
-	# todo make exit codes enum
+		exit(ExitCodes.unique_required)
 
 	__create_projects_ini_if_not_exists()
 
 	if __exists_name(name):
 		print("Choose unique name. This name already exists.")
-		exit(1)
-	# todo exit code
+		exit(ExitCodes.unique_required)
 
 	if __exists_path(path):
 		print("Choose unique path. Two projects cannot share path.")
-		exit(1)
-	# todo exit code
+		exit(ExitCodes.unique_required)
 
 	__add_project(name, path)
 

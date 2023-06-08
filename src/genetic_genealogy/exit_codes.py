@@ -7,3 +7,4 @@ class ExitCodes(IntEnum):
 	no_such_file = 3
 	io_error = 4
 	no_current_project = 5
+	unique_required = 6

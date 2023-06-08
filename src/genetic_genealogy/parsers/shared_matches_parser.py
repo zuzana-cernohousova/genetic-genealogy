@@ -4,6 +4,7 @@ import sys
 from abc import ABC, abstractmethod
 
 from genetic_genealogy.csv_io import CSVHelper
+from genetic_genealogy.exit_codes import ExitCodes
 from genetic_genealogy.helper import one_space
 from genetic_genealogy.parsers.match_parsers import CSVMatchDatabase, FTDNAMatchParser, Parser
 from genetic_genealogy.parsers.formats import SharedMatchesFormatEnum, FTDNAMatchFormatEnum, MatchFormatEnum, \
@@ -44,18 +45,19 @@ class SharedMatchesParser(Parser, ABC):
 				with open(csv_config_filename, 'r', encoding="utf-8-sig") as input_file:
 					self._load_pm_from_dict_reader(csv.DictReader(input_file))
 
+		except FileNotFoundError:
+			print("The primary matches configuration file was not found.")
+			exit(ExitCodes.no_such_file)
 		except IOError:
 			print("File could not be parsed.")
-			exit(1)
-		# todo exit code
+			exit(ExitCodes.io_error)
 
 	def _load_pm_from_dict_reader(self, reader):
 		for row in reader:
 			ID = row[self._primary_match_format.person_id]
 			if ID is None:
 				print("All primary matches must be identified by person_id.")
-				exit(1)
-				# todo exit code
+				exit(ExitCodes.missing_data)
 
 			self._primary_matches[ID] = row[self._primary_match_format.path]
 
@@ -92,8 +94,7 @@ class SharedMatchesParser(Parser, ABC):
 
 					if not self._input_format().validate_format(reader.fieldnames):
 						print("Wrong input format.")
-						exit(1)
-						# todo exit codes
+						exit(ExitCodes.wrong_input_format)
 
 					for row in reader:
 						# parse secondary match record - only part that is genetic_genealogy dependant
@@ -129,8 +130,14 @@ class SharedMatchesParser(Parser, ABC):
 
 						self._result.append(output_row)
 
+			except FileNotFoundError:
+				self._files_not_parsed.append(primary_match_id)
+				print("The source file was not found.")
+				exit(ExitCodes.no_such_file)
 			except IOError:
 				self._files_not_parsed.append(primary_match_id)
+				print("File could not be parsed.")
+				exit(ExitCodes.io_error)
 
 	@abstractmethod
 	def _get_secondary_match_id_and_name(self, existing_matches, input_row) -> (int, str):

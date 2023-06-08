@@ -2,6 +2,8 @@ import configparser
 import appdirs
 import os
 
+from genetic_genealogy.exit_codes import ExitCodes
+
 
 class ConfigReader:
 	"""Class used for parsing configuration from global configuration file (settings.ini)."""
@@ -35,6 +37,5 @@ class ConfigReader:
 			current_project = cp["CURRENT_PROJECT"]["current_project"]
 			return cp["PROJECTS"][current_project]
 		else:
-			print("Current project was not set, please use the gengen checkout command to choose current project.")
-			exit(1)
-			# todo exit code enum
+			print("Current project was not set, please use the 'gengen checkout' command to choose current project.")
+			exit(ExitCodes.no_current_project)
