@@ -1,4 +1,5 @@
 import csv
+import io
 import sys
 from abc import ABC, abstractmethod
 
@@ -36,8 +37,8 @@ class SharedMatchesParser(Parser, ABC):
 
 		try:
 			if csv_config_filename is None:
-				input_file = sys.stdin.read().splitlines()
-				self._load_pm_from_dict_reader(csv.DictReader(input_file))
+				input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8-sig')
+				self._load_pm_from_dict_reader(csv.DictReader(input_stream))
 
 			else:
 				with open(csv_config_filename, 'r', encoding="utf-8-sig") as input_file:

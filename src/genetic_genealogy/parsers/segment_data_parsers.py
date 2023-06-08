@@ -1,4 +1,5 @@
 import csv
+import io
 import re
 import sys
 from abc import ABC, abstractmethod
@@ -35,8 +36,8 @@ class SegmentParser(Parser, ABC):
 
 		try:
 			if filename is None:
-				input_file = sys.stdin.read().splitlines()
-				self._parse_from_dict_reader(csv.DictReader(input_file), existing_matches, existing_segments)
+				input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8-sig')
+				self._parse_from_dict_reader(csv.DictReader(input_stream), existing_matches, existing_segments)
 
 			else:
 				with open(filename, 'r', encoding="utf-8-sig") as input_file:

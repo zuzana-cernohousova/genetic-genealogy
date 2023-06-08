@@ -1,4 +1,5 @@
 import csv
+import io
 import sys
 
 from genetic_genealogy.helper import lower_no_whitespace
@@ -38,8 +39,8 @@ class CSVHelper:
 
 		try:
 			if filename is None:
-				input_file = sys.stdin.read().splitlines()
-				return CSVHelper.__load_from_reader(csv.DictReader(input_file), input_format_enum)
+				input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8-sig')
+				return CSVHelper.__load_from_reader(csv.DictReader(input_stream), input_format_enum)
 
 			with open(filename, 'r', encoding="utf-8-sig") as input_file:
 				reader = csv.DictReader(input_file)
