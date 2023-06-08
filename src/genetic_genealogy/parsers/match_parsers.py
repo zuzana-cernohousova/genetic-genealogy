@@ -1,4 +1,5 @@
 import csv
+import io
 import sys
 from abc import ABC, abstractmethod
 
@@ -61,8 +62,8 @@ class MatchParser(Parser, ABC):
 		# read file or standard input
 		try:
 			if filename is None:
-				input_file = sys.stdin.read().splitlines()
-				self._parse_from_dict_reader(csv.DictReader(input_file), existing_records)
+				input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
+				self._parse_from_dict_reader(csv.DictReader(input_stream), existing_records)
 
 			else:
 				with open(filename, 'r', encoding="utf-8-sig") as input_file:

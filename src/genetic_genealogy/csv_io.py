@@ -67,7 +67,7 @@ class CSVHelper:
 		if fieldnames is not None:
 			for index in fieldnames:
 				for value in input_format_enum:
-					if value.name == index:
+					if lower_no_whitespace(value.name) == lower_no_whitespace(index):
 						new_fieldnames.append(value)
 						break
 
