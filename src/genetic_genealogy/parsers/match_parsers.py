@@ -81,7 +81,9 @@ class MatchParser(Parser, ABC):
 	def _parse_from_dict_reader(self, reader, existing_records):
 		# check if the file is in the correct format
 		if not self._input_format().validate_format(reader.fieldnames):
-			raise ValueError("Wrong input format.")
+			print("Wrong input format.")
+			exit(1)
+			# todo exit codes
 
 		reader.fieldnames = CSVHelper.get_strenum_fieldnames(self._input_format(), reader.fieldnames)
 

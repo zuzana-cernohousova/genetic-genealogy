@@ -53,8 +53,9 @@ class SharedMatchesParser(Parser, ABC):
 		for row in reader:
 			ID = row[self._primary_match_format.person_id]
 			if ID is None:
-				raise ValueError("Primary match must be identified by person_id.")
-			# todo print message and exit code
+				print("All primary matches must be identified by person_id.")
+				exit(1)
+				# todo exit code
 
 			self._primary_matches[ID] = row[self._primary_match_format.path]
 
@@ -90,7 +91,9 @@ class SharedMatchesParser(Parser, ABC):
 					reader.fieldnames = CSVHelper.get_strenum_fieldnames(self._input_format(), reader.fieldnames)
 
 					if not self._input_format().validate_format(reader.fieldnames):
-						raise ValueError("Wrong input format.")
+						print("Wrong input format.")
+						exit(1)
+						# todo exit codes
 
 					for row in reader:
 						# parse secondary match record - only part that is genetic_genealogy dependant
