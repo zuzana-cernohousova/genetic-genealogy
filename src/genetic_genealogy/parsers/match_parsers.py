@@ -146,23 +146,23 @@ class FTDNAMatchParser(MatchParser):
 
 	@classmethod
 	def parse_non_id_columns(cls, record: dict) -> dict:
-		i_f = cls._input_format()
 
 		output_record = {}
 		for index in cls._output_format():
 			output_record[index] = ""
 
 		# add genetic_genealogy name
-		output_record[cls._output_format().source] = i_f.format_name()
+		output_record[cls._output_format().source] = cls._input_format().format_name()
 
 		# create name and add it into result row
 		output_record[cls._output_format().person_name] = cls.__create_name(record)
 
 		# copy all relevant existing items from record to output record
-		for input_column_name in i_f:
+		for input_column_name in record.keys():
+			# not all columns of input format must be present
 			item = record[input_column_name]
 
-			output_column = i_f.get_mapped_column_name(input_column_name)
+			output_column = cls._input_format().get_mapped_column_name(input_column_name)
 			# output_column is of MatchFormatEnum type -> is int if is not none
 
 			if output_column is not None:
@@ -178,20 +178,18 @@ class GEDmatchMatchParser(MatchParser):
 
 	@classmethod
 	def parse_non_id_columns(cls, record) -> dict:
-		i_f = cls._input_format()
-
 		output_record = {}
 		for index in MatchFormatEnum:
 			output_record[index] = ""
 
 		# add genetic_genealogy name
-		output_record[MatchFormatEnum.source] = i_f.format_name()
+		output_record[MatchFormatEnum.source] = cls._input_format().format_name()
 
 		# copy all relevant existing items from record to output record
-		for input_column_name in i_f:
+		for input_column_name in record.keys():
 			item = record[input_column_name]
 
-			output_column = i_f.get_mapped_column_name(input_column_name)
+			output_column = cls._input_format().get_mapped_column_name(input_column_name)
 			# output_column is of MatchFormatEnum type -> is int if is not none
 
 			if output_column is not None:
@@ -207,4 +205,4 @@ class GEDmatchMatchParser(MatchParser):
 			for new_match in self._new_matches:
 				print("id= " + str(new_match[self._output_format().person_id]) + ", name= " + new_match[
 					self._output_format().person_name] + ", gedmatch_id= "
-					  + new_match[self._output_format().gedmatch_kit_id])
+					+ new_match[self._output_format().gedmatch_kit_id])

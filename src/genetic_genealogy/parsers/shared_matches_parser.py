@@ -204,7 +204,7 @@ class GEDmatchSharedMatchesParser(SharedMatchesParser):
 	def _input_format(cls):
 		return GEDmatchMatchFormatEnum
 
-	def _get_secondary_match_id_and_name(self, existing_matches, input_row) -> (int | None, str):
+	def _get_secondary_match_id_and_name(self, existing_matches, input_row: dict) -> (int | None, str):
 		kit_id = one_space(input_row[self._input_format().matched_kit])
 		name = one_space(input_row[self._input_format().matched_name])
 
@@ -214,8 +214,8 @@ class GEDmatchSharedMatchesParser(SharedMatchesParser):
 
 		return None, name
 
-	def _fill_in_match_statistics(self, input_row, output_row) -> None:
+	def _fill_in_match_statistics(self, input_row: dict, output_row: dict) -> None:
 		mapping = self._input_format().shared_matches_mapping()
-		for index in self._input_format():
+		for index in input_row.keys():
 			if index in mapping:
 				output_row[mapping[index]] = one_space(input_row[index])
