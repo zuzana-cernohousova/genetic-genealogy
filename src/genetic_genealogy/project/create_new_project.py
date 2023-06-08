@@ -8,9 +8,11 @@ def __create_project_directory_structure(abs_path):
 	if not os.path.exists(abs_path):
 		os.mkdir(abs_path)
 
-	for d in ["input_files", "working_files"]:
+	for d in ["data", "work_files"]:
 		if not os.path.exists(os.path.join(abs_path, d)):
 			os.makedirs(os.path.join(abs_path, d))
+
+	# todo create static template file - from there read how the directory structure should look
 
 
 def __create_settings_file(name, abs_path):
@@ -75,6 +77,7 @@ def __create_projects_ini_if_not_exists():
 
 			cp["CURRENT_PROJECT"] = {}
 			cp["PROJECTS"] = {}
+			# todo create sittings.ini template, to be recreated, this is stoopid
 
 			cp.write(projects)
 
@@ -111,7 +114,7 @@ def __try_to_add_new_project_to_projects(name, path, existing=False):
 	if not existing and os.path.exists(path):
 		print("Choose the -e/--existing option if you want to create a project from existing directory.")
 		exit(1)
-		# todo make exit codes enum
+	# todo make exit codes enum
 
 	__create_projects_ini_if_not_exists()
 
@@ -135,6 +138,8 @@ def create_new_project(args):
 	__try_to_add_new_project_to_projects(n, a_p, args.existing)
 	__create_project_directory_structure(a_p)
 	__create_settings_file(n, a_p)
+
+	print("Project " + n + " was successfully created.")
 
 
 if __name__ == "__main__":

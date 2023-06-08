@@ -89,7 +89,7 @@ class CSVHelper:
 
 		else:
 			# file will be opened or created
-			with open(filename, "w", newline='', encoding="utf-8-sig") as output_file:
+			with open(filename, 'w', newline='', encoding="utf-8-sig") as output_file:
 				CSVHelper.__write_to_writer(database, database_format, csv.writer(output_file))
 
 	@staticmethod
