@@ -1,5 +1,10 @@
 # genetic-genealogy
 
+## Requirements
+
+- python >= 3.11
+- appdirs    
+
 ## Installation
 To install this application, use:
 
