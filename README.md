@@ -41,8 +41,8 @@ https://drive.google.com/file/d/1zltsMH-SDBmn84_Kg38oEF7a6StJ5UmY/view?usp=shari
 ![high level diagram](img/high_level_diagram.png)
 
 ## COMMANDS
-### gengen create-project
-The _create-project_ subcommand creates a new project of a given name on a given path.
+### gengen new-project
+The _new-project_ subcommand creates a new project of a given name on a given path.
 Use the _-e/--existing_ option to create a project from an existing directory.
 
 The Project structure and properties is closer described [below](#gengen-project).
@@ -52,8 +52,8 @@ Use the _list-projects_ subcommand to list all projects.
 
 Usage:
 
-    gengen create-project example_name example/path
-    gengen create-project existing_directory_name on/existing/example/path -e
+    gengen new-project example_name example/path
+    gengen new-project existing_directory_name on/existing/example/path -e
 
 > Note that the project name will be lower-cased
 
@@ -118,8 +118,8 @@ Použití:
 
     gengen parse-matches --gedmatch
 
-### gengen parse-shared-segments
-Subcommand _parse-shared-matches_ provádí propojení
+### gengen parse-shared
+Subcommand _parse-shared_ provádí propojení
 a unifikaci souborů obsahujících shody sdílené mezi POI a shodami POI.
 
 Vstupním souborem tohoto programu je csv soubor obsahující identifikaci osoby (primary match)
@@ -150,9 +150,9 @@ o tom, zda byly identifikovány všechny primární i sekundární shody a pří
 
 Použití:
 
-    gengen parse-shared-matches -of output_file --ftdna --verbose
+    gengen parse-shared -of output_file --ftdna --verbose
 
-    gengen parse-shared-matches -sf ids_and_paths.csv --gedmatch
+    gengen parse-shared -sf ids_and_paths.csv --gedmatch
 
 ### gengen parse-segments
 Subcommand _parse-segments_ zajišťuje transformaci dat o segmentech do unifikovaného formátu.
