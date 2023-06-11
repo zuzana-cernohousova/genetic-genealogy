@@ -235,8 +235,8 @@ When creating a new project a directory structure like this will be created:
     
     example/path/
     ├── settings.ini
-    ├── input_files
-    └── work_files
+    ├── input_data
+    └── database
 
 The settings.ini file contains basic information about
 the project and some files location configuration. For example:
@@ -246,5 +246,5 @@ the project and some files location configuration. For example:
     name = example_name
     
     [CSV_LOCATIONS]
-    match_database = work_files/all_matches.csv
-    segment_database = work_files/all_segments.csv
+    match_database = database/all_matches.csv
+    segment_database = database/all_segments.csv

@@ -10,7 +10,7 @@ def __create_project_directory_structure(abs_path):
 	if not os.path.exists(abs_path):
 		os.mkdir(abs_path)
 
-	for d in ["data", "work_files"]:
+	for d in ["input_data", "database"]:
 		if not os.path.exists(os.path.join(abs_path, d)):
 			os.makedirs(os.path.join(abs_path, d))
 
@@ -42,8 +42,8 @@ def __create_settings_file(name, abs_path):
 	cp["PROJECT_INFO"]["name"] = name.lower()
 
 	cp["CSV_LOCATIONS"] = {}
-	cp["CSV_LOCATIONS"]["match_database"] = os.path.join("work_files", "all_matches.csv")
-	cp["CSV_LOCATIONS"]["segment_database"] = os.path.join("work_files", "all_segments.csv")
+	cp["CSV_LOCATIONS"]["match_database"] = os.path.join("database", "all_matches.csv")
+	cp["CSV_LOCATIONS"]["segment_database"] = os.path.join("database", "all_segments.csv")
 
 	with open(os.path.join(abs_path, "settings.ini"), "w", encoding="utf-8") as settings:
 		cp.write(settings)
