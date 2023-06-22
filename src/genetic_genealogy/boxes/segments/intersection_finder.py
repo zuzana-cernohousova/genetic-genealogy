@@ -40,7 +40,7 @@ class IntersectionFinder(ABC):
 			else:
 				self._segments_by_chromosome[chrom_id] = [segment]
 
-	def find_intersections_of_segment(self, segment_id) -> list | None:
+	def find_intersections_of_segment(self, segment_id) -> list:
 		"""Finds all segments that intersect specified segment,
 		finds the intersection endpoints."""
 		result = []

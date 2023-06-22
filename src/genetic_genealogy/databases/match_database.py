@@ -45,7 +45,7 @@ class MatchDatabase(Database, ABC):
 	def format(self):
 		return MatchFormatEnum
 
-	def get_record_from_match_name(self, match_name) -> dict | None:
+	def get_record_from_match_name(self, match_name):
 		"""Finds a record based on name and returns it. If no record is found, returns None."""
 
 		if self.records_by_name is None:
@@ -58,7 +58,7 @@ class MatchDatabase(Database, ABC):
 
 		return None
 
-	def get_record_from_gedmatch_id(self, match_gedmatch_id) -> dict | None:
+	def get_record_from_gedmatch_id(self, match_gedmatch_id):
 		"""Finds a record based on gedmatch kit id and returns it. If no record is found, returns None."""
 
 		if self.records_by_gedmatch_id is None:
@@ -69,7 +69,7 @@ class MatchDatabase(Database, ABC):
 
 		return None
 
-	def get_id(self, parsed_record, source, searched_id_type=MatchFormatEnum.person_id) -> int | None:
+	def get_id(self, parsed_record, source, searched_id_type=MatchFormatEnum.person_id):
 		"""Returns id of just parsed record. Depending on source database,
 		different fields are used to speed up the process."""
 
@@ -96,7 +96,7 @@ class MatchDatabase(Database, ABC):
 
 		return None
 
-	def get_record_from_id(self, record_id: int) -> dict | None:
+	def get_record_from_id(self, record_id: int):
 		"""Returns a record of given id. record_id must be int."""
 
 		if self.records_by_id is None:

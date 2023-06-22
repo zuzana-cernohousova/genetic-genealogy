@@ -133,7 +133,7 @@ class FTDNASegmentParser(SegmentParser):
 		return FTDNASegmentFormatEnum
 
 	@classmethod
-	def _find_person_id(cls, match_database: CSVMatchDatabase, record: dict) -> int | None:
+	def _find_person_id(cls, match_database: CSVMatchDatabase, record: dict) -> int:
 		name = cls.__create_name(record)
 		person = match_database.get_record_from_match_name(name)
 
@@ -164,7 +164,7 @@ class FTDNASegmentParser(SegmentParser):
 
 class GEDmatchSegmentParser(SegmentParser, ABC):
 	@classmethod
-	def _find_person_id(cls, match_database: CSVMatchDatabase, record: dict) -> int | None:
+	def _find_person_id(cls, match_database: CSVMatchDatabase, record: dict):
 		person = match_database.get_record_from_gedmatch_id(" ".join(record[cls._input_format().matched_kit].split()))
 		if person is not None:
 			return int(person[match_database.format.person_id])

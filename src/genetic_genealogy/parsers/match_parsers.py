@@ -53,7 +53,7 @@ class MatchParser(Parser, ABC):
 		and therefore does not require database access."""
 		pass
 
-	def parse(self, filename: str | None = None) -> None:
+	def parse(self, filename: str = None) -> None:
 		# create and load database
 		existing_records = CSVMatchDatabase()
 		existing_records.load()

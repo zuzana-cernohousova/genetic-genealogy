@@ -181,7 +181,7 @@ class FTDNASharedMatchesParser(SharedMatchesParser):
 	def _input_format(cls):
 		return FTDNAMatchFormatEnum
 
-	def _get_secondary_match_id_and_name(self, existing_matches, input_row) -> (int | None, str):
+	def _get_secondary_match_id_and_name(self, existing_matches, input_row):
 		match = FTDNAMatchParser.parse_non_id_columns(input_row)
 		name = match[MatchFormatEnum.person_name]
 
@@ -204,7 +204,7 @@ class GEDmatchSharedMatchesParser(SharedMatchesParser):
 	def _input_format(cls):
 		return GEDmatchMatchFormatEnum
 
-	def _get_secondary_match_id_and_name(self, existing_matches, input_row: dict) -> (int | None, str):
+	def _get_secondary_match_id_and_name(self, existing_matches, input_row: dict):
 		kit_id = one_space(input_row[self._input_format().matched_kit])
 		name = one_space(input_row[self._input_format().matched_name])
 

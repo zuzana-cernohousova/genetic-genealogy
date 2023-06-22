@@ -48,7 +48,7 @@ class SegmentDatabase(Database, ABC):
 				else:
 					self._segments_by_person_name[name] = [segment]
 
-	def get_id(self, parsed_record, source, searched_id_type=SegmentFormatEnum.segment_id) -> int | None:
+	def get_id(self, parsed_record, source, searched_id_type=SegmentFormatEnum.segment_id) -> int :
 		if self._segments_by_person_name is None:
 			self._create_segments_by_person_name()
 		if self._segments_by_chromosome is None:
