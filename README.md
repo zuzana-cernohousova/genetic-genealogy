@@ -2,7 +2,6 @@
 
 ## Requirements
 
-- python >= 3.11
 - appdirs    
 
 ## Installation
@@ -10,7 +9,22 @@ To install this application, use:
 
     pip install git+https://github.com/zuzana-cernohousova/genetic-genealogy.git
 
-### Functionality
+### Without installation
+If you do not want to install this app, use:
+
+    git clone https://github.com/zuzana-cernohousova/genetic-genealogy.git
+
+after that, instead of 
+
+    gengen
+
+use this as the entry point:
+
+    python3 genetic-genealogy/src/genetic_genealogy/gengen.py
+
+After that, append any of the subcommands specified below.
+
+## Functionality
 After installing the application _gengen_ command and the following subcommands will be available:
 
 - new-project
