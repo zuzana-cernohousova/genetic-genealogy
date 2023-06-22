@@ -1,4 +1,10 @@
 import argparse
+import sys
+import os
+
+if 'genetic_genealogy' not in sys.modules:
+	sys.path.append((os.path.dirname(os.path.realpath(__file__))))
+
 from genetic_genealogy.usage.parse import parse_matches, parse_segments, parse_shared_matches
 from genetic_genealogy.usage import find_segment_intersections
 from genetic_genealogy.project import checkout_project, create_new_project, delete_project, list_projects, \
