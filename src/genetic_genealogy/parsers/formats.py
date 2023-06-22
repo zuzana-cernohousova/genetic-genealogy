@@ -1,4 +1,4 @@
-from enum import Enum, IntEnum, StrEnum
+from enum import Enum, IntEnum
 
 from genetic_genealogy.helper import lower_no_whitespace
 
@@ -139,7 +139,7 @@ class ClusterFormatEnum(FormatEnum):
 
 # region Source formats
 
-class InputFormatEnum(StrEnum):
+class InputFormatEnum(str, Enum):
 	"""Child classes of this class define formats of input data of this application."""
 
 	@classmethod
@@ -430,7 +430,7 @@ class SegmentSearch_GEDmatchSegmentFormatEnum(InputFormatEnum):
 # endregion
 
 # region Shared matches primary matches file
-class PrimaryMatchesEnum(StrEnum):
+class PrimaryMatchesEnum(str, Enum):
 	person_id = "person_id"
 	path = "path"
 
