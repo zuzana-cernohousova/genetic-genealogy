@@ -10,11 +10,15 @@ To install this application, use:
     pip install git+https://github.com/zuzana-cernohousova/genetic-genealogy.git
 
 ### Without installation
-If you do not want to install this app, use:
+If you do not want to install this app, use this to clone the repository:
 
     git clone https://github.com/zuzana-cernohousova/genetic-genealogy.git
 
-after that, instead of 
+Then install requirements:
+
+    pip install appdirs
+
+After that, instead of this
 
     gengen
 
@@ -22,7 +26,7 @@ use this as the entry point:
 
     python3 genetic-genealogy/src/genetic_genealogy/gengen.py
 
-After that, append any of the subcommands specified below.
+Append any of the subcommands specified below.
 
 ## Functionality
 After installing the application _gengen_ command and the following subcommands will be available:
