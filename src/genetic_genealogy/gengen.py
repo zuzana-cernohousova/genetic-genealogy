@@ -4,8 +4,10 @@ import os
 
 if 'genetic_genealogy' not in sys.modules:
 	sys.path.append((os.path.dirname(os.path.realpath(__file__))))
-	import parse_matches, parse_segments, parse_shared_matches, find_segment_intersections, checkout_project, \
-		create_new_project, delete_project, list_projects, current_project
+	from usage.parse import parse_matches, parse_segments, parse_shared_matches
+	from usage import find_segment_intersections
+	from project import checkout_project, create_new_project, delete_project, list_projects, \
+		current_project
 
 else:
 	from genetic_genealogy.usage.parse import parse_matches, parse_segments, parse_shared_matches
