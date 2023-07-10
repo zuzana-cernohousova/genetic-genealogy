@@ -107,6 +107,21 @@ def main():
 
 	# endregion
 
+	# are there enough arguments?
+	if len(sys.argv) < 2:
+		print("Use one of the following subcommands:\n"
+			  "new-project\n"
+			  "delete-project\n"
+			  "list-projects\n"
+			  "current-project\n"
+			  "checkout\n"
+			  "parse-matches\n"
+			  "parse-segments\n"
+			  "parse-shared-matches\n"
+			  "find-intersections\n"
+			  )
+		return
+
 	args = args_parser.parse_args()
 	args.func(args)
 
