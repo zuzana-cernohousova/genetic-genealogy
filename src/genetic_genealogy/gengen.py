@@ -109,17 +109,20 @@ def main():
 
 	# are there enough arguments?
 	if len(sys.argv) < 2:
-		print("Use one of the following subcommands:\n"
-			  "new-project\n"
-			  "delete-project\n"
-			  "list-projects\n"
-			  "current-project\n"
-			  "checkout\n"
-			  "parse-matches\n"
-			  "parse-segments\n"
-			  "parse-shared-matches\n"
-			  "find-intersections\n"
-			  )
+		print("""Welcome to the genetic-genealogy project!
+			
+			To use any of the supported features, use one of the following subcommands:
+			Use one of the following subcommands:
+			new-project
+			delete-project
+			list-projects
+			current-project
+			checkout
+			parse-matches
+			parse-segments
+			parse-shared-matches
+			find-intersections"""
+			)
 		return
 
 	args = args_parser.parse_args()
