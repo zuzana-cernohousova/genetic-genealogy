@@ -53,6 +53,7 @@ class FormatEnum(IntEnum):
 
 	@classmethod
 	def get_minimal_column_names_set(cls):
+		"""Returns list of names of necessary columns."""
 		return {item.name for item in cls}
 
 
@@ -72,8 +73,6 @@ class MatchFormatEnum(FormatEnum):
 
 		return [cls.person_id]
 
-	# todo rework the column set
-
 	person_id = 0
 	person_name = 1
 	source = 2
@@ -82,22 +81,18 @@ class MatchFormatEnum(FormatEnum):
 	mt_haplogroup = 5
 	y_haplogroup = 6
 	x_total_cm = 7
-	kit_age = 8
-	generations = 9
-	match_number = 10
-	gedmatch_kit_id = 11
-	e_mail = 12
-	ged_wiki_tree = 13
-	sex = 14
-	x_largest_segment_cm = 15
-	ged_match_source = 16
-	snps_overlap = 17
-	match_date = 18
-	relationship_range = 19
-	linked_relationship = 20
-	ancestral_surnames = 21
-	notes = 22
-	matching_bucket = 23
+	generations = 8
+	gedmatch_kit_id = 9
+	e_mail = 10
+	x_largest_segment_cm = 11
+	ged_match_source = 12
+	snps_overlap = 13
+	match_date = 14
+	relationship_range = 15
+	linked_relationship = 16
+	ancestral_surnames = 17
+	notes = 18
+	matching_bucket = 19
 
 
 class SegmentFormatEnum(FormatEnum):
@@ -226,6 +221,7 @@ class InputFormatEnum(str, Enum):
 
 	@classmethod
 	def get_minimal_column_set(cls) -> set:
+		"""Returns a list of all the column identifiers that are defined to be necessary."""
 		return {item for item in cls}
 
 
