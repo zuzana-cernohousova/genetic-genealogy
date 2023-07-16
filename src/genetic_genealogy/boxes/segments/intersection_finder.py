@@ -14,6 +14,7 @@ class IntersectionFinder(ABC):
 
 	@abstractmethod
 	def save_intersections(self, result, output_destination) -> None:
+		"""Saves found segments to the output_destination."""
 		pass
 
 	def __init__(self):
@@ -22,8 +23,42 @@ class IntersectionFinder(ABC):
 		self._segments_by_id = {}
 		self._segments_by_chromosome = {}
 
+
+class CSVIntersectionFinder(IntersectionFinder):
+	def __init__(self):
+		super(CSVIntersectionFinder, self).__init__()
+
 	__segment_format = SegmentFormatEnum
 	__output_format = SegmentIntersectionFormatEnum
+
+	def load_segments(self, segments_filename=None, from_database=False):
+		"""
+		Loads segments. Intersections of these loaded segments will later be found.
+
+		Loads segments from CSV file. If filename is not specified, segment database specified in
+		project configuration is used.
+		Build a dictionary of segments over ids and over chromosomes."""
+
+		if from_database:
+			segments_filename = ConfigReader.get_segment_database_location()
+
+		try:
+			self._segments = CSVHelper.load_csv(segments_filename, self.__segment_format)
+
+		except FileNotFoundError:
+			print("The source file was not found.")
+			exit(ExitCodes.no_such_file)
+		except IOError:
+			print("The source file could not be loaded.")
+			exit(ExitCodes.io_error)
+
+		self._create_segments_by_id()
+		self._create_segments_by_chromosome()
+
+	def save_intersections(self, result, output_filename=None):
+		"""Saves the found intersections to file or to standard output if output_filename is None."""
+
+		CSVHelper.save_csv(result, SegmentIntersectionFormatEnum, output_filename)
 
 	def _create_segments_by_id(self) -> None:
 		for segment in self._segments:
@@ -41,10 +76,12 @@ class IntersectionFinder(ABC):
 				self._segments_by_chromosome[chrom_id] = [segment]
 
 	def find_intersections_of_segment(self, segment_id) -> list:
-		"""Finds all segments that intersect specified segment,
-		finds the intersection endpoints."""
+		"""Finds all segments that intersect a specified segment,
+		finds the intersection start- and end-points."""
+
 		result = []
 		if segment_id not in self._segments_by_id.keys():
+			# if segment is not known, cannot find anything
 			return None
 
 		sf = self.__segment_format
@@ -57,7 +94,9 @@ class IntersectionFinder(ABC):
 		chromosome = self._segments_by_chromosome[chromosome_id]
 
 		for s in chromosome:
+			# for every other segment on the same chromosome
 			if s[sf.segment_id] == segment_id:
+				# it is the same segment, skip it
 				continue
 
 			intersection = self.__check_and_get_intersection(s, segment)
@@ -110,9 +149,6 @@ class IntersectionFinder(ABC):
 					# if segment has not ended yet, there is an intersection
 					intersection = self.__check_and_get_intersection(segment, o)
 
-					if intersection is None:
-						print("meow")
-
 					output_row = self.__create_and_fill_output_row(segment, o, intersection)
 					result.append(output_row)
 
@@ -123,7 +159,9 @@ class IntersectionFinder(ABC):
 
 	@staticmethod
 	def __check_and_get_intersection(segment_s, segment_r):
-		sf = IntersectionFinder.__segment_format
+		"""Checks if the two given segments intersect.
+		If yes, it returns the start and the end of the intersecting region as a tuple."""
+		sf = CSVIntersectionFinder.__segment_format
 		coords = [
 			(
 				(segment_s[sf.start], segment_s[sf.end]),
@@ -169,39 +207,3 @@ class IntersectionFinder(ABC):
 		row[of.length_snp] = intersection[1] - intersection[0] + 1
 
 		return row
-
-
-class CSVIntersectionFinder(IntersectionFinder):
-	def __init__(self):
-		super(CSVIntersectionFinder, self).__init__()
-
-	__segment_format = SegmentFormatEnum
-
-	def load_segments(self, segments_filename=None, from_database=False):
-		"""
-		Loads segments. Intersections of these loaded segments will later be found.
-
-		Loads segments from CSV file. If filename is not specified, segment database specified in
-		project configuration is used.
-		Build a dictionary of segments over ids and over chromosomes."""
-
-		if from_database:
-			segments_filename = ConfigReader.get_segment_database_location()
-
-		try:
-			self._segments = CSVHelper.load_csv(segments_filename, self.__segment_format)
-
-		except FileNotFoundError:
-			print("The source file was not found.")
-			exit(ExitCodes.no_such_file)
-		except IOError:
-			print("The source file could not be loaded.")
-			exit(ExitCodes.io_error)
-
-		self._create_segments_by_id()
-		self._create_segments_by_chromosome()
-
-	def save_intersections(self, result, output_filename=None):
-		"""Saves the found intersections to file or to standard output if output_filename is None."""
-
-		CSVHelper.save_csv(result, SegmentIntersectionFormatEnum, output_filename)
