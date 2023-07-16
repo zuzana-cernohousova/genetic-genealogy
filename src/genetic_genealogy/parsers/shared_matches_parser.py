@@ -53,6 +53,10 @@ class SharedMatchesParser(Parser, ABC):
 			exit(ExitCodes.io_error)
 
 	def _load_pm_from_dict_reader(self, reader):
+		if not self._primary_match_format.validate_format(reader.fieldnames):
+			print("Wrong config file format.")
+			exit(ExitCodes.wrong_input_format)
+
 		for row in reader:
 			ID = row[self._primary_match_format.person_id]
 			if ID is None:

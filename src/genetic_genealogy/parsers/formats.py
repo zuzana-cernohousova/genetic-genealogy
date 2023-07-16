@@ -159,6 +159,10 @@ class ClusterFormatEnum(FormatEnum):
 	person_name = 2
 
 
+class PrimaryMatchesEnum(FormatEnum):
+	person_id = 0
+	path = 1
+
 # endregion
 
 
@@ -450,16 +454,9 @@ class SegmentSearch_GEDmatchSegmentFormatEnum(InputFormatEnum):
 			cls.matched_kit, cls.chromosome, cls.start_location, cls.end_location, cls.centimorgans, cls.matching_snps
 		}
 
-
 # endregion
 # endregion
 
-# region Shared matches primary matches file
-class PrimaryMatchesEnum(str, Enum):
-	person_id = "person_id"
-	path = "path"
-
-# endregion
 
 # todo for every parsing option, put names of colums into readme
 # for both input and output formats
