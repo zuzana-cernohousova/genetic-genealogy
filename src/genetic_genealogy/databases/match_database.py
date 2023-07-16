@@ -117,7 +117,8 @@ class CSVMatchDatabase(MatchDatabase):
 		self.__file_name = ConfigReader.get_match_database_location()
 
 	def load(self):
-		"""Reads the given csv file and stores it. CSV file location is read from project configuration."""
+		"""Reads the given csv file and stores it.
+		CSV file location is read from project configuration."""
 		self._largest_ID, self._database = CSVHelper.load_csv_database(
 			self.__file_name,
 			self.format,

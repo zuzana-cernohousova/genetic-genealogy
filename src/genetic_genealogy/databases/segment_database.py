@@ -23,7 +23,7 @@ class SegmentDatabase(Database, ABC):
 
 	def _create_segments_by_chromosome(self) -> None:
 		"""Creates a dict where chromosome ids are keys and values are lists of segments.
-		Will be used for faster computation"""
+		Will be used for faster computation."""
 
 		self._segments_by_chromosome = {}
 
@@ -48,7 +48,10 @@ class SegmentDatabase(Database, ABC):
 				else:
 					self._segments_by_person_name[name] = [segment]
 
-	def get_id(self, parsed_record, source, searched_id_type=SegmentFormatEnum.segment_id) -> int :
+	def get_id(self, parsed_record, source, searched_id_type=SegmentFormatEnum.segment_id) -> int:
+		"""Finds ID of the segment from the record.
+		If the segment is not in the database, returns None."""
+
 		if self._segments_by_person_name is None:
 			self._create_segments_by_person_name()
 		if self._segments_by_chromosome is None:
@@ -107,4 +110,5 @@ class CSVSegmentDatabase(SegmentDatabase):
 		)
 
 	def save(self):
+		"""Saves the output to the specified file."""
 		CSVHelper.save_csv(self._database, self.format, filename=self.__file_name)
