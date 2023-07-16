@@ -59,6 +59,7 @@ class CSVHelper:
 		new_fieldnames = []
 
 		if not input_format_enum.validate_format(fieldnames):
+			print("Wrong input format.")
 			exit(ExitCodes.wrong_input_format)
 
 		# replace fieldnames with enum values
