@@ -3,6 +3,7 @@ import io
 import sys
 
 from genetic_genealogy.helper import lower_no_whitespace
+from genetic_genealogy.exit_codes import ExitCodes
 
 
 class CSVHelper:
@@ -56,6 +57,9 @@ class CSVHelper:
 	@staticmethod
 	def __get_intenum_fieldnames(fieldnames, input_format_enum) -> list:
 		new_fieldnames = []
+
+		if not input_format_enum.validate_format(fieldnames):
+			exit(ExitCodes.wrong_input_format)
 
 		# replace fieldnames with enum values
 		if fieldnames is not None:

@@ -30,6 +30,31 @@ class FormatEnum(IntEnum):
 		should be taken into consideration while comparing two records of this format."""
 		return [key for key in cls]
 
+	@classmethod
+	def validate_format(cls, other_header):
+		"""Check if header contains all columns, if not or contains a wrong column, return False.
+		If order is different, create a mapping with the right order."""
+
+		# for all necessary columns - lowercase them and get rid of all whitespaces
+		lowercase_no_whitespace_minimal_column_set = {lower_no_whitespace(item) for item in
+													  cls.get_minimal_column_names_set()}
+
+		# the same for the other header
+		lowercase_no_whitespace_other_header_set = {lower_no_whitespace(item) for item in
+													other_header}
+
+		# if the minimal column set is a subset of the other header set, it is OK
+		if lowercase_no_whitespace_minimal_column_set.issubset(lowercase_no_whitespace_other_header_set):
+			# additional columns are not detected and given the implementation
+			# of the methods using the formats, it should not be a problem
+			return True
+
+		return False
+
+	@classmethod
+	def get_minimal_column_names_set(cls):
+		return {item.name for item in cls}
+
 
 class MatchFormatEnum(FormatEnum):
 	"""This class defines the format of parsed match data."""
@@ -169,11 +194,11 @@ class InputFormatEnum(str, Enum):
 
 		# for all necessary columns - lowercase them and get rid of all whitespaces
 		lowercase_no_whitespace_minimal_column_set = {lower_no_whitespace(item) for item in
-													 cls.get_minimal_column_set()}
+													  cls.get_minimal_column_set()}
 
 		# the same for the other header
 		lowercase_no_whitespace_other_header_set = {lower_no_whitespace(item) for item in
-												   other_header}
+													other_header}
 
 		# if the minimal column set is a subset of the other header set, it is OK
 		if lowercase_no_whitespace_minimal_column_set.issubset(lowercase_no_whitespace_other_header_set):
