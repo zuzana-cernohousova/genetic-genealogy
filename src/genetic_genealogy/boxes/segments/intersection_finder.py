@@ -17,16 +17,27 @@ class IntersectionFinder(ABC):
 		"""Saves found segments to the output_destination."""
 		pass
 
-	def __init__(self):
-		self._segments = []
+	@abstractmethod
+	def find_intersections_of_segment(self, segment_id) -> list:
+		"""Finds all segments that intersect a specified segment,
+		finds the intersection start- and end-points."""
 
-		self._segments_by_id = {}
-		self._segments_by_chromosome = {}
+	@abstractmethod
+	def find_intersections_of_person(self, person_id) -> list:
+		"""Finds all intersections of all segments shared with a given person."""
+
+	@abstractmethod
+	def find_all_intersections(self) -> list:
+		"""Finds all intersections of all segments loaded."""
 
 
 class CSVIntersectionFinder(IntersectionFinder):
 	def __init__(self):
 		super(CSVIntersectionFinder, self).__init__()
+		self._segments = []
+
+		self._segments_by_id = {}
+		self._segments_by_chromosome = {}
 
 	__segment_format = SegmentFormatEnum
 	__output_format = SegmentIntersectionFormatEnum
