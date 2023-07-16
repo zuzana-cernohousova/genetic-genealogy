@@ -68,7 +68,7 @@ class SegmentParser(Parser, ABC):
 
 		# check if the file is in the correct format
 		if not self._input_format().validate_format(reader.fieldnames):
-			print("Wrong input format.")
+			print("Wrong segment file format.")
 			exit(ExitCodes.wrong_input_format)
 
 		reader.fieldnames = CSVHelper.get_strenum_fieldnames(self._input_format(), reader.fieldnames)

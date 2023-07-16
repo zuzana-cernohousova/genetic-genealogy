@@ -97,7 +97,7 @@ class SharedMatchesParser(Parser, ABC):
 					reader.fieldnames = CSVHelper.get_strenum_fieldnames(self._input_format(), reader.fieldnames)
 
 					if not self._input_format().validate_format(reader.fieldnames):
-						print("Wrong input format.")
+						print("Wrong matches file format.")
 						exit(ExitCodes.wrong_input_format)
 
 					for row in reader:
