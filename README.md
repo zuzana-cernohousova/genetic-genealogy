@@ -170,7 +170,7 @@ Použití:
 
     gengen parse-shared -of output_file --ftdna --verbose
 
-    gengen parse-shared -sf ids_and_paths.csv --gedmatch
+    gengen parse-shared -cf ids_and_paths.csv --gedmatch
 
 ### gengen parse-segments
 Subcommand _parse-segments_ zajišťuje transformaci dat o segmentech do unifikovaného formátu.
