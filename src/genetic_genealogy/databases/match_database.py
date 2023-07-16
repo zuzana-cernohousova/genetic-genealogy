@@ -1,4 +1,3 @@
-import re
 from abc import ABC
 
 from genetic_genealogy.csv_io import CSVHelper
@@ -59,7 +58,8 @@ class MatchDatabase(Database, ABC):
 		return None
 
 	def get_record_from_gedmatch_id(self, match_gedmatch_id):
-		"""Finds a record based on gedmatch kit id and returns it. If no record is found, returns None."""
+		"""Finds a record based on gedmatch kit id and returns it.
+		If no record is found, returns None."""
 
 		if self.records_by_gedmatch_id is None:
 			self.__create_records_by_gedmatch_id_dict()
