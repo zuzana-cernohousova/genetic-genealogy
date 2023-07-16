@@ -20,6 +20,10 @@ class CSVHelper:
 				reader = csv.DictReader(input_file)
 				reader.fieldnames = CSVHelper.__get_intenum_fieldnames(reader.fieldnames, database_format)
 
+				if reader.fieldnames is None:
+					print("Wrong CSV database format.")
+					exit(ExitCodes.wrong_input_format)
+
 				for record in reader:
 					record_id = int(record[searched_id])
 					if record_id > biggest_id:
@@ -36,7 +40,8 @@ class CSVHelper:
 	@staticmethod
 	def load_csv(filename, input_format_enum) -> list:
 		"""Simply loads a csv file using a DictReader, returns it as a list of dictionaries,
-		where keys are replaced with input_format_enum values."""
+		where keys are replaced with input_format_enum values.
+		Checks it the format of the file is valid, given the input_format_enum."""
 
 		if filename is None:
 			input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8-sig')
@@ -47,20 +52,11 @@ class CSVHelper:
 			return CSVHelper.__load_from_reader(reader, input_format_enum)
 
 	@staticmethod
-	def __get_list_from_reader(reader: csv.DictReader) -> list:
-		result = []
-		for row in reader:
-			result.append(row)
-
-		return result
-
-	@staticmethod
 	def __get_intenum_fieldnames(fieldnames, input_format_enum) -> list:
 		new_fieldnames = []
 
 		if not input_format_enum.validate_format(fieldnames):
-			print("Wrong segment file format.")
-			exit(ExitCodes.wrong_input_format)
+			return None
 
 		# replace fieldnames with enum values
 		if fieldnames is not None:
@@ -75,7 +71,12 @@ class CSVHelper:
 	@staticmethod
 	def __load_from_reader(reader, input_format_intenum) -> list:
 		reader.fieldnames = CSVHelper.__get_intenum_fieldnames(reader.fieldnames, input_format_intenum)
-		return CSVHelper.__get_list_from_reader(reader)
+
+		if reader.fieldnames is None:
+			print("Wrong input format.")
+			exit(ExitCodes.wrong_input_format)
+
+		return [row for row in reader]
 
 	@staticmethod
 	def save_csv(database: list, database_format, filename=None) -> None:
