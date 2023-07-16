@@ -58,12 +58,12 @@ class SharedMatchesParser(Parser, ABC):
 			exit(ExitCodes.wrong_input_format)
 
 		for row in reader:
-			ID = row[self._primary_match_format.person_id]
+			ID = row[self._primary_match_format.person_id.name]
 			if ID is None:
 				print("All primary matches must be identified by person_id.")
 				exit(ExitCodes.missing_data)
 
-			self._primary_matches[ID] = row[self._primary_match_format.path]
+			self._primary_matches[ID] = row[self._primary_match_format.path.name]
 
 	def parse(self, configuration_file=None):
 		"""Parses input data from files - paths to these files are specified by the configuration file given as
