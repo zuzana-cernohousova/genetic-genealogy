@@ -38,7 +38,7 @@ After installing the application _gengen_ command and the following subcommands 
 - checkout
 - parse-matches
 - parse-segments
-- parse-shared-matches
+- parse-shared
 - find-intersections 
 
 These subcommands are more closely described [below](#commands).

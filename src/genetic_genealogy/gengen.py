@@ -3,6 +3,7 @@ import sys
 import os
 
 if 'genetic_genealogy' not in sys.modules:
+	# if not using installed package
 	sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 from genetic_genealogy.usage.parse import parse_matches, parse_segments, parse_shared_matches
@@ -12,6 +13,7 @@ from genetic_genealogy.project import checkout_project, create_new_project, dele
 
 
 def main():
+	"""This is the main entry point for the application."""
 	args_parser = argparse.ArgumentParser()
 
 	subparsers = args_parser.add_subparsers(
@@ -109,6 +111,7 @@ def main():
 
 	# are there enough arguments?
 	if len(sys.argv) < 2:
+		# if not pring message
 		print("""Welcome to the genetic-genealogy project!
 
 To use any of the supported features, use one of the following subcommands:
@@ -120,7 +123,7 @@ current-project
 checkout
 parse-matches
 parse-segments
-parse-shared-matches
+parse-shared
 find-intersections"""
 )
 		return
