@@ -150,7 +150,7 @@ Všechny soubory na které tento soubor odkazuje musí pocházet ze stejného zd
 ten je specifikován přepínačem _--ftdna_ nebo _--gedmatch_. 
 Hlavička tohoto vstupního souboru má podobu:
 
-    id,name,path
+    person_id,path
 
 Alespoň jedna z hodnot _id_ a _name_ musí být v každém záznamu vyplněna.
 
