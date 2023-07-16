@@ -105,7 +105,7 @@ def main():
 
 	i_group = intersection_args.add_mutually_exclusive_group()
 	i_group.add_argument("-sid", "--segment_id", type=int)
-	i_group.add_argument("-id", "--person_id", type=int)
+	i_group.add_argument("-pid", "--person_id", type=int)
 
 	# endregion
 
