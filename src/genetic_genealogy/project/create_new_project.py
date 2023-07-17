@@ -25,8 +25,9 @@ def __create_settings_file(name, abs_path):
 
 	cp = configparser.ConfigParser()
 	try:
-		with open(os.path.join(os.path.dirname(__file__), "templates/project_config_template.ini")) as template:
+		with open(os.path.join(os.path.dirname(__file__), "templates", "project_config_template.ini")) as template:
 			cp.read(template)
+
 	except IOError as err:
 		err.add_note("IOError when reading project_config_template.ini")
 		raise
@@ -53,7 +54,7 @@ def __create_global_config():
 	# read the template
 
 	try:
-		with open(os.path.join(os.path.dirname(__file__), "templates/global_config_template.ini")) as template:
+		with open(os.path.join(os.path.dirname(__file__), "templates", "global_config_template.ini")) as template:
 			cp.read(template)
 	except IOError as err:
 		err.add_note("IOError when reading global_config_template.ini")
