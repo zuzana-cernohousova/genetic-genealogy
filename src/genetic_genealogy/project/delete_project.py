@@ -1,7 +1,4 @@
 import argparse
-import configparser
-import appdirs
-import os
 import sys
 from genetic_genealogy.project.project_helper import get_global_configuration, write_global_configuration
 

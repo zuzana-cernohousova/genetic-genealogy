@@ -1,7 +1,4 @@
 import argparse
-import configparser
-import appdirs
-import os
 
 from genetic_genealogy.project.project_helper import get_global_configuration
 
