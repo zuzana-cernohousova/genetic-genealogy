@@ -3,11 +3,11 @@ import configparser
 import appdirs
 import os
 
+from genetic_genealogy.project.project_helper import get_global_configuration
+
 
 def current_project(args):
-	projects_config_path = os.path.join(appdirs.user_config_dir("genetic-genealogy"), "projects.ini")
-	cp = configparser.ConfigParser()
-	cp.read(projects_config_path)
+	cp = get_global_configuration()
 
 	if "current_project" in cp["CURRENT_PROJECT"]:
 		name = cp["CURRENT_PROJECT"]["current_project"]

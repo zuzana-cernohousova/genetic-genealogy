@@ -3,12 +3,11 @@ import configparser
 import appdirs
 import os
 import sys
+from genetic_genealogy.project.project_helper import get_global_configuration, write_global_configuration
 
 
 def __try_to_delete_project(name):
-	projects_config_path = os.path.join(appdirs.user_config_dir("genetic-genealogy"), "projects.ini")
-	cp = configparser.ConfigParser()
-	cp.read(projects_config_path)
+	cp = get_global_configuration()
 
 	if name in cp["PROJECTS"].keys():
 
@@ -20,8 +19,7 @@ def __try_to_delete_project(name):
 					cp["PROJECTS"].pop(name)
 					cp["CURRENT_PROJECT"].pop("current_project")
 
-					with open(projects_config_path, "w") as projects:
-						cp.write(projects)
+					write_global_configuration(cp)
 
 					print("Project was successfully deleted from projects.")
 					return
@@ -31,10 +29,7 @@ def __try_to_delete_project(name):
 					return
 
 		cp["PROJECTS"].pop(name)
-
-		with open(projects_config_path, "w") as projects:
-			cp.write(projects)
-
+		write_global_configuration(cp)
 		print("Project was successfully deleted from projects.")
 		return
 

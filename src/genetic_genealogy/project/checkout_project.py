@@ -3,17 +3,17 @@ import configparser
 import appdirs
 import os
 
+from genetic_genealogy.project.project_helper import get_global_configuration, write_global_configuration
+
 
 def __try_to_checkout_project(name):
-	projects_config_path = os.path.join(appdirs.user_config_dir("genetic-genealogy"), "projects.ini")
-	cp = configparser.ConfigParser()
-	cp.read(projects_config_path)
+	"""Tries to change the current project in the projects configuration file."""
+	cp = get_global_configuration()
 
 	if name in cp["PROJECTS"].keys():
 		cp["CURRENT_PROJECT"]["current_project"] = name
 
-		with open(projects_config_path, "w") as projects:
-			cp.write(projects)
+		write_global_configuration(cp)
 
 		print("Project checkout was successful. You are now working with the " + name + " project.")
 		return
@@ -37,4 +37,3 @@ if __name__ == "__main__":
 
 	checkout_project(arguments)
 
-# todo add current project command

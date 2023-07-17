@@ -24,7 +24,6 @@ def list_projects(args):
 		print("No current project. To set a project as current, use the 'gengen checkout' command.")
 
 
-
 if __name__ == "__main__":
 	args_parser = argparse.ArgumentParser()
 	args_parser.add_argument("-l", "--long", action="store_true")
