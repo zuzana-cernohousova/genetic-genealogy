@@ -53,6 +53,9 @@ class CSVHelper:
 
 	@staticmethod
 	def __get_intenum_fieldnames(fieldnames, input_format_enum) -> list:
+		"""Returns list of input_format_enum values corresponding to names of columns
+		in fieldnames in the same order.
+		If the formats do not match, returns None."""
 		new_fieldnames = []
 
 		if not input_format_enum.validate_format(fieldnames):
@@ -70,6 +73,8 @@ class CSVHelper:
 
 	@staticmethod
 	def __load_from_reader(reader, input_format_intenum) -> list:
+		"""Returns a list of dictionaries corresponding to rows of reader.
+		Checks if the format is correct."""
 		reader.fieldnames = CSVHelper.__get_intenum_fieldnames(reader.fieldnames, input_format_intenum)
 
 		if reader.fieldnames is None:
@@ -94,6 +99,7 @@ class CSVHelper:
 
 	@staticmethod
 	def __write_to_writer(database, database_format, writer) -> None:
+		"""Writes the database (list of rows) to the given writer."""
 		writer.writerow(database_format.get_header())
 
 		for row in database:

@@ -53,7 +53,11 @@ class SharedMatchesParser(Parser, ABC):
 			exit(ExitCodes.io_error)
 
 	def _load_pm_from_dict_reader(self, reader):
+		"""Loads IDs and their corresponding file paths from csv reader.
+		Checks if the file format is correct.
+		Checks if all data is present."""
 		if not self._primary_match_format.validate_format(reader.fieldnames):
+			# check if format is correct
 			print("Wrong config file format.")
 			exit(ExitCodes.wrong_input_format)
 
@@ -66,10 +70,12 @@ class SharedMatchesParser(Parser, ABC):
 			self._primary_matches[ID] = row[self._primary_match_format.path.name]
 
 	def parse(self, configuration_file=None):
-		"""Parses input data from files - paths to these files are specified by the configuration file given as
-		a parameter to this method.
-		The configuration file, which is a csv file, determines the ids of primary matches and the paths to the
-		files corresponding to them. In those files, there are regular match data in source specific format.
+		"""Parses input data from files - paths to these files are specified by
+		the configuration file given as a parameter to this method.
+		The configuration file, which is a csv file, determines the
+		ids of primary matches and the paths to the
+		files corresponding to them. In those files,
+		there are match data in the source specific format.
 		Matches from those files are referred to as secondary matches and
 		they are matches in common with the POI and the given primary match.
 
@@ -146,6 +152,7 @@ class SharedMatchesParser(Parser, ABC):
 	@abstractmethod
 	def _get_secondary_match_id_and_name(self, existing_matches, input_row) -> (int, str):
 		"""Gets secondary match information from match database (existing_matches).
+		Returns the ID and name as a tuple of int and str.
 		Is source database specific."""
 		pass
 
@@ -214,11 +221,15 @@ class GEDmatchSharedMatchesParser(SharedMatchesParser):
 
 		match = existing_matches.get_record_from_gedmatch_id(kit_id)
 		if match is not None:
+			# secondary match was found, can get id from the record
 			return match[MatchFormatEnum.person_id], name
 
+		# secondary match was not found
 		return None, name
 
 	def _fill_in_match_statistics(self, input_row: dict, output_row: dict) -> None:
+		"""Fill output row columns, that describe how much DNA
+		the primary match shares with the secondary match."""
 		mapping = self._input_format().shared_matches_mapping()
 		for index in input_row.keys():
 			if index in mapping:

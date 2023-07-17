@@ -32,7 +32,8 @@ class Parser(ABC):
 	@abstractmethod
 	def parse(self, filename: str) -> None:
 		"""Reads the file under filename and parses the records into
-		the format specified by _output_format. If filename is not specified, data is read from standard input."""
+		the format specified by _output_format.
+		If filename is not specified, data is read from standard input."""
 		pass
 
 
@@ -54,7 +55,11 @@ class MatchParser(Parser, ABC):
 		pass
 
 	def parse(self, filename: str = None) -> None:
-		# create and load database
+		"""Parses records in the given filename.
+		If filename is not given, reads from standard input.
+		Checks for the correct format."""
+
+		# create and load the database
 		existing_records = CSVMatchDatabase()
 		existing_records.load()
 
@@ -82,11 +87,16 @@ class MatchParser(Parser, ABC):
 			existing_records.save()
 
 	def _parse_from_dict_reader(self, reader, existing_records):
+		"""Parses every record in the given reader,
+		compares it to the existing_records database.
+		Check if the reader is of the correct format."""
+
 		# check if the file is in the correct format
 		if not self._input_format().validate_format(reader.fieldnames):
 			print("Wrong matches file format.")
 			exit(ExitCodes.wrong_input_format)
 
+		# replace string fieldnames with enum
 		reader.fieldnames = CSVHelper.get_strenum_fieldnames(self._input_format(), reader.fieldnames)
 
 		# for every record in the reader, parse it into the correct format and store it in the self.__result list
@@ -114,6 +124,8 @@ class MatchParser(Parser, ABC):
 			self._result.append(output_record)
 
 	def print_message(self) -> None:
+		"""Prints message about the results of the parsing."""
+
 		if len(self._new_matches) == 0:
 			print("No new matches found.")
 		else:
@@ -172,6 +184,7 @@ class FTDNAMatchParser(MatchParser):
 
 
 class GEDmatchMatchParser(MatchParser):
+	"""Classed used for parsing match data exported from GEDmatch."""
 	@classmethod
 	def _input_format(cls):
 		return GEDmatchMatchFormatEnum

@@ -4,7 +4,6 @@ import re
 import sys
 from abc import ABC, abstractmethod
 
-from genetic_genealogy import exit_codes
 from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.databases.match_database import CSVMatchDatabase
 from genetic_genealogy.databases.segment_database import CSVSegmentDatabase
@@ -12,10 +11,12 @@ from genetic_genealogy.exit_codes import ExitCodes
 from genetic_genealogy.parsers.formats import FTDNASegmentFormatEnum, ListCSV_GEDmatchSegmentFormatEnum, \
 	SegmentSearch_GEDmatchSegmentFormatEnum, SegmentFormatEnum
 from genetic_genealogy.parsers.match_parsers import Parser
+from genetic_genealogy.helper import one_space
 
 
 class SegmentParser(Parser, ABC):
-	"""Class used for parsing segments. Child classes are used for parsing input from different databases."""
+	"""Class used for parsing segments.
+	Child classes are used for parsing input from different databases."""
 
 	def __init__(self):
 		super().__init__()
@@ -58,6 +59,9 @@ class SegmentParser(Parser, ABC):
 	@classmethod
 	@abstractmethod
 	def _find_person_id(cls, match_database: CSVMatchDatabase, record: dict):
+		"""Finds person ID for the giver record in the match_database,
+		returns it as int.
+		If no ID is found, returns None."""
 		pass
 
 	@abstractmethod
@@ -65,6 +69,8 @@ class SegmentParser(Parser, ABC):
 		pass
 
 	def _parse_from_dict_reader(self, reader, existing_matches, existing_segments):
+		"""Parses records from the given dict_reader.
+		Appends the parsed records to _result."""
 
 		# check if the file is in the correct format
 		if not self._input_format().validate_format(reader.fieldnames):
@@ -144,7 +150,9 @@ class FTDNASegmentParser(SegmentParser):
 
 	@classmethod
 	def __create_name(cls, record: dict) -> str:
-		return re.sub(' +', ' ', record[cls._input_format().match_name])
+		"""Returns the full name of the person in the record,
+		words are divided by one space."""
+		return one_space(record[cls._input_format().match_name])
 
 	def print_message(self) -> None:
 		"""Prints information if new segments were added to the database.
@@ -165,7 +173,8 @@ class FTDNASegmentParser(SegmentParser):
 class GEDmatchSegmentParser(SegmentParser, ABC):
 	@classmethod
 	def _find_person_id(cls, match_database: CSVMatchDatabase, record: dict):
-		person = match_database.get_record_from_gedmatch_id(" ".join(record[cls._input_format().matched_kit].split()))
+		person = match_database.get_record_from_gedmatch_id\
+			(" ".join(record[cls._input_format().matched_kit].split()))
 		if person is not None:
 			return int(person[match_database.format.person_id])
 
@@ -173,7 +182,8 @@ class GEDmatchSegmentParser(SegmentParser, ABC):
 
 	def print_message(self) -> None:
 		"""Prints information if new segments were added to the database.
-		Prints gedmatch identifiers of all the people who were not identified based on their names, if any were not."""
+		Prints gedmatch identifiers of all the people who were not
+		identified based on their names, if any were not."""
 		if self._new_segments_found:
 			print("New segments were added to the database.")
 		else:
