@@ -7,6 +7,8 @@ from genetic_genealogy.project.project_helper import get_global_configuration
 
 
 def current_project(args):
+	"""Prints the current project read from the global configuration file."""
+
 	cp = get_global_configuration()
 
 	if "current_project" in cp["CURRENT_PROJECT"]:

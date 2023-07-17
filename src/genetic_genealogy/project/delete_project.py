@@ -7,6 +7,10 @@ from genetic_genealogy.project.project_helper import get_global_configuration, w
 
 
 def __try_to_delete_project(name):
+	"""Deletes the project from the global configuration file.
+	Does not delete the project directory structure.
+	If the current project is to be deleted, user is asked for confirmation."""
+
 	cp = get_global_configuration()
 
 	if name in cp["PROJECTS"].keys():

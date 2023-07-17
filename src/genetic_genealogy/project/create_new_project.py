@@ -9,6 +9,7 @@ from genetic_genealogy.project.project_helper import get_global_configuration, w
 
 
 def __create_project_directory_structure(abs_path):
+	"""Creates the simple directory structure of the project on the given path."""
 	if not os.path.exists(abs_path):
 		os.mkdir(abs_path)
 
@@ -18,6 +19,8 @@ def __create_project_directory_structure(abs_path):
 
 
 def __create_settings_file(name, abs_path):
+	"""Creates the project configuration file, adds the project info.
+	Configuration file is created based on a template."""
 	settings_path = os.path.join(abs_path, "settings.ini")
 
 	cp = configparser.ConfigParser()
@@ -37,6 +40,9 @@ def __create_settings_file(name, abs_path):
 
 
 def __create_global_config():
+	"""Creates an empty global configuration file, where project list will be added.
+	Configuration file is created based on a template."""
+
 	global_config_dir = appdirs.user_config_dir("genetic-genealogy")
 
 	if not os.path.exists(global_config_dir):
@@ -75,15 +81,20 @@ def __add_project(name, path, cp):
 
 
 def __try_to_add_new_project_to_projects(name, path, existing_path=False):
+	"""Tries to add new project to the list of existing projects.
+	If the name or the path are taken, the project will not be created."""
+
 	if not existing_path and os.path.exists(path):
 		print("Choose the -e/--existing option if you want to create a project from an existing directory.")
 		exit(ExitCodes.unique_required)
 
+	# if global configuration does not exist, create it
 	global_config_path = get_global_configuration_path()
 	if not os.path.exists(global_config_path):
 		__create_global_config()
 
 	cp = get_global_configuration()
+	# if name or path is taken, the project cannot be created
 	if __name_taken(name, cp):
 		print("Choose unique name. This name already exists.")
 		exit(ExitCodes.unique_required)
@@ -96,6 +107,8 @@ def __try_to_add_new_project_to_projects(name, path, existing_path=False):
 
 
 def create_new_project(args):
+	"""Creates a new project given the arguments."""
+
 	a_p = os.path.abspath(args.path)
 	n = args.name
 

@@ -1,7 +1,4 @@
 import argparse
-import configparser
-import appdirs
-import os
 
 from genetic_genealogy.project.project_helper import get_global_configuration, write_global_configuration
 
@@ -25,6 +22,7 @@ def __try_to_checkout_project(name):
 
 
 def checkout_project(args):
+	"""Changes the current project if it is possible."""
 	n = args.name
 	__try_to_checkout_project(n)
 

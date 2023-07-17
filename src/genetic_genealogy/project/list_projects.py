@@ -5,6 +5,10 @@ import os
 
 
 def list_projects(args):
+	"""Reads the global configuration and prints a list of all existing projects,
+	the list contains both name and path of each project.
+	Prints the name of the current project."""
+
 	projects_config_path = os.path.join(appdirs.user_config_dir("genetic-genealogy"), "projects.ini")
 	cp = configparser.ConfigParser()
 	cp.read(projects_config_path)
