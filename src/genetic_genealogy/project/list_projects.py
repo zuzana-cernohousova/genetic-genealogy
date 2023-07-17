@@ -1,7 +1,6 @@
 import argparse
-import configparser
-import appdirs
-import os
+
+from genetic_genealogy.project.project_helper import get_global_configuration
 
 
 def list_projects(args):
@@ -9,9 +8,7 @@ def list_projects(args):
 	the list contains both name and path of each project.
 	Prints the name of the current project."""
 
-	projects_config_path = os.path.join(appdirs.user_config_dir("genetic-genealogy"), "projects.ini")
-	cp = configparser.ConfigParser()
-	cp.read(projects_config_path)
+	cp = get_global_configuration()
 
 	print("Existing projects:")
 
