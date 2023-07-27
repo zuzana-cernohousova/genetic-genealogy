@@ -48,14 +48,13 @@ These subcommands are more closely described [below](#commands).
 ### A Diagram describing the functionalities of this project
 Behind this link, you can find a diagram in witch there are described current
 and future features of this project.
-
 On top, there is a high level scheme of the application,
 below more detail are described.
 
 https://drive.google.com/file/d/1zltsMH-SDBmn84_Kg38oEF7a6StJ5UmY/view?usp=sharing
 
 ### _High level scheme_
-![high level diagram](img/high_level_diagram.png)
+![high level diagram](img/project_workflow_eng.svg)
 
 ## COMMANDS
 ### gengen new-project
