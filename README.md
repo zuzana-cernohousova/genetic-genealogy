@@ -228,8 +228,8 @@ When creating a new project a directory structure like this will be created:
     
     example/path/
     ├── settings.ini
-    ├── input_data
-    └── database
+    ├── input_data/
+    └── database/
 
 The settings.ini file contains basic information about
 the project and some files location configuration. For example:
