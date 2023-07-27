@@ -88,6 +88,9 @@ Use this command to display all projects available on the system.
 It also displays the name of the current project.
 Use the _-l/--long_ option to display paths to the projects.
 
+A list of all the projects is kept in a platform-specific location
+defined by the appdirs package, in a file named _projects.ini_.
+
 Usage:
     
     gengen list-projects
