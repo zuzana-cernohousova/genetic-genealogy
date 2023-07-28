@@ -56,7 +56,6 @@ class CSVIntersectionFinder(IntersectionFinder):
 		try:
 			self._segments = CSVHelper.load_csv(segments_filename, self.__segment_format)
 
-
 		except FileNotFoundError:
 			print("The source file was not found.")
 			exit(ExitCodes.no_such_file)
