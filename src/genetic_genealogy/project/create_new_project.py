@@ -7,6 +7,16 @@ from genetic_genealogy.exit_codes import ExitCodes
 from genetic_genealogy.project.project_helper import get_global_configuration, write_global_configuration, \
 	get_global_configuration_path, write_project_configuration_to_file
 
+global_config_template = """[CURRENT_PROJECT]
+
+[PROJECTS]
+"""
+
+project_config_template = """[PROJECT_INFO]
+
+[CSV_LOCATIONS]
+"""
+
 
 def __create_project_directory_structure(abs_path):
 	"""Creates the simple directory structure of the project on the given path."""
@@ -24,12 +34,7 @@ def __create_settings_file(name, abs_path):
 	settings_path = os.path.join(abs_path, "settings.ini")
 
 	cp = configparser.ConfigParser()
-	try:
-		cp.read(os.path.join(os.path.dirname(__file__), "templates", "project_config_template.ini"))
-
-	except IOError as err:
-		err.add_note("IOError when reading project_config_template.ini")
-		raise
+	cp.read_string(project_config_template)
 
 	cp["PROJECT_INFO"]["main_path"] = abs_path
 	cp["PROJECT_INFO"]["name"] = name.lower()
@@ -50,14 +55,9 @@ def __create_global_config():
 		os.makedirs(global_config_dir)
 
 	cp = configparser.ConfigParser()
+
 	# read the template
-
-	try:
-		cp.read(os.path.join(os.path.dirname(__file__), "templates", "global_config_template.ini"))
-
-	except IOError as err:
-		err.add_note("IOError when reading global_config_template.ini")
-		raise
+	cp.read_string(global_config_template)
 
 	# write the contents of the global configuration file
 	write_global_configuration(cp)
