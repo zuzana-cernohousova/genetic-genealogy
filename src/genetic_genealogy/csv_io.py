@@ -58,6 +58,9 @@ class CSVHelper:
 		If the formats do not match, returns None."""
 		new_fieldnames = []
 
+		if fieldnames is None:
+			return None
+
 		if not input_format_enum.validate_format(fieldnames):
 			return None
 
@@ -112,6 +115,9 @@ class CSVHelper:
 	def get_strenum_fieldnames(input_format, fieldnames) -> list:
 		"""Creates a list of values of given input_format (that is a strenum) in the same order as are the corresponding
 		strings in current fieldnames."""
+
+		if fieldnames is None:
+			return None
 
 		result = []
 		for name in fieldnames:
