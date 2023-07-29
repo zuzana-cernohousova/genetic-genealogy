@@ -35,6 +35,9 @@ class FormatEnum(IntEnum):
 		"""Check if header contains all columns, if not or contains a wrong column, return False.
 		If order is different, create a mapping with the right order."""
 
+		if other_header is None:
+			return False
+
 		# for all necessary columns - lowercase them and get rid of all whitespaces
 		lowercase_no_whitespace_minimal_column_set = {lower_no_whitespace(item) for item in
 													  cls.get_minimal_column_names_set()}
@@ -190,6 +193,8 @@ class InputFormatEnum(str, Enum):
 	def validate_format(cls, other_header):
 		"""Check if header contains all columns, if not or contains a wrong column, return False.
 		If order is different, create a mapping with the right order."""
+		if other_header is None:
+			return False
 
 		# for all necessary columns - lowercase them and get rid of all whitespaces
 		lowercase_no_whitespace_minimal_column_set = {lower_no_whitespace(item) for item in
