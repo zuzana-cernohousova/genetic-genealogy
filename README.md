@@ -246,6 +246,9 @@ the project and some files location configuration. For example:
     segment_database = database/all_segments.csv
     command_log = database/command_log.csv
 
+The command_log location is used for saving all the relevant commands (with parsing and intersections subcommands)
+as well as the working directories so that the whole pipeline can be replicated. 
+
 ## Example
 In the [anonym_example](anonym_example) directory, anonymized input files can be found.
 Use the following commands to try them out while working from the root of this repository.
