@@ -1,16 +1,16 @@
 import argparse
 
-from genetic_genealogy.project.config_reader import ConfigReader
+from genetic_genealogy.project.config_helper import ConfigHelper
 
 
 def __try_to_checkout_project(name):
 	"""Tries to change the current project in the projects configuration file."""
-	cp = ConfigReader.get_global_configuration()
+	cp = ConfigHelper.get_global_configuration()
 
 	if name in cp["PROJECTS"].keys():
 		cp["CURRENT_PROJECT"]["current_project"] = name
 
-		ConfigReader.write_global_configuration(cp)
+		ConfigHelper.write_global_configuration(cp)
 
 		print("Project checkout was successful. You are now working with the " + name + " project.")
 		return

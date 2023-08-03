@@ -1,6 +1,6 @@
 from abc import ABC
 
-from genetic_genealogy.project.config_reader import ConfigReader
+from genetic_genealogy.project.config_helper import ConfigHelper
 from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.databases.database import Database
 from genetic_genealogy.helper import lower_no_whitespace
@@ -98,7 +98,7 @@ class CSVSegmentDatabase(SegmentDatabase):
 
 	def __init__(self):
 		super().__init__()
-		self.__file_name = ConfigReader.get_segment_database_location()
+		self.__file_name = ConfigHelper.get_segment_database_location()
 
 	def load(self):
 		"""Reads the given csv file and stores it. CSV file location is read from project configuration."""

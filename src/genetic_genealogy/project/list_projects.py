@@ -1,6 +1,6 @@
 import argparse
 
-from genetic_genealogy.project.config_reader import ConfigReader
+from genetic_genealogy.project.config_helper import ConfigHelper
 
 
 def list_projects(args):
@@ -8,7 +8,7 @@ def list_projects(args):
 	the list contains both name and path of each project.
 	Prints the name of the current project."""
 
-	cp = ConfigReader.get_global_configuration()
+	cp = ConfigHelper.get_global_configuration()
 
 	if "PROJECTS" not in cp:
 		print("There are no projects yet. First create some.")

@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from genetic_genealogy.project.config_reader import ConfigReader
+from genetic_genealogy.project.config_helper import ConfigHelper
 
 
 def __try_to_delete_project(name):
@@ -9,7 +9,7 @@ def __try_to_delete_project(name):
 	Does not delete the project directory structure.
 	If the current project is to be deleted, user is asked for confirmation."""
 
-	cp = ConfigReader.get_global_configuration()
+	cp = ConfigHelper.get_global_configuration()
 
 	if name in cp["PROJECTS"].keys():
 
@@ -21,7 +21,7 @@ def __try_to_delete_project(name):
 					cp["PROJECTS"].pop(name)
 					cp["CURRENT_PROJECT"].pop("current_project")
 
-					ConfigReader.write_global_configuration(cp)
+					ConfigHelper.write_global_configuration(cp)
 
 					print("Project was successfully deleted from projects.")
 					return
@@ -31,7 +31,7 @@ def __try_to_delete_project(name):
 					return
 
 		cp["PROJECTS"].pop(name)
-		ConfigReader.write_global_configuration(cp)
+		ConfigHelper.write_global_configuration(cp)
 		print("Project was successfully deleted from projects.")
 		return
 

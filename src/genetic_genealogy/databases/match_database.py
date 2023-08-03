@@ -4,7 +4,7 @@ from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.databases.database import Database
 from genetic_genealogy.helper import lower_one_space
 from genetic_genealogy.parsers.formats import MatchFormatEnum, SourceEnum
-from genetic_genealogy.project.config_reader import ConfigReader
+from genetic_genealogy.project.config_helper import ConfigHelper
 
 
 class MatchDatabase(Database, ABC):
@@ -114,7 +114,7 @@ class CSVMatchDatabase(MatchDatabase):
 
 	def __init__(self):
 		super().__init__()
-		self.__file_name = ConfigReader.get_match_database_location()
+		self.__file_name = ConfigHelper.get_match_database_location()
 
 	def load(self):
 		"""Reads the given csv file and stores it.

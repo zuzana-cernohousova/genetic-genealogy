@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from genetic_genealogy.project.config_reader import ConfigReader
+from genetic_genealogy.project.config_helper import ConfigHelper
 from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.exit_codes import ExitCodes
 from genetic_genealogy.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatEnum
@@ -51,7 +51,7 @@ class CSVIntersectionFinder(IntersectionFinder):
 		Build a dictionary of segments over ids and over chromosomes."""
 
 		if from_database:
-			segments_filename = ConfigReader.get_segment_database_location()
+			segments_filename = ConfigHelper.get_segment_database_location()
 
 		try:
 			self._segments = CSVHelper.load_csv(segments_filename, self.__segment_format)

@@ -5,12 +5,12 @@ import os
 from genetic_genealogy.exit_codes import ExitCodes
 
 
-class ConfigReader:
+class ConfigHelper:
 	"""Class used for parsing configuration from global configuration file (settings.ini)."""
 
 	@staticmethod
 	def get_match_database_location():
-		current_proj_path = ConfigReader.get_current_project_path()
+		current_proj_path = ConfigHelper.get_current_project_path()
 
 		project_config = configparser.ConfigParser()
 		project_config.read(os.path.join(current_proj_path, "settings.ini"))
@@ -19,7 +19,7 @@ class ConfigReader:
 
 	@staticmethod
 	def get_segment_database_location():
-		current_proj_path = ConfigReader.get_current_project_path()
+		current_proj_path = ConfigHelper.get_current_project_path()
 
 		project_config = configparser.ConfigParser()
 		project_config.read(os.path.join(current_proj_path, "settings.ini"))
@@ -50,7 +50,7 @@ class ConfigReader:
 	def get_global_configuration():
 		"""Reads project configuration from the "project.ini" file
 		and returns it in form of an instance of configparser.ConfigParser."""
-		projects_config_path = ConfigReader.get_global_configuration_path()
+		projects_config_path = ConfigHelper.get_global_configuration_path()
 		config_parser = configparser.ConfigParser()
 
 		try:
@@ -78,7 +78,7 @@ class ConfigReader:
 	def write_global_configuration(config_parser):
 		"""Writes the given config parser to the path of the global configuration
 		for this application obtained from the get_global_configuration_path method."""
-		projects_config_path = ConfigReader.get_global_configuration_path()
+		projects_config_path = ConfigHelper.get_global_configuration_path()
 
 		try:
 			with open(projects_config_path, "w") as projects:
