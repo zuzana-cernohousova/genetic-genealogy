@@ -96,7 +96,7 @@ class CSVIntersectionFinder(IntersectionFinder):
 
 		sf = self.__segment_format
 
-		segment = self._segments_by_int_id[segment_id]
+		segment = self._segments_by_int_id[int(segment_id)]
 		chromosome_id = segment[sf.chromosome_id]
 		if chromosome_id not in self._segments_by_chromosome.keys():
 			return []
