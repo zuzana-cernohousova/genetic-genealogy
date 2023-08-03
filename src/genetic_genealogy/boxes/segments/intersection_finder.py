@@ -36,7 +36,7 @@ class CSVIntersectionFinder(IntersectionFinder):
 		super(CSVIntersectionFinder, self).__init__()
 		self._segments = []
 
-		self._segments_by_id = {}
+		self._segments_by_int_id = {}
 		self._segments_by_chromosome = {}
 
 	__segment_format = SegmentFormatEnum
@@ -74,7 +74,7 @@ class CSVIntersectionFinder(IntersectionFinder):
 	def _create_segments_by_id(self) -> None:
 		for segment in self._segments:
 			# create a dict where ids are keys
-			self._segments_by_id[segment[self.__segment_format.segment_id]] = segment
+			self._segments_by_int_id[int(segment[self.__segment_format.segment_id])] = segment
 
 	def _create_segments_by_chromosome(self) -> None:
 		# create a dict where chromosome ids are keys and values are lists of segments
@@ -82,22 +82,22 @@ class CSVIntersectionFinder(IntersectionFinder):
 		for segment in self._segments:
 			chrom_id = segment[self.__segment_format.chromosome_id]
 			if chrom_id in self._segments_by_chromosome.keys():
-				self._segments_by_chromosome[chrom_id].append(segment)
+				self._segments_by_chromosome[int(chrom_id)].append(segment)
 			else:
-				self._segments_by_chromosome[chrom_id] = [segment]
+				self._segments_by_chromosome[int(chrom_id)] = [segment]
 
 	def find_intersections_of_segment(self, segment_id) -> list:
 		"""Finds all segments that intersect a specified segment,
 		finds the intersection start- and end-points."""
 
-		if segment_id not in self._segments_by_id.keys():
+		if int(segment_id) not in self._segments_by_int_id.keys():
 			# if segment is not known, cannot find anything
 			return []
 
 		sf = self.__segment_format
 
-		segment = self._segments_by_id[segment_id]
-		chromosome_id = segment[sf.chromosome_id]
+		segment = self._segments_by_int_id[segment_id]
+		chromosome_id = int(segment[sf.chromosome_id])
 		if chromosome_id not in self._segments_by_chromosome.keys():
 			return []
 
@@ -106,7 +106,7 @@ class CSVIntersectionFinder(IntersectionFinder):
 
 		for s in chromosome:
 			# for every other segment on the same chromosome
-			if s[sf.segment_id] == segment_id:
+			if int(s[sf.segment_id]) == int(segment_id):
 				# it is the same segment, skip it
 				continue
 
