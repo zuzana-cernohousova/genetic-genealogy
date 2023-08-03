@@ -49,7 +49,7 @@ def main():
 
 	# region current
 	current_args = subparsers.add_parser("current-project")
-	current_args.add_argument("-l", "--long")
+	current_args.add_argument("-l", "--long", action="store_true")
 	current_args.set_defaults(func=current_project.current_project)
 	# endregion
 
