@@ -1,12 +1,12 @@
 import argparse
 
-from genetic_genealogy.project.project_helper import get_global_configuration
+from genetic_genealogy.project.config_reader import ConfigReader
 
 
 def current_project(args):
 	"""Prints the current project read from the global configuration file."""
 
-	cp = get_global_configuration()
+	cp = ConfigReader.get_global_configuration()
 
 	if "CURRENT_PROJECT" not in cp:
 		print("There are no projects yet. First create some.")

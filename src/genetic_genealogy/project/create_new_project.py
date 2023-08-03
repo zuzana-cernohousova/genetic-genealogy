@@ -4,8 +4,7 @@ import appdirs
 import configparser
 
 from genetic_genealogy.exit_codes import ExitCodes
-from genetic_genealogy.project.project_helper import get_global_configuration, write_global_configuration, \
-	get_global_configuration_path, write_project_configuration_to_file
+from genetic_genealogy.project.config_reader import ConfigReader
 
 global_config_template = """[CURRENT_PROJECT]
 
@@ -41,7 +40,7 @@ def __create_settings_file(name, abs_path):
 	cp["CSV_LOCATIONS"]["match_database"] = os.path.join("database", "all_matches.csv")
 	cp["CSV_LOCATIONS"]["segment_database"] = os.path.join("database", "all_segments.csv")
 
-	write_project_configuration_to_file(cp, settings_path)
+	ConfigReader.write_project_configuration_to_file(cp, settings_path)
 
 
 def __create_global_config():
@@ -60,7 +59,7 @@ def __create_global_config():
 	cp.read_string(global_config_template)
 
 	# write the contents of the global configuration file
-	write_global_configuration(cp)
+	ConfigReader.write_global_configuration(cp)
 
 
 def __name_taken(name, cp) -> bool:
@@ -77,7 +76,7 @@ def __path_taken(path, cp) -> bool:
 
 def __add_project(name, path, cp):
 	cp["PROJECTS"][name] = path
-	write_global_configuration(cp)
+	ConfigReader.write_global_configuration(cp)
 
 
 def __try_to_add_new_project_to_projects(name, path, existing_path=False):
@@ -89,11 +88,11 @@ def __try_to_add_new_project_to_projects(name, path, existing_path=False):
 		exit(ExitCodes.unique_required)
 
 	# if global configuration does not exist, create it
-	global_config_path = get_global_configuration_path()
+	global_config_path = ConfigReader.get_global_configuration_path()
 	if not os.path.exists(global_config_path):
 		__create_global_config()
 
-	cp = get_global_configuration()
+	cp = ConfigReader.get_global_configuration()
 	# if name or path is taken, the project cannot be created
 	if __name_taken(name, cp):
 		print("Choose unique name. This name already exists.")

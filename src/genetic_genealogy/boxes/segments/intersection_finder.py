@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from genetic_genealogy.config_reader import ConfigReader
+from genetic_genealogy.project.config_reader import ConfigReader
 from genetic_genealogy.csv_io import CSVHelper
 from genetic_genealogy.exit_codes import ExitCodes
 from genetic_genealogy.parsers.formats import SegmentIntersectionFormatEnum, SegmentFormatEnum
