@@ -90,18 +90,18 @@ class CSVIntersectionFinder(IntersectionFinder):
 		"""Finds all segments that intersect a specified segment,
 		finds the intersection start- and end-points."""
 
-		result = []
 		if segment_id not in self._segments_by_id.keys():
 			# if segment is not known, cannot find anything
-			return None
+			return []
 
 		sf = self.__segment_format
 
 		segment = self._segments_by_id[segment_id]
 		chromosome_id = segment[sf.chromosome_id]
 		if chromosome_id not in self._segments_by_chromosome.keys():
-			return None
+			return []
 
+		result = []
 		chromosome = self._segments_by_chromosome[chromosome_id]
 
 		for s in chromosome:
