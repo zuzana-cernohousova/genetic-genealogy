@@ -1,6 +1,5 @@
 import csv
 import io
-import re
 import sys
 from abc import ABC, abstractmethod
 
