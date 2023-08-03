@@ -293,6 +293,6 @@ Use the following commands to try them out while working from the root of this r
     gengen find-intersections -fd -pid 1 -of example-dir/person_1_segments_intersections.csv
     
     # find intersections of one segment
-    gengen find-intersections -fd -sid 1 -of example-dir/person_1_segments_intersections.csv
+    gengen find-intersections -fd -sid 1 -of example-dir/segment_1_segments_intersections.csv
 
      
