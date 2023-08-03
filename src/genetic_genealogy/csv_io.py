@@ -126,3 +126,9 @@ class CSVHelper:
 					result.append(enum_name)
 
 		return result
+
+	@staticmethod
+	def write_row_to_end(file, row):
+		with open(file, 'a', newline="") as f:
+			writer = csv.writer(f)
+			writer.writerow(row)

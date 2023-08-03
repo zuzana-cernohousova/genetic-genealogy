@@ -2,6 +2,8 @@ import argparse
 import sys
 import os
 
+import genetic_genealogy.csv_io
+
 if 'genetic_genealogy' not in sys.modules:
 	# if not using installed package
 	sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
@@ -9,7 +11,20 @@ if 'genetic_genealogy' not in sys.modules:
 from genetic_genealogy.usage.parse import parse_matches, parse_segments, parse_shared_matches
 from genetic_genealogy.usage import find_segment_intersections
 from genetic_genealogy.project import checkout_project, create_new_project, delete_project, list_projects, \
-	current_project
+	current_project, config_helper
+
+
+def save_command(working_dir, args):
+	if not config_helper.ConfigHelper.exists_current_project():
+		return
+
+	command = ["gengen"] + args[1:]
+	row = [working_dir, " ".join(command)]
+	path = config_helper.ConfigHelper.get_command_log_location()
+	if not os.path.exists(path):
+		genetic_genealogy.csv_io.CSVHelper.write_row_to_end(path, ["working_directory", "command"])
+
+	genetic_genealogy.csv_io.CSVHelper.write_row_to_end(path, row)
 
 
 def main():
@@ -130,6 +145,14 @@ find-intersections"""
 
 	args = args_parser.parse_args()
 	args.func(args)
+
+	if sys.argv[1] in [
+		"parse-matches",
+		"parse-segments",
+		"parse-shared",
+		"find-intersections"]:
+
+		save_command(os.getcwd(), sys.argv)
 
 
 if __name__ == "__main__":

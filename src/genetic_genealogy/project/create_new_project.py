@@ -39,6 +39,7 @@ def __create_settings_file(name, abs_path):
 	cp["PROJECT_INFO"]["name"] = name.lower()
 	cp["CSV_LOCATIONS"]["match_database"] = os.path.join("database", "all_matches.csv")
 	cp["CSV_LOCATIONS"]["segment_database"] = os.path.join("database", "all_segments.csv")
+	cp["CSV_LOCATIONS"]["command_log"] = os.path.join("database", "command_log.csv")
 
 	ConfigHelper.write_project_configuration_to_file(cp, settings_path)
 
