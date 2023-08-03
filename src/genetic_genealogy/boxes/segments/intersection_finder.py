@@ -130,7 +130,7 @@ class CSVIntersectionFinder(IntersectionFinder):
 		result = []
 
 		for segment in self._segments:
-			if segment[self.__segment_format.person_id] == person_id:
+			if int(segment[self.__segment_format.person_id]) == int(person_id):
 				result.append(segment)
 
 		return result
