@@ -276,15 +276,15 @@ Use the following commands to try them out while working from the root of this r
     # use -v/--verbose to print information if new segments beeing added to the database and if any names were not identified
     gengen parse-segments --ftdna -sf anonym_example/FTDNA/FTDNA_segment_data.csv -of example-dir/FTDNA_segments.csv -v
     
-    # try again the same command and see how no new segments are added to the database
+    # try again the same command and see that no new segments are added to the database
     gengen parse-segments --ftdna -sf anonym_example/FTDNA/FTDNA_segment_data.csv -of example-dir/FTDNA_segments.csv -v
 
     # parse segments from FamilyTreeDNA
-    gengen parse-segments --gss -sf anonym_example/GEDmatch/GEDmatch_segments_gss.csv -of example-dir/GEDmatch_segments_gss.csv
-    gengen parse-segments --gl -sf anonym_example/GEDmatch/GEDmatch_segments_gl.csv -of example-dir/GEDmatch_segments_gl.csv
+    gengen parse-segments -gss -sf anonym_example/GEDmatch/GEDmatch_segments_gss.csv -of example-dir/GEDmatch_segments_gss.csv
+    gengen parse-segments -gl -sf anonym_example/GEDmatch/GEDmatch_segments_gl.csv -of example-dir/GEDmatch_segments_gl.csv
 
     # find intersections between segments from a file
-    gengen find-intersecitons -sf example-dir/FTDNA_segments.csv -of example-dir/FTDNA_segments_intersections.csv
+    gengen find-intersections -sf example-dir/FTDNA_segments.csv -of example-dir/FTDNA_segments_intersections.csv
 
     # find intersections of all segments currently in the database
     gengen find-intersections -fd -of example-dir/all_segments_intersections.csv
