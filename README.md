@@ -244,3 +244,52 @@ the project and some files location configuration. For example:
     [CSV_LOCATIONS]
     match_database = database/all_matches.csv
     segment_database = database/all_segments.csv
+    command_log = database/command_log.csv
+
+## Example
+In the [anonym_example](anonym_example) directory, anonymized input files can be found.
+Use the following commands to try them out while working from the root of this repository.
+
+    # create a new project while creating a new directory - example-dir
+    gengen new-project example example-dir
+
+    # show existing projects
+    gengen list-projects
+
+    # make the example project the current one
+    gengen checkout example
+
+    # see if the current project was set proprerly
+    gengen current-project
+
+    # parse matches from FamilyTreeDNA
+    # use -v/--verbose to print information about new matches added to the database 
+    gengen parse-matches --ftdna -sf anonym_example/FTDNA/FTDNA_match_data.csv -of example-dir/FTDNA_matches.csv -v
+    
+    # parse matches from GEDmatch
+    gengen parse-matches --gedmatch -sf anonym_example/GEDmatch/GEDmatch_match_data.csv -of example-dir/GEDmatch_matches.csv
+
+    # parse segments from FamilyTreeDNA
+    # use -v/--verbose to print information if new segments beeing added to the database and if any names were not identified
+    gengen parse-segments --ftdna -sf anonym_example/FTDNA/FTDNA_segment_data.csv -of example-dir/FTDNA_segments.csv -v
+    
+    # try again the same command and see how no new segments are added to the database
+    gengen parse-segments --ftdna -sf anonym_example/FTDNA/FTDNA_segment_data.csv -of example-dir/FTDNA_segments.csv -v
+
+    # parse segments from FamilyTreeDNA
+    gengen parse-segments --gss -sf anonym_example/GEDmatch/GEDmatch_segments_gss.csv -of example-dir/GEDmatch_segments_gss.csv
+    gengen parse-segments --gl -sf anonym_example/GEDmatch/GEDmatch_segments_gl.csv -of example-dir/GEDmatch_segments_gl.csv
+
+    # find intersections between segments from a file
+    gengen find-intersecitons -sf example-dir/FTDNA_segments.csv -of example-dir/FTDNA_segments_intersections.csv
+
+    # find intersections of all segments currently in the database
+    gengen find-intersections -fd -of example-dir/all_segments_intersections.csv
+
+    # find intersections of segments from one preson
+    gengen find-intersections -fd -pid 1 -of example-dir/person_1_segments_intersections.csv
+    
+    # find intersections of one segment
+    gengen find-intersections -fd -sid 1 -of example-dir/person_1_segments_intersections.csv
+
+     
