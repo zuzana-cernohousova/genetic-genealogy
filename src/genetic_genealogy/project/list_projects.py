@@ -10,6 +10,10 @@ def list_projects(args):
 
 	cp = get_global_configuration()
 
+	if "PROJECTS" not in cp:
+		print("There are no projects yet. First create some.")
+		return
+
 	print("Existing projects:")
 
 	if args.long:

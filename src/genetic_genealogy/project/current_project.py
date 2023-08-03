@@ -8,6 +8,10 @@ def current_project(args):
 
 	cp = get_global_configuration()
 
+	if "CURRENT_PROJECT" not in cp:
+		print("There are no projects yet. First create some.")
+		return
+
 	if "current_project" in cp["CURRENT_PROJECT"]:
 		name = cp["CURRENT_PROJECT"]["current_project"]
 
