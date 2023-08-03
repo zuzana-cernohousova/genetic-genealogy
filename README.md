@@ -246,7 +246,7 @@ the project and some files location configuration. For example:
     segment_database = database/all_segments.csv
     command_log = database/command_log.csv
 
-The command_log location is used for saving all the relevant commands (with parsing and intersections subcommands)
+The command_log location is used for saving all the relevant commands (parsing and intersections subcommands)
 as well as the working directories so that the whole pipeline can be replicated. 
 
 ## Example
