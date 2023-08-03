@@ -82,9 +82,9 @@ class CSVIntersectionFinder(IntersectionFinder):
 		for segment in self._segments:
 			chrom_id = segment[self.__segment_format.chromosome_id]
 			if chrom_id in self._segments_by_chromosome.keys():
-				self._segments_by_chromosome[int(chrom_id)].append(segment)
+				self._segments_by_chromosome[chrom_id].append(segment)
 			else:
-				self._segments_by_chromosome[int(chrom_id)] = [segment]
+				self._segments_by_chromosome[chrom_id] = [segment]
 
 	def find_intersections_of_segment(self, segment_id) -> list:
 		"""Finds all segments that intersect a specified segment,
@@ -97,7 +97,7 @@ class CSVIntersectionFinder(IntersectionFinder):
 		sf = self.__segment_format
 
 		segment = self._segments_by_int_id[segment_id]
-		chromosome_id = int(segment[sf.chromosome_id])
+		chromosome_id = segment[sf.chromosome_id]
 		if chromosome_id not in self._segments_by_chromosome.keys():
 			return []
 
